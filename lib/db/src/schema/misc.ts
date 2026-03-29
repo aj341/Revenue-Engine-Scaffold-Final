@@ -96,6 +96,28 @@ export const insertPlaybookEntrySchema = createInsertSchema(playbookEntriesTable
 export type InsertPlaybookEntry = z.infer<typeof insertPlaybookEntrySchema>;
 export type PlaybookEntry = typeof playbookEntriesTable.$inferSelect;
 
+// Import Logs
+export const importLogsTable = pgTable(
+  "import_logs",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id").notNull().default("default"),
+    recordType: text("record_type").notNull(),
+    fileName: text("file_name").notNull(),
+    rowCount: integer("row_count").notNull().default(0),
+    successCount: integer("success_count").notNull().default(0),
+    skipCount: integer("skip_count").notNull().default(0),
+    errorCount: integer("error_count").notNull().default(0),
+    errors: jsonb("errors"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("import_logs_user_idx").on(t.userId)]
+);
+
+export const insertImportLogSchema = createInsertSchema(importLogsTable).omit({ id: true, createdAt: true });
+export type InsertImportLog = z.infer<typeof insertImportLogSchema>;
+export type ImportLog = typeof importLogsTable.$inferSelect;
+
 // Settings
 export const settingsTable = pgTable(
   "settings",

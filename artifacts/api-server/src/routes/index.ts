@@ -11,6 +11,8 @@ import sequencesRouter from "./sequences";
 import activitiesRouter from "./activities";
 import opportunitiesRouter from "./opportunities";
 import experimentsRouter from "./experiments";
+import analyzeRouter from "./analyze";
+import issuesRouter from "./issues";
 
 export function registerRoutes(app: Express) {
   app.use("/api", healthRouter);
@@ -25,4 +27,6 @@ export function registerRoutes(app: Express) {
   app.use("/api", activitiesRouter);
   app.use("/api", opportunitiesRouter);
   app.use("/api", experimentsRouter);
+  app.use("/api", analyzeRouter);
+  app.use("/api", issuesRouter);
 }

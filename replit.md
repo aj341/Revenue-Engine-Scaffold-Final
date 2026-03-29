@@ -44,9 +44,11 @@ All mounted under `/api`:
 | Prefix | Routes |
 |--------|--------|
 | `/api/auth` | POST /login, POST /logout, GET /me |
-| `/api/accounts` | CRUD + POST /import |
-| `/api/contacts` | CRUD |
+| `/api/accounts` | CRUD + POST /import (domain dedup + derived fields) |
+| `/api/contacts` | CRUD + POST /import (email dedup + seniority normalisation) |
 | `/api/analyses` | CRUD |
+| `/api/analyze` | POST — calls external homepage analyser, upserts analysis + computes derived fields on account |
+| `/api/issues` | GET list of 16 static issue clusters with account counts; GET /:code detail |
 | `/api/insights` | CRUD (insight blocks) |
 | `/api/sequences` | GET + POST |
 | `/api/activities` | GET + POST |
@@ -57,16 +59,37 @@ All mounted under `/api`:
 | `/api/dashboard/activity-today` | GET hot prospects + recent activity |
 | `/api/settings` | GET + POST |
 
-## Frontend Pages (Phase 1)
+## Frontend Pages (Phase 2 — all wired in App.tsx)
 
 | Route | Status |
 |-------|--------|
 | `/login` | ✅ Full — email/password auth |
 | `/dashboard` | ✅ Full — 6 KPIs, pipeline snapshot, hot prospects, quick actions |
-| `/accounts` | ✅ Full — table with search, new account dialog, /accounts/:id detail |
-| `/contacts` | ✅ Full — table with search, outreach status badges, new contact dialog |
+| `/accounts` | ✅ Full — table with search, new account button |
+| `/accounts/new` | ✅ Full — manual entry form |
+| `/accounts/import` | ✅ Full — CSV wizard: drag/drop, column mapping, validation, dedup report |
+| `/accounts/:id` | ✅ Full — 12 sections: overview, derived fields, analyses, activity, contacts, opportunities |
+| `/contacts` | ✅ Full — table with search, outreach status badges |
+| `/contacts/new` | ✅ Full — manual entry with account picker, auto seniority detection |
+| `/contacts/import` | ✅ Full — CSV import wizard |
+| `/contacts/:id` | ✅ Full — profile header, edit form, linked account, activity timeline |
+| `/analyses` | ✅ Full — filterable list (issue code, ICP, date range) |
+| `/analyses/:id` | ✅ Full — score circle, 9 gauges, issue cards, strengths |
+| `/issues` | ✅ Full — 16 issue cluster card grid with account counts |
+| `/issues/:code` | ✅ Full — accounts with this issue, insight blocks, recommended sequences |
 | `/settings` | ✅ Full — API keys, sender info, analyser config |
-| `/analyses`, `/issues`, `/insights`, `/messages`, `/sequences`, `/queue`, `/inbox`, `/calls`, `/opportunities`, `/assets`, `/experiments`, `/playbook` | ⏳ "Coming Soon" placeholder |
+| `/messages`, `/sequences`, `/queue`, `/inbox`, `/calls`, `/opportunities`, `/assets`, `/experiments`, `/playbook` | ⏳ "Coming Soon" placeholder |
+
+## Phase 2 Derived Fields (on accounts)
+
+| Field | Logic |
+|-------|-------|
+| `likelyPrimaryProblem` | top issue code from analysis |
+| `likelySecondaryProblem` | second issue code from analysis |
+| `personalizationLevel` | `high_touch` if sequenceFamily=strategic, `moderate` if fitScore≥75, else `generic` |
+| `suggestedSequenceFamily` | derived from issue code + ICP + tier |
+| `knownChallenges` | JSONB array of issue codes from analysis |
+| `description` | auto-generated from company profile |
 
 ## Authentication
 

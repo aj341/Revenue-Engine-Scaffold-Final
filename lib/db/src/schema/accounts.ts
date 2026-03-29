@@ -21,6 +21,13 @@ export const accountsTable = pgTable(
     sourceDetail: text("source_detail"),
     sourceCaptureDate: timestamp("source_capture_date"),
     ownerId: text("owner_id").notNull().default("default"),
+    // Derived fields (Phase 2)
+    likelyPrimaryProblem: text("likely_primary_problem"),
+    likelySecondaryProblem: text("likely_secondary_problem"),
+    personalizationLevel: text("personalization_level"),
+    suggestedSequenceFamily: text("suggested_sequence_family"),
+    knownChallenges: text("known_challenges"),
+    description: text("description"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },

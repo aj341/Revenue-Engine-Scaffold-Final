@@ -112,6 +112,94 @@ router.put("/contacts/:id", async (req, res) => {
   }
 });
 
+// POST /contacts/import
+router.post("/contacts/import", async (req, res) => {
+  try {
+    const { rows, dedupStrategy = "skip" } = req.body as {
+      rows: Record<string, unknown>[];
+      dedupStrategy?: string;
+    };
+
+    const normalizeSeniority = (title: string): string => {
+      const t = (title || "").toLowerCase();
+      if (/ceo|cto|cfo|coo|cmo|ciso|founder|co-founder|c-suite|president|chief/.test(t)) return "c_level";
+      if (/\bvp\b|vice president|vp of/.test(t)) return "vp";
+      if (/director|head of|principal/.test(t)) return "director";
+      if (/manager|coordinator|supervisor|lead/.test(t)) return "manager";
+      if (/engineer|developer|designer|analyst|specialist|associate|executive|representative/.test(t)) return "individual_contributor";
+      return "other";
+    };
+
+    let imported = 0;
+    let skipped = 0;
+    const errors: string[] = [];
+
+    const existingEmails = new Set<string>();
+    const existingRows = await db.select({ email: contactsTable.email }).from(contactsTable);
+    existingRows.forEach(r => { if (r.email) existingEmails.add(r.email.toLowerCase()); });
+
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const rowNum = i + 1;
+      try {
+        const firstName = String(row.firstName || row.first_name || row["First Name"] || "").trim();
+        const lastName = String(row.lastName || row.last_name || row["Last Name"] || "").trim();
+        const email = String(row.email || row.Email || "").trim().toLowerCase();
+        const phone = String(row.phone || row.Phone || "").trim();
+        const linkedinUrl = String(row.linkedinUrl || row.linkedin_url || row["LinkedIn URL"] || "").trim();
+        const jobTitle = String(row.jobTitle || row.job_title || row["Job Title"] || row.title || "").trim();
+        const accountId = String(row.accountId || row.account_id || "").trim();
+        const notes = String(row.notes || row.Notes || "").trim();
+
+        if (!firstName && !lastName) {
+          errors.push(`Row ${rowNum}: Missing first name and last name`);
+          continue;
+        }
+        if (!email) {
+          errors.push(`Row ${rowNum}: Missing email address`);
+          continue;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          errors.push(`Row ${rowNum}: Invalid email format: ${email}`);
+          continue;
+        }
+
+        if (existingEmails.has(email)) {
+          skipped++;
+          continue;
+        }
+
+        const seniority = normalizeSeniority(jobTitle);
+        const fullName = [firstName, lastName].filter(Boolean).join(" ");
+
+        await db.insert(contactsTable).values({
+          firstName,
+          lastName,
+          fullName,
+          email,
+          phone: phone || null,
+          linkedinUrl: linkedinUrl || null,
+          jobTitle: jobTitle || null,
+          seniority,
+          accountId: accountId || "standalone",
+          notes: notes || null,
+          outreachStatus: "new",
+        });
+
+        existingEmails.add(email);
+        imported++;
+      } catch (e: any) {
+        errors.push(`Row ${rowNum}: ${e.message}`);
+      }
+    }
+
+    res.json({ imported, skipped, errors, total: rows.length });
+  } catch (err) {
+    req.log.error({ err }, "importContacts error");
+    res.status(500).json({ error: "internal_error" });
+  }
+});
+
 // DELETE /contacts/:id
 router.delete("/contacts/:id", async (req, res) => {
   try {

@@ -9,8 +9,17 @@ import Login from "@/pages/login";
 import Dashboard from "@/pages/dashboard";
 import Accounts from "@/pages/accounts";
 import AccountDetail from "@/pages/account-detail";
+import AccountNew from "@/pages/account-new";
+import AccountImport from "@/pages/account-import";
 import Contacts from "@/pages/contacts";
+import ContactDetail from "@/pages/contact-detail";
+import ContactNew from "@/pages/contact-new";
+import ContactImport from "@/pages/contact-import";
 import Settings from "@/pages/settings";
+import Analyses from "@/pages/analyses";
+import AnalysisDetail from "@/pages/analysis-detail";
+import Issues from "@/pages/issues";
+import IssueDetail from "@/pages/issue-detail";
 import ComingSoon from "@/pages/coming-soon";
 import NotFound from "@/pages/not-found";
 
@@ -23,12 +32,10 @@ const queryClient = new QueryClient({
   },
 });
 
-// Protected route wrapper
 const ProtectedRoute = ({ component: Component, ...rest }: any) => {
   const [location, setLocation] = useLocation();
   
   useEffect(() => {
-    // Simple auth guard for frontend UX simulation
     const user = localStorage.getItem("auth_user");
     if (!user && location !== "/login") {
       setLocation("/login");
@@ -41,7 +48,6 @@ const ProtectedRoute = ({ component: Component, ...rest }: any) => {
 function Router() {
   const [location] = useLocation();
 
-  // Root redirect
   useEffect(() => {
     if (location === "/") {
       window.location.href = import.meta.env.BASE_URL + "dashboard";
@@ -52,17 +58,33 @@ function Router() {
     <Switch>
       <Route path="/login" component={Login} />
       
-      {/* Functional Pages */}
+      {/* Dashboard */}
       <Route path="/dashboard"><ProtectedRoute component={Dashboard} /></Route>
-      <Route path="/accounts"><ProtectedRoute component={Accounts} /></Route>
+      
+      {/* Accounts */}
+      <Route path="/accounts/import"><ProtectedRoute component={AccountImport} /></Route>
+      <Route path="/accounts/new"><ProtectedRoute component={AccountNew} /></Route>
       <Route path="/accounts/:id"><ProtectedRoute component={AccountDetail} /></Route>
+      <Route path="/accounts"><ProtectedRoute component={Accounts} /></Route>
+      
+      {/* Contacts */}
+      <Route path="/contacts/import"><ProtectedRoute component={ContactImport} /></Route>
+      <Route path="/contacts/new"><ProtectedRoute component={ContactNew} /></Route>
+      <Route path="/contacts/:id"><ProtectedRoute component={ContactDetail} /></Route>
       <Route path="/contacts"><ProtectedRoute component={Contacts} /></Route>
+
+      {/* Analyses */}
+      <Route path="/analyses/:id"><ProtectedRoute component={AnalysisDetail} /></Route>
+      <Route path="/analyses"><ProtectedRoute component={Analyses} /></Route>
+
+      {/* Issues */}
+      <Route path="/issues/:code"><ProtectedRoute component={IssueDetail} /></Route>
+      <Route path="/issues"><ProtectedRoute component={Issues} /></Route>
+
+      {/* Settings */}
       <Route path="/settings"><ProtectedRoute component={Settings} /></Route>
       
       {/* Placeholder Pages */}
-      <Route path="/analyses"><ProtectedRoute component={() => <ComingSoon title="Analyses" />} /></Route>
-      <Route path="/issues"><ProtectedRoute component={() => <ComingSoon title="Issue Clusters" />} /></Route>
-      <Route path="/insights"><ProtectedRoute component={() => <ComingSoon title="Insight Library" />} /></Route>
       <Route path="/messages"><ProtectedRoute component={() => <ComingSoon title="Message Generator" />} /></Route>
       <Route path="/sequences"><ProtectedRoute component={() => <ComingSoon title="Sequences" />} /></Route>
       <Route path="/queue"><ProtectedRoute component={() => <ComingSoon title="Execution Queue" />} /></Route>

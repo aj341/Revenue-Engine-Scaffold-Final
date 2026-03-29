@@ -79,30 +79,99 @@ router.post("/accounts", async (req, res) => {
 // POST /accounts/import
 router.post("/accounts/import", async (req, res) => {
   try {
-    const { rows } = req.body as { rows: Record<string, unknown>[] };
+    const { rows, dedupStrategy = "skip" } = req.body as {
+      rows: Record<string, unknown>[];
+      dedupStrategy?: string;
+    };
+
+    const computeDerived = (priorityTier: string, fitScore: number) => {
+      let personalizationLevel = "generic";
+      if (priorityTier === "strategic") personalizationLevel = "high_touch";
+      else if (fitScore >= 75) personalizationLevel = "moderate";
+      return { personalizationLevel };
+    };
+
+    const existingDomains = new Map<string, string>();
+    const existingRows = await db.select({ id: accountsTable.id, domain: accountsTable.domain }).from(accountsTable);
+    existingRows.forEach(r => { if (r.domain) existingDomains.set(r.domain.toLowerCase().replace(/^www\./, ""), r.id); });
+
     let imported = 0;
+    let skipped = 0;
+    let updated = 0;
     const errors: string[] = [];
 
-    for (const row of rows) {
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const rowNum = i + 1;
       try {
+        const companyName = String(row.companyName || row.company_name || row["Company Name"] || row.company || "").trim();
+        const rawDomain = String(row.domain || row.Domain || row.website || "").trim().toLowerCase().replace(/^https?:\/\//, "").replace(/^www\./, "").split("/")[0];
+        const websiteUrl = String(row.websiteUrl || row.website_url || row["Website URL"] || row.website || "").trim();
+        const industry = String(row.industry || row.Industry || "").trim();
+        const priorityTier = String(row.priorityTier || row.priority_tier || row["Priority Tier"] || "medium").trim().toLowerCase();
+        const fitScore = Math.min(100, Math.max(0, parseInt(String(row.fitScore || row.fit_score || "50")))) || 50;
+        const icpType = String(row.icpType || row.icp_type || row["ICP Type"] || "").trim();
+        const geography = String(row.geography || row.Geography || row.location || "").trim();
+        const employeeBand = String(row.employeeBand || row.employee_band || row.employees || row["Employee Count"] || "").trim();
+
+        if (!companyName) {
+          errors.push(`Row ${rowNum}: Missing company name`);
+          continue;
+        }
+        if (!rawDomain) {
+          errors.push(`Row ${rowNum}: Missing domain`);
+          continue;
+        }
+
+        const { personalizationLevel } = computeDerived(priorityTier, fitScore);
+        const normalizedDomain = rawDomain;
+
+        if (existingDomains.has(normalizedDomain)) {
+          if (dedupStrategy === "skip") {
+            skipped++;
+            continue;
+          } else if (dedupStrategy === "update") {
+            const existingId = existingDomains.get(normalizedDomain)!;
+            await db.update(accountsTable).set({
+              companyName,
+              websiteUrl: websiteUrl || null,
+              industry: industry || null,
+              priorityTier: priorityTier || null,
+              fitScore,
+              icpType: icpType || null,
+              geography: geography || null,
+              employeeBand: employeeBand || null,
+              personalizationLevel,
+              updatedAt: new Date(),
+            }).where(eq(accountsTable.id, existingId));
+            updated++;
+            continue;
+          }
+        }
+
         await db.insert(accountsTable).values({
-          companyName: String(row.companyName || row.company_name || row["Company Name"] || "Unknown"),
-          domain: String(row.domain || row.Domain || ""),
-          websiteUrl: String(row.websiteUrl || row.website_url || row["Website URL"] || ""),
-          industry: String(row.industry || row.Industry || ""),
-          icpType: String(row.icpType || row.icp_type || ""),
-          priorityTier: String(row.priorityTier || row.priority_tier || "B"),
-          fitScore: parseInt(String(row.fitScore || row.fit_score || "50")),
+          companyName,
+          domain: normalizedDomain,
+          websiteUrl: websiteUrl || null,
+          industry: industry || null,
+          priorityTier: priorityTier || null,
+          fitScore,
+          icpType: icpType || null,
+          geography: geography || null,
+          employeeBand: employeeBand || null,
+          personalizationLevel,
           source: "csv_import",
           ownerId: (req.session as any).userId || "default",
         });
+
+        existingDomains.set(normalizedDomain, "new");
         imported++;
       } catch (e: any) {
-        errors.push(`Row ${imported + errors.length + 1}: ${e.message}`);
+        errors.push(`Row ${rowNum}: ${e.message}`);
       }
     }
 
-    res.json({ imported, skipped: 0, errors });
+    res.json({ imported, updated, skipped, errors, total: rows.length });
   } catch (err) {
     req.log.error({ err }, "importAccounts error");
     res.status(500).json({ error: "internal_error" });
