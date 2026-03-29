@@ -2,13 +2,11 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 
 export function useAuth() {
-  const [user, setUser] = useState<{ id: string; email: string } | null>(null);
+  const [user, setUser] = useState<{ id: string; email: string; name?: string } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    // In a real app, you might fetch /api/auth/me
-    // Here we'll just simulate a check or check local storage if needed
     const stored = localStorage.getItem("auth_user");
     if (stored) {
       setUser(JSON.parse(stored));
@@ -21,26 +19,29 @@ export function useAuth() {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
-      
-      // Even if API doesn't exist yet, we simulate success for UI demo purposes
-      if (res.ok || res.status === 404) {
-        const mockUser = { id: "1", email };
-        setUser(mockUser);
-        localStorage.setItem("auth_user", JSON.stringify(mockUser));
+
+      if (res.ok) {
+        const data = await res.json();
+        const authUser = data.user ?? { id: "1", email };
+        setUser(authUser);
+        localStorage.setItem("auth_user", JSON.stringify(authUser));
         setLocation("/dashboard");
         return { success: true };
       }
-      return { success: false, error: "Invalid credentials" };
+
+      const body = await res.json().catch(() => ({}));
+      return { success: false, error: body.error ?? "Invalid email or password" };
     } catch (err) {
-      return { success: false, error: "Network error" };
+      return { success: false, error: "Cannot reach server — please try again" };
     }
   };
 
   const logout = async () => {
     try {
-      await fetch("/api/auth/logout", { method: "POST" });
+      await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
     } catch (e) {
       // ignore
     }
