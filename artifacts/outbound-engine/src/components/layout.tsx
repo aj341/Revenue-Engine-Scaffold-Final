@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { 
   LayoutDashboard, Building2, Users, Search, Layers, Lightbulb, 
   MessageSquare, GitBranch, ListChecks, Inbox, Phone, Target, 
-  Package, FlaskConical, BookOpen, Settings, LogOut, Hexagon
+  Package, FlaskConical, BookOpen, Settings, LogOut, Hexagon, CheckSquare
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -20,12 +20,12 @@ const NAV_ITEMS = [
   { label: "Message Generator", href: "/messages", icon: MessageSquare },
   { label: "Sequences", href: "/sequences", icon: GitBranch },
   { label: "Execution Queue", href: "/queue", icon: ListChecks },
-  { label: "Reply Inbox", href: "/inbox", icon: Inbox, soon: true },
-  { label: "Call Prep", href: "/calls", icon: Phone, soon: true },
-  { label: "Opportunities", href: "/opportunities", icon: Target, soon: true },
-  { label: "Assets", href: "/assets", icon: Package, soon: true },
-  { label: "Experiments", href: "/experiments", icon: FlaskConical, soon: true },
-  { label: "Playbook", href: "/playbook", icon: BookOpen, soon: true },
+  { label: "Reply Inbox", href: "/inbox", icon: Inbox },
+  { label: "Opportunities", href: "/opportunities", icon: Target },
+  { label: "Tasks", href: "/tasks", icon: CheckSquare },
+  { label: "Call Prep", href: "/calls", icon: Phone },
+  { label: "Experiments", href: "/experiments", icon: FlaskConical },
+  { label: "Playbook & Assets", href: "/playbook", icon: BookOpen },
   { label: "Settings", href: "/settings", icon: Settings },
 ];
 
@@ -61,14 +61,10 @@ export function AppLayout({ children, title }: { children: ReactNode, title: str
                     ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium shadow-sm" 
                     : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-white"
                   }
-                  ${item.soon ? "opacity-60" : ""}
                 `}
               >
                 <Icon className={`w-5 h-5 transition-transform duration-200 ${isActive ? "scale-110" : "group-hover:scale-110"}`} />
                 <span className="flex-1 text-sm">{item.label}</span>
-                {item.soon && (
-                  <span className="text-[10px] uppercase tracking-wider bg-white/10 px-1.5 py-0.5 rounded-md text-white/70 font-semibold">Soon</span>
-                )}
               </Link>
             );
           })}
@@ -146,12 +142,9 @@ export function Layout({ children }: { children: ReactNode }) {
               <Link key={item.href} href={item.href}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group ${
                   isActive ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium shadow-sm" : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-white"
-                } ${item.soon ? "opacity-60" : ""}`}>
+                }`}>
                 <Icon className={`w-5 h-5 transition-transform duration-200 ${isActive ? "scale-110" : "group-hover:scale-110"}`} />
                 <span className="flex-1 text-sm">{item.label}</span>
-                {item.soon && (
-                  <span className="text-[10px] uppercase tracking-wider bg-white/10 px-1.5 py-0.5 rounded-md text-white/70 font-semibold">Soon</span>
-                )}
               </Link>
             );
           })}

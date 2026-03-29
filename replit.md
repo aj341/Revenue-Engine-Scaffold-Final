@@ -28,7 +28,8 @@ All tables follow the brief's Prisma schema, translated to Drizzle:
 - `message_templates` — channel-specific message templates
 - `prospect_sequences` — tracks contacts through sequences
 - `activities` — logged outreach activities (email/linkedin/phone/video)
-- `replies` — classified reply records
+- `replies` — inbox reply records with AI classification (classification, urgency, confidence score, draft response)
+- `tasks` — CRM-style task management (type, priority, due date, account/contact link)
 - `assets` — design tools and resources
 - `asset_usages` — tracks asset sharing per contact
 - `opportunities` — pipeline deals (booked → closed)
@@ -90,7 +91,12 @@ All mounted under `/api`:
 | `/sequences/new` | ✅ Phase 3 — Sequence editor: step timeline, step editor, settings panel |
 | `/sequences/:id` | ✅ Phase 3 — Same editor, loads existing sequence |
 | `/queue` | ✅ Phase 3 — Execution queue with today/overdue/week/all filters, channel filter, Send/Skip/Pause with confirmation modal |
-| `/inbox`, `/calls`, `/opportunities`, `/assets`, `/experiments`, `/playbook` | ⏳ "Coming Soon" placeholder |
+| `/inbox` | ✅ Phase 4 — Reply Inbox: two-panel (list + detail), classification tabs, AI classify-reply, draft response, archive/flag |
+| `/opportunities` | ✅ Phase 4 — Opportunities kanban: 6 columns (booked→held→proposal→negotiating→won→lost), Add/edit, pipeline metrics |
+| `/tasks` | ✅ Phase 4 — Task management: Open/Due Today/Overdue/Done tabs, priority badges, create/edit/complete |
+| `/calls` | ✅ Phase 4 — Call Prep: booked/held calls from opportunities, contextual brief per account |
+| `/experiments` | ✅ Phase 5 — Experiments: two-panel list/detail, A/B stats, AI analysis via Anthropic |
+| `/playbook` | ✅ Phase 5 — Playbook & Assets: dual-tab (Playbook entries + Asset library with react-markdown rendering) |
 
 ## Phase 3 — Account Detail Enhancements
 - **Assign Sequence modal** on account detail sidebar: loads active sequences, lets you pick a sequence + optional contact, calls `POST /api/prospect-sequences`, shows confirmation toast.

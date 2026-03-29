@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, jsonb, index, unique } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, jsonb, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -34,32 +34,3 @@ export const insertActivitySchema = createInsertSchema(activitiesTable).omit({
 
 export type InsertActivity = z.infer<typeof insertActivitySchema>;
 export type Activity = typeof activitiesTable.$inferSelect;
-
-export const repliesTable = pgTable(
-  "replies",
-  {
-    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-    activityId: text("activity_id").notNull().unique(),
-    contactId: text("contact_id").notNull(),
-    rawReply: text("raw_reply").notNull(),
-    classifiedAs: text("classified_as"),
-    sentiment: text("sentiment"),
-    urgency: text("urgency"),
-    suggestedNextAction: text("suggested_next_action"),
-    draftResponse: text("draft_response"),
-    humanReviewRequired: text("human_review_required").notNull().default("false"),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
-  },
-  (t) => [
-    index("replies_contact_idx").on(t.contactId),
-    index("replies_classified_idx").on(t.classifiedAs),
-  ]
-);
-
-export const insertReplySchema = createInsertSchema(repliesTable).omit({
-  id: true,
-  createdAt: true,
-});
-
-export type InsertReply = z.infer<typeof insertReplySchema>;
-export type Reply = typeof repliesTable.$inferSelect;

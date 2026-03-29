@@ -14,6 +14,9 @@ import experimentsRouter from "./experiments";
 import analyzeRouter from "./analyze";
 import issuesRouter from "./issues";
 import generateMessageRouter from "./generate-message";
+import repliesRouter from "./replies";
+import tasksRouter from "./tasks";
+import playbookRouter from "./playbook";
 
 export function registerRoutes(app: Express) {
   app.use("/api", healthRouter);
@@ -31,4 +34,7 @@ export function registerRoutes(app: Express) {
   app.use("/api", analyzeRouter);
   app.use("/api", issuesRouter);
   app.use("/api", generateMessageRouter);
+  app.use("/api", repliesRouter);
+  app.use("/api", tasksRouter);
+  app.use("/api", playbookRouter);
 }

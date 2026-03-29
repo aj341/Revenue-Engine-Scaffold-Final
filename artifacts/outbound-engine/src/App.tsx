@@ -26,7 +26,12 @@ import Messages from "@/pages/messages";
 import Sequences from "@/pages/sequences";
 import SequenceDetail from "@/pages/sequence-detail";
 import Queue from "@/pages/queue";
-import ComingSoon from "@/pages/coming-soon";
+import Inbox from "@/pages/inbox";
+import Calls from "@/pages/calls";
+import Opportunities from "@/pages/opportunities";
+import Experiments from "@/pages/experiments";
+import Playbook from "@/pages/playbook";
+import Tasks from "@/pages/tasks";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -105,12 +110,16 @@ function Router() {
 
       {/* Queue */}
       <Route path="/queue"><ProtectedRoute component={Queue} /></Route>
-      <Route path="/inbox"><ProtectedRoute component={() => <ComingSoon title="Reply Inbox" />} /></Route>
-      <Route path="/calls"><ProtectedRoute component={() => <ComingSoon title="Call Prep" />} /></Route>
-      <Route path="/opportunities"><ProtectedRoute component={() => <ComingSoon title="Opportunities" />} /></Route>
-      <Route path="/assets"><ProtectedRoute component={() => <ComingSoon title="Assets" />} /></Route>
-      <Route path="/experiments"><ProtectedRoute component={() => <ComingSoon title="Experiments" />} /></Route>
-      <Route path="/playbook"><ProtectedRoute component={() => <ComingSoon title="Playbook" />} /></Route>
+
+      {/* Phase 4 — Live */}
+      <Route path="/inbox"><ProtectedRoute component={Inbox} /></Route>
+      <Route path="/calls"><ProtectedRoute component={Calls} /></Route>
+      <Route path="/opportunities"><ProtectedRoute component={Opportunities} /></Route>
+      <Route path="/tasks"><ProtectedRoute component={Tasks} /></Route>
+
+      {/* Phase 5 — Live */}
+      <Route path="/experiments"><ProtectedRoute component={Experiments} /></Route>
+      <Route path="/playbook"><ProtectedRoute component={Playbook} /></Route>
 
       <Route component={NotFound} />
     </Switch>
