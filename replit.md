@@ -49,8 +49,12 @@ All mounted under `/api`:
 | `/api/analyses` | CRUD |
 | `/api/analyze` | POST — calls external homepage analyser, upserts analysis + computes derived fields on account |
 | `/api/issues` | GET list of 16 static issue clusters with account counts; GET /:code detail |
-| `/api/insights` | CRUD (insight blocks) |
-| `/api/sequences` | GET + POST |
+| `/api/insights` | Full CRUD + bulk-import + multi-filter (issueCode, icp, channel, active, search) |
+| `/api/sequences` | Full CRUD with steps (create/update replaces steps), GET /:id/steps |
+| `/api/prospect-sequences` | GET + POST (assign sequence to account/contact), PUT /:id |
+| `/api/execution-queue` | GET (filter: today/overdue/week/all, channel), POST /:id/send, /skip, /pause |
+| `/api/generate-message` | POST — Anthropic claude-sonnet-4-6, returns 3 message variants as JSON |
+| `/api/message-templates` | GET + POST (save generated variants as reusable templates) |
 | `/api/activities` | GET + POST |
 | `/api/opportunities` | GET + POST + PUT /:id |
 | `/api/experiments` | GET + POST + PUT /:id |
@@ -78,7 +82,19 @@ All mounted under `/api`:
 | `/issues` | ✅ Full — 16 issue cluster card grid with account counts |
 | `/issues/:code` | ✅ Full — accounts with this issue, insight blocks, recommended sequences |
 | `/settings` | ✅ Full — API keys, sender info, analyser config |
-| `/messages`, `/sequences`, `/queue`, `/inbox`, `/calls`, `/opportunities`, `/assets`, `/experiments`, `/playbook` | ⏳ "Coming Soon" placeholder |
+| `/insights` | ✅ Phase 3 — Table/card toggle, sidebar filters (issue/ICP/channel/active), search, pagination, bulk JSON import |
+| `/insights/new` | ✅ Phase 3 — Create form with live email preview |
+| `/insights/:id` | ✅ Phase 3 — Edit/duplicate/delete with live preview split-pane |
+| `/messages` | ✅ Phase 3 — Anthropic message generator, 3-column layout: context / variants / controls. Save as template, copy, expand. |
+| `/sequences` | ✅ Phase 3 — Sequence list with ICP/status filters, step bar visualization |
+| `/sequences/new` | ✅ Phase 3 — Sequence editor: step timeline, step editor, settings panel |
+| `/sequences/:id` | ✅ Phase 3 — Same editor, loads existing sequence |
+| `/queue` | ✅ Phase 3 — Execution queue with today/overdue/week/all filters, channel filter, Send/Skip/Pause with confirmation modal |
+| `/inbox`, `/calls`, `/opportunities`, `/assets`, `/experiments`, `/playbook` | ⏳ "Coming Soon" placeholder |
+
+## Phase 3 — Account Detail Enhancements
+- **Assign Sequence modal** on account detail sidebar: loads active sequences, lets you pick a sequence + optional contact, calls `POST /api/prospect-sequences`, shows confirmation toast.
+- **Generate Message** button deep-links to `/messages?accountId=<id>` (prefills context from existing contacts/analyses).
 
 ## Phase 2 Derived Fields (on accounts)
 

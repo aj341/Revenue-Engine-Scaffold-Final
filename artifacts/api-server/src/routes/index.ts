@@ -13,6 +13,7 @@ import opportunitiesRouter from "./opportunities";
 import experimentsRouter from "./experiments";
 import analyzeRouter from "./analyze";
 import issuesRouter from "./issues";
+import generateMessageRouter from "./generate-message";
 
 export function registerRoutes(app: Express) {
   app.use("/api", healthRouter);
@@ -29,4 +30,5 @@ export function registerRoutes(app: Express) {
   app.use("/api", experimentsRouter);
   app.use("/api", analyzeRouter);
   app.use("/api", issuesRouter);
+  app.use("/api", generateMessageRouter);
 }

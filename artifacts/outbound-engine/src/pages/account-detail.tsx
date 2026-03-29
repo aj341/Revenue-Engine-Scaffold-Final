@@ -70,6 +70,43 @@ export default function AccountDetail() {
   const [notesOpen, setNotesOpen] = useState(false);
   const [notes, setNotes] = useState("");
   const [opportunityOpen, setOpportunityOpen] = useState(false);
+  const [assignSeqOpen, setAssignSeqOpen] = useState(false);
+  const [allSequences, setAllSequences] = useState<any[]>([]);
+  const [selectedSeqId, setSelectedSeqId] = useState("");
+  const [assignContactId, setAssignContactId] = useState("unassigned");
+  const [assigning, setAssigning] = useState(false);
+
+  const loadSequences = async () => {
+    const r = await fetch("/api/sequences?active=true", { credentials: "include" });
+    const d = await r.json();
+    setAllSequences(d.data || []);
+  };
+
+  const handleAssignSequence = async () => {
+    if (!selectedSeqId) return;
+    setAssigning(true);
+    try {
+      const r = await fetch("/api/prospect-sequences", {
+        method: "POST", credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          accountId: id,
+          contactId: assignContactId !== "unassigned" ? assignContactId : "unassigned",
+          sequenceId: selectedSeqId,
+        }),
+      });
+      if (!r.ok) throw new Error("Assignment failed");
+      const seq = allSequences.find(s => s.id === selectedSeqId);
+      toast({ title: "Sequence assigned!", description: `${seq?.sequenceName} is now active for ${account?.companyName}.` });
+      setAssignSeqOpen(false);
+      setSelectedSeqId("");
+      setAssignContactId("unassigned");
+    } catch {
+      toast({ variant: "destructive", title: "Failed to assign sequence" });
+    } finally {
+      setAssigning(false);
+    }
+  };
 
   const { data: res, isLoading } = useGetAccount(id, { query: { enabled: !!id } });
   const account = res?.data as any;
@@ -467,7 +504,7 @@ export default function AccountDetail() {
                   <Mail className="w-4 h-4" /> Generate Message
                 </Button>
                 <Button className="w-full justify-start gap-2" size="sm" variant="outline"
-                  onClick={() => navigate(`/sequences?accountId=${id}`)}>
+                  onClick={() => { loadSequences(); setAssignSeqOpen(true); }}>
                   <TrendingUp className="w-4 h-4" /> Assign Sequence
                 </Button>
                 <Button className="w-full justify-start gap-2" size="sm" variant="outline"
@@ -572,6 +609,61 @@ export default function AccountDetail() {
                 updateMutation.mutate({ id, data: { description: notes } } as any);
                 setNotesOpen(false);
               }}>Save Notes</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Assign Sequence Modal */}
+        <Dialog open={assignSeqOpen} onOpenChange={setAssignSeqOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Assign Sequence — {account?.companyName}</DialogTitle>
+            </DialogHeader>
+            <p className="text-sm text-muted-foreground">Select a sequence to assign to this account. The sequence will appear in the Execution Queue.</p>
+            <div className="space-y-4 mt-2">
+              <div>
+                <Label>Sequence</Label>
+                <select className="w-full mt-1 h-9 rounded-md border border-input bg-background px-3 text-sm"
+                  value={selectedSeqId} onChange={e => setSelectedSeqId(e.target.value)}>
+                  <option value="">Select a sequence…</option>
+                  {allSequences.map((s: any) => (
+                    <option key={s.id} value={s.id}>{s.sequenceName} ({s.stepCount ?? 0} steps)</option>
+                  ))}
+                </select>
+                {allSequences.length === 0 && (
+                  <p className="text-xs text-muted-foreground mt-1">No active sequences found. <span className="text-primary cursor-pointer" onClick={() => { setAssignSeqOpen(false); navigate("/sequences/new"); }}>Create one first.</span></p>
+                )}
+              </div>
+              <div>
+                <Label>Assign to Contact (optional)</Label>
+                <select className="w-full mt-1 h-9 rounded-md border border-input bg-background px-3 text-sm"
+                  value={assignContactId} onChange={e => setAssignContactId(e.target.value)}>
+                  <option value="unassigned">All contacts at {account?.companyName}</option>
+                  {(account?.contacts || []).map((c: any) => (
+                    <option key={c.id} value={c.id}>{c.firstName} {c.lastName} — {c.jobTitle}</option>
+                  ))}
+                </select>
+              </div>
+              {selectedSeqId && (
+                <div className="rounded-lg bg-primary/5 border border-primary/20 p-3 text-xs space-y-1">
+                  {(() => {
+                    const seq = allSequences.find(s => s.id === selectedSeqId);
+                    return seq ? (
+                      <>
+                        <div className="font-medium">{seq.sequenceName}</div>
+                        {seq.icp && <div className="text-muted-foreground">ICP: {seq.icp.replace(/_/g, " ")}</div>}
+                        <div className="text-muted-foreground">{seq.stepCount ?? 0} steps · starts immediately</div>
+                      </>
+                    ) : null;
+                  })()}
+                </div>
+              )}
+            </div>
+            <div className="flex justify-end gap-2 mt-4">
+              <Button variant="ghost" onClick={() => setAssignSeqOpen(false)}>Cancel</Button>
+              <Button onClick={handleAssignSequence} disabled={!selectedSeqId || assigning}>
+                {assigning ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Assigning…</> : "Assign Sequence"}
+              </Button>
             </div>
           </DialogContent>
         </Dialog>

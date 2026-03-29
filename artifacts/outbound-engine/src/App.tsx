@@ -20,6 +20,12 @@ import Analyses from "@/pages/analyses";
 import AnalysisDetail from "@/pages/analysis-detail";
 import Issues from "@/pages/issues";
 import IssueDetail from "@/pages/issue-detail";
+import Insights from "@/pages/insights";
+import InsightDetail from "@/pages/insight-detail";
+import Messages from "@/pages/messages";
+import Sequences from "@/pages/sequences";
+import SequenceDetail from "@/pages/sequence-detail";
+import Queue from "@/pages/queue";
 import ComingSoon from "@/pages/coming-soon";
 import NotFound from "@/pages/not-found";
 
@@ -84,10 +90,21 @@ function Router() {
       {/* Settings */}
       <Route path="/settings"><ProtectedRoute component={Settings} /></Route>
       
-      {/* Placeholder Pages */}
-      <Route path="/messages"><ProtectedRoute component={() => <ComingSoon title="Message Generator" />} /></Route>
-      <Route path="/sequences"><ProtectedRoute component={() => <ComingSoon title="Sequences" />} /></Route>
-      <Route path="/queue"><ProtectedRoute component={() => <ComingSoon title="Execution Queue" />} /></Route>
+      {/* Insights */}
+      <Route path="/insights/new"><ProtectedRoute component={InsightDetail} /></Route>
+      <Route path="/insights/:id"><ProtectedRoute component={InsightDetail} /></Route>
+      <Route path="/insights"><ProtectedRoute component={Insights} /></Route>
+
+      {/* Messages */}
+      <Route path="/messages"><ProtectedRoute component={Messages} /></Route>
+
+      {/* Sequences */}
+      <Route path="/sequences/new"><ProtectedRoute component={SequenceDetail} /></Route>
+      <Route path="/sequences/:id"><ProtectedRoute component={SequenceDetail} /></Route>
+      <Route path="/sequences"><ProtectedRoute component={Sequences} /></Route>
+
+      {/* Queue */}
+      <Route path="/queue"><ProtectedRoute component={Queue} /></Route>
       <Route path="/inbox"><ProtectedRoute component={() => <ComingSoon title="Reply Inbox" />} /></Route>
       <Route path="/calls"><ProtectedRoute component={() => <ComingSoon title="Call Prep" />} /></Route>
       <Route path="/opportunities"><ProtectedRoute component={() => <ComingSoon title="Opportunities" />} /></Route>

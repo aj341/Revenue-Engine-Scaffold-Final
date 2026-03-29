@@ -7,3 +7,5 @@ export * from "./activities";
 export * from "./opportunities";
 export * from "./experiments";
 export * from "./misc";
+export * from "./conversations";
+export * from "./messages";
