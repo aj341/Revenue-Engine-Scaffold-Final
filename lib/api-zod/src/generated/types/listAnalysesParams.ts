@@ -7,6 +7,6 @@
  */
 
 export type ListAnalysesParams = {
-  prospectId?: number;
+  accountId?: string;
   issueCode?: string;
 };

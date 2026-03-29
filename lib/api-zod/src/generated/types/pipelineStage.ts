@@ -9,5 +9,4 @@
 export interface PipelineStage {
   stage: string;
   count: number;
-  change: number;
 }

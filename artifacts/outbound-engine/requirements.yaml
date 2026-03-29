@@ -1,0 +1,17 @@
+packages:
+  "framer-motion": "For premium page transitions and micro-interactions"
+  "recharts": "For dashboard pipeline visualization and analytics"
+  "date-fns": "For formatting timestamps beautifully"
+
+images:
+  - path: "artifacts/outbound-engine/public/images/logo.png"
+    description: "Minimal modern abstract geometric honeycomb and bee icon logo mark in vibrant yellow on transparent background"
+    aspect_ratio: "1:1"
+  - path: "artifacts/outbound-engine/public/images/login-bg.png"
+    description: "Dark, sleek abstract 3D geometric background with subtle gold and yellow light accents and glassmorphism elements"
+    aspect_ratio: "16:9"
+
+notes:
+  - Backend must implement POST /api/auth/login returning {success: true, user: {}} and setting a session cookie.
+  - Backend must implement POST /api/auth/logout.
+  - Assuming standard Replit API proxy routes /api to the backend.

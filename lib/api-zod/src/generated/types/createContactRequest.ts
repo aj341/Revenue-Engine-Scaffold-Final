@@ -7,9 +7,9 @@
  */
 
 export interface CreateContactRequest {
-  prospectId: number;
-  firstName: string;
-  lastName: string;
+  accountId: string;
+  firstName?: string | null;
+  lastName?: string | null;
   jobTitle?: string | null;
   seniority?: string | null;
   email?: string | null;

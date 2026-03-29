@@ -6,8 +6,9 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { Contact } from "./contact";
+import type { PaginatedMeta } from "./paginatedMeta";
 
 export interface ContactListResponse {
-  contacts: Contact[];
-  total: number;
+  data: Contact[];
+  meta: PaginatedMeta;
 }

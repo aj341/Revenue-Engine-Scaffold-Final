@@ -1,96 +1,96 @@
-# Workspace
+# Design Bees Outbound Revenue Engine
 
-## Overview
+An internal sales outreach tool for a design subscription business. Built as a React+Vite frontend with an Express 5 backend, Replit PostgreSQL, and Drizzle ORM.
 
-pnpm workspace monorepo using TypeScript. Each package manages its own dependencies.
+## Architecture
 
-## Stack
+### Artifacts
+- **`artifacts/outbound-engine`** — React+Vite SPA frontend, served at `/`
+- **`artifacts/api-server`** — Express 5 REST API, served at port 8080
 
-- **Monorepo tool**: pnpm workspaces
-- **Node.js version**: 24
-- **Package manager**: pnpm
-- **TypeScript version**: 5.9
-- **API framework**: Express 5
-- **Database**: PostgreSQL + Drizzle ORM
-- **Validation**: Zod (`zod/v4`), `drizzle-zod`
-- **API codegen**: Orval (from OpenAPI spec)
-- **Build**: esbuild (CJS bundle)
+### Shared Libraries
+- **`lib/db`** — Drizzle ORM schema + db client (`@workspace/db`)
+- **`lib/api-spec`** — OpenAPI 3.1 spec (`lib/api-spec/openapi.yaml`)
+- **`lib/api-client-react`** — Generated React Query hooks from OpenAPI spec (`@workspace/api-client-react`)
+- **`lib/api-zod`** — Generated Zod validation schemas from OpenAPI spec (`@workspace/api-zod`)
 
-## Structure
+## Database Schema (PostgreSQL via Drizzle)
 
-```text
-artifacts-monorepo/
-├── artifacts/              # Deployable applications
-│   └── api-server/         # Express API server
-├── lib/                    # Shared libraries
-│   ├── api-spec/           # OpenAPI spec + Orval codegen config
-│   ├── api-client-react/   # Generated React Query hooks
-│   ├── api-zod/            # Generated Zod schemas from OpenAPI
-│   └── db/                 # Drizzle ORM schema + DB connection
-├── scripts/                # Utility scripts (single workspace package)
-│   └── src/                # Individual .ts scripts, run via `pnpm --filter @workspace/scripts run <script>`
-├── pnpm-workspace.yaml     # pnpm workspace (artifacts/*, lib/*, lib/integrations/*, scripts)
-├── tsconfig.base.json      # Shared TS options (composite, bundler resolution, es2022)
-├── tsconfig.json           # Root TS project references
-└── package.json            # Root package with hoisted devDeps
+All tables follow the brief's Prisma schema, translated to Drizzle:
+- `users` — internal auth users (email + bcrypt password_hash)
+- `accounts` — target companies (ICP, fit score, priority tier)
+- `contacts` — people at accounts (seniority, outreach status)
+- `analyses` — homepage design analysis results (9 scoring dimensions)
+- `issue_clusters` — issue taxonomy by code
+- `insight_blocks` — ICP-specific insight templates per issue
+- `sequences` — outreach sequence definitions
+- `sequence_steps` — individual steps within sequences
+- `message_templates` — channel-specific message templates
+- `prospect_sequences` — tracks contacts through sequences
+- `activities` — logged outreach activities (email/linkedin/phone/video)
+- `replies` — classified reply records
+- `assets` — design tools and resources
+- `asset_usages` — tracks asset sharing per contact
+- `opportunities` — pipeline deals (booked → closed)
+- `experiments` — A/B test tracking
+- `events` — audit log
+- `playbook_entries` — operational playbook content
+- `settings` — per-user configuration (encrypted API keys, sender info)
+
+## API Routes
+
+All mounted under `/api`:
+
+| Prefix | Routes |
+|--------|--------|
+| `/api/auth` | POST /login, POST /logout, GET /me |
+| `/api/accounts` | CRUD + POST /import |
+| `/api/contacts` | CRUD |
+| `/api/analyses` | CRUD |
+| `/api/insights` | CRUD (insight blocks) |
+| `/api/sequences` | GET + POST |
+| `/api/activities` | GET + POST |
+| `/api/opportunities` | GET + POST + PUT /:id |
+| `/api/experiments` | GET + POST + PUT /:id |
+| `/api/dashboard/metrics` | GET KPIs |
+| `/api/dashboard/pipeline` | GET pipeline stage counts |
+| `/api/dashboard/activity-today` | GET hot prospects + recent activity |
+| `/api/settings` | GET + POST |
+
+## Frontend Pages (Phase 1)
+
+| Route | Status |
+|-------|--------|
+| `/login` | ✅ Full — email/password auth |
+| `/dashboard` | ✅ Full — 6 KPIs, pipeline snapshot, hot prospects, quick actions |
+| `/accounts` | ✅ Full — table with search, new account dialog, /accounts/:id detail |
+| `/contacts` | ✅ Full — table with search, outreach status badges, new contact dialog |
+| `/settings` | ✅ Full — API keys, sender info, analyser config |
+| `/analyses`, `/issues`, `/insights`, `/messages`, `/sequences`, `/queue`, `/inbox`, `/calls`, `/opportunities`, `/assets`, `/experiments`, `/playbook` | ⏳ "Coming Soon" placeholder |
+
+## Authentication
+
+Session-based authentication using `express-session` + `bcryptjs`. No Supabase.
+- Seed user: `admin@designbees.com` / `admin123`
+- Sessions stored in memory (upgrade to pg-session-store for production)
+
+## Stack Decisions (vs. Brief)
+
+| Brief Specified | Actual Implementation |
+|-----------------|----------------------|
+| Next.js 14 | React + Vite (not supported as artifact) |
+| Supabase Auth | Session auth (bcryptjs + express-session) |
+| Supabase PostgreSQL | Replit built-in PostgreSQL |
+| Prisma ORM | Drizzle ORM |
+
+## Code Generation
+
+To regenerate the API client after changing `lib/api-spec/openapi.yaml`:
+```bash
+pnpm --filter @workspace/api-spec run codegen
 ```
 
-## TypeScript & Composite Projects
-
-Every package extends `tsconfig.base.json` which sets `composite: true`. The root `tsconfig.json` lists all packages as project references. This means:
-
-- **Always typecheck from the root** — run `pnpm run typecheck` (which runs `tsc --build --emitDeclarationOnly`). This builds the full dependency graph so that cross-package imports resolve correctly. Running `tsc` inside a single package will fail if its dependencies haven't been built yet.
-- **`emitDeclarationOnly`** — we only emit `.d.ts` files during typecheck; actual JS bundling is handled by esbuild/tsx/vite...etc, not `tsc`.
-- **Project references** — when package A depends on package B, A's `tsconfig.json` must list B in its `references` array. `tsc --build` uses this to determine build order and skip up-to-date packages.
-
-## Root Scripts
-
-- `pnpm run build` — runs `typecheck` first, then recursively runs `build` in all packages that define it
-- `pnpm run typecheck` — runs `tsc --build --emitDeclarationOnly` using project references
-
-## Packages
-
-### `artifacts/api-server` (`@workspace/api-server`)
-
-Express 5 API server. Routes live in `src/routes/` and use `@workspace/api-zod` for request and response validation and `@workspace/db` for persistence.
-
-- Entry: `src/index.ts` — reads `PORT`, starts Express
-- App setup: `src/app.ts` — mounts CORS, JSON/urlencoded parsing, routes at `/api`
-- Routes: `src/routes/index.ts` mounts sub-routers; `src/routes/health.ts` exposes `GET /health` (full path: `/api/health`)
-- Depends on: `@workspace/db`, `@workspace/api-zod`
-- `pnpm --filter @workspace/api-server run dev` — run the dev server
-- `pnpm --filter @workspace/api-server run build` — production esbuild bundle (`dist/index.cjs`)
-- Build bundles an allowlist of deps (express, cors, pg, drizzle-orm, zod, etc.) and externalizes the rest
-
-### `lib/db` (`@workspace/db`)
-
-Database layer using Drizzle ORM with PostgreSQL. Exports a Drizzle client instance and schema models.
-
-- `src/index.ts` — creates a `Pool` + Drizzle instance, exports schema
-- `src/schema/index.ts` — barrel re-export of all models
-- `src/schema/<modelname>.ts` — table definitions with `drizzle-zod` insert schemas (no models definitions exist right now)
-- `drizzle.config.ts` — Drizzle Kit config (requires `DATABASE_URL`, automatically provided by Replit)
-- Exports: `.` (pool, db, schema), `./schema` (schema only)
-
-Production migrations are handled by Replit when publishing. In development, we just use `pnpm --filter @workspace/db run push`, and we fallback to `pnpm --filter @workspace/db run push-force`.
-
-### `lib/api-spec` (`@workspace/api-spec`)
-
-Owns the OpenAPI 3.1 spec (`openapi.yaml`) and the Orval config (`orval.config.ts`). Running codegen produces output into two sibling packages:
-
-1. `lib/api-client-react/src/generated/` — React Query hooks + fetch client
-2. `lib/api-zod/src/generated/` — Zod schemas
-
-Run codegen: `pnpm --filter @workspace/api-spec run codegen`
-
-### `lib/api-zod` (`@workspace/api-zod`)
-
-Generated Zod schemas from the OpenAPI spec (e.g. `HealthCheckResponse`). Used by `api-server` for response validation.
-
-### `lib/api-client-react` (`@workspace/api-client-react`)
-
-Generated React Query hooks and fetch client from the OpenAPI spec (e.g. `useHealthCheck`, `healthCheck`).
-
-### `scripts` (`@workspace/scripts`)
-
-Utility scripts package. Each script is a `.ts` file in `src/` with a corresponding npm script in `package.json`. Run scripts via `pnpm --filter @workspace/scripts run <script>`. Scripts can import any workspace package (e.g., `@workspace/db`) by adding it as a dependency in `scripts/package.json`.
+To push DB schema changes:
+```bash
+pnpm --filter @workspace/db run push
+```

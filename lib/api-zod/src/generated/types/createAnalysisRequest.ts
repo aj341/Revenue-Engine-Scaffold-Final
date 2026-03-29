@@ -5,11 +5,10 @@
  * Design Bees Outbound Revenue Engine API
  * OpenAPI spec version: 0.1.0
  */
-import type { CreateAnalysisRequestPageType } from "./createAnalysisRequestPageType";
 
 export interface CreateAnalysisRequest {
-  prospectId?: number | null;
+  accountId: string;
   domain: string;
   pageUrl: string;
-  pageType: CreateAnalysisRequestPageType;
+  pageType: string;
 }

@@ -14,452 +14,148 @@ export interface ErrorResponse {
   message?: string;
 }
 
-export type ProspectEmployeeCountBand =
-  (typeof ProspectEmployeeCountBand)[keyof typeof ProspectEmployeeCountBand];
-
-export const ProspectEmployeeCountBand = {
-  "1-10": "1-10",
-  "11-50": "11-50",
-  "51-100": "51-100",
-  "101-250": "101-250",
-  "250+": "250+",
-} as const;
-
-export type ProspectPriorityTier =
-  (typeof ProspectPriorityTier)[keyof typeof ProspectPriorityTier];
-
-export const ProspectPriorityTier = {
-  A: "A",
-  B: "B",
-  C: "C",
-} as const;
-
-export type ProspectIcpType =
-  (typeof ProspectIcpType)[keyof typeof ProspectIcpType];
-
-export const ProspectIcpType = {
-  founder: "founder",
-  marketing_manager: "marketing_manager",
-  agency: "agency",
-} as const;
-
-export type ProspectOutreachStatus =
-  (typeof ProspectOutreachStatus)[keyof typeof ProspectOutreachStatus];
-
-export const ProspectOutreachStatus = {
-  not_started: "not_started",
-  in_sequence: "in_sequence",
-  replied: "replied",
-  booked: "booked",
-  showed: "showed",
-  closed_won: "closed_won",
-  closed_lost: "closed_lost",
-  nurture: "nurture",
-} as const;
-
-export type ProspectPersonalizationLevel =
-  | (typeof ProspectPersonalizationLevel)[keyof typeof ProspectPersonalizationLevel]
-  | null;
-
-export const ProspectPersonalizationLevel = {
-  high: "high",
-  medium: "medium",
-  low: "low",
-} as const;
-
-export interface Prospect {
-  id: number;
-  companyName: string;
-  domain: string;
-  websiteUrl: string;
-  industry: string;
-  subIndustry?: string;
-  employeeCountBand?: ProspectEmployeeCountBand;
-  revenueBand?: string | null;
-  geography?: string | null;
-  source: string;
-  sourceDetail?: string | null;
-  sourceCaptureDate?: string | null;
-  accountOwner?: string | null;
-  priorityTier: ProspectPriorityTier;
-  icpType: ProspectIcpType;
-  /**
-   * @minimum 0
-   * @maximum 100
-   */
-  fitScore: number;
-  outreachStatus: ProspectOutreachStatus;
-  likelyPrimaryProblem?: string | null;
-  likelySecondaryProblem?: string | null;
-  likelyAssetToOffer?: string | null;
-  personalizationLevel?: ProspectPersonalizationLevel;
-  sequenceFamily?: string | null;
-  notes?: string | null;
-  latestAnalysisId?: number | null;
-  createdAt: string;
-  updatedAt: string;
+export interface PaginatedMeta {
+  total: number;
+  page: number;
+  pageSize: number;
 }
 
-export type ContactOutreachStatus =
-  (typeof ContactOutreachStatus)[keyof typeof ContactOutreachStatus];
+export interface Account {
+  id: string;
+  companyName: string;
+  domain?: string | null;
+  websiteUrl?: string | null;
+  industry?: string | null;
+  subIndustry?: string | null;
+  employeeBand?: string | null;
+  revenueBand?: string | null;
+  geography?: string | null;
+  icpType?: string | null;
+  fitScore?: number | null;
+  priorityTier?: string | null;
+  source?: string | null;
+  sourceDetail?: string | null;
+  sourceCaptureDate?: string | null;
+  ownerId: string;
+  createdAt: string;
+  updatedAt: string;
+  contactCount?: number | null;
+}
 
-export const ContactOutreachStatus = {
-  not_started: "not_started",
-  in_sequence: "in_sequence",
-  replied: "replied",
-  booked: "booked",
-  opted_out: "opted_out",
-} as const;
+export interface AccountResponse {
+  data: Account;
+}
 
 export interface Contact {
-  id: number;
-  prospectId: number;
-  firstName: string;
-  lastName: string;
-  fullName: string;
+  id: string;
+  accountId: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  fullName?: string | null;
   jobTitle?: string | null;
   seniority?: string | null;
   email?: string | null;
   phone?: string | null;
   linkedinUrl?: string | null;
   contactSource?: string | null;
-  outreachStatus: ContactOutreachStatus;
+  outreachStatus: string;
   notes?: string | null;
   createdAt: string;
+  updatedAt: string;
+  accountName?: string | null;
 }
 
-export type AnalysisPageType =
-  (typeof AnalysisPageType)[keyof typeof AnalysisPageType];
-
-export const AnalysisPageType = {
-  homepage: "homepage",
-  landing_page: "landing_page",
-  pricing: "pricing",
-  about: "about",
-  other: "other",
-} as const;
-
-export type AnalysisStatus =
-  (typeof AnalysisStatus)[keyof typeof AnalysisStatus];
-
-export const AnalysisStatus = {
-  pending: "pending",
-  complete: "complete",
-  failed: "failed",
-} as const;
-
 export interface Analysis {
-  id: number;
-  prospectId?: number | null;
+  id: string;
+  accountId: string;
   domain: string;
   pageUrl: string;
-  pageType: AnalysisPageType;
-  analyzedAt?: string | null;
-  status: AnalysisStatus;
-  heroClarityScore?: number | null;
-  ctaClarityScore?: number | null;
-  ctaProminenceScore?: number | null;
-  visualHierarchyScore?: number | null;
-  messageOrderScore?: number | null;
-  outcomeClarityScore?: number | null;
-  trustSignalScore?: number | null;
-  frictionScore?: number | null;
-  mobileReadabilityScore?: number | null;
-  overallScore?: number | null;
+  pageType: string;
+  analyzedAt: string;
+  heroClarity?: number | null;
+  ctaClarity?: number | null;
+  ctaProminence?: number | null;
+  visualHierarchy?: number | null;
+  messageOrder?: number | null;
+  outcomeClarity?: number | null;
+  trustSignal?: number | null;
+  friction?: number | null;
+  mobileReadability?: number | null;
   primaryIssueCode?: string | null;
   secondaryIssueCode?: string | null;
   tertiaryIssueCode?: string | null;
   issueSummaryShort?: string | null;
   issueSummaryDetailed?: string | null;
-  strengthsDetected?: string | null;
   recommendedPriorityFix?: string | null;
   confidenceScore?: number | null;
-  rawNotes?: string | null;
   screenshotUrl?: string | null;
   createdAt: string;
 }
 
-export type SequencePersonalizationLevel =
-  (typeof SequencePersonalizationLevel)[keyof typeof SequencePersonalizationLevel];
-
-export const SequencePersonalizationLevel = {
-  high: "high",
-  medium: "medium",
-  low: "low",
-} as const;
-
-export type SequenceStatus =
-  (typeof SequenceStatus)[keyof typeof SequenceStatus];
-
-export const SequenceStatus = {
-  draft: "draft",
-  active: "active",
-  paused: "paused",
-  completed: "completed",
-  archived: "archived",
-} as const;
-
-export type SequenceStepChannel =
-  (typeof SequenceStepChannel)[keyof typeof SequenceStepChannel];
-
-export const SequenceStepChannel = {
-  email: "email",
-  linkedin: "linkedin",
-  phone: "phone",
-  video: "video",
-  other: "other",
-} as const;
-
-export type SequenceStepStatus =
-  (typeof SequenceStepStatus)[keyof typeof SequenceStepStatus];
-
-export const SequenceStepStatus = {
-  pending: "pending",
-  sent: "sent",
-  replied: "replied",
-  skipped: "skipped",
-} as const;
-
-export interface SequenceStep {
-  id: number;
-  sequenceId: number;
-  stepNumber: number;
-  channel: SequenceStepChannel;
-  dayOffset: number;
-  subject?: string | null;
-  body: string;
-  ctaText?: string | null;
-  insightId?: number | null;
-  assetOffered?: string | null;
-  status: SequenceStepStatus;
-  sentAt?: string | null;
-}
-
-export interface Sequence {
-  id: number;
-  prospectId: number;
-  contactId?: number | null;
-  name: string;
-  personalizationLevel: SequencePersonalizationLevel;
-  status: SequenceStatus;
-  currentStep: number;
-  totalSteps: number;
-  startedAt?: string | null;
-  completedAt?: string | null;
-  steps: SequenceStep[];
-  createdAt: string;
-}
-
-export type TouchChannel = (typeof TouchChannel)[keyof typeof TouchChannel];
-
-export const TouchChannel = {
-  email: "email",
-  linkedin: "linkedin",
-  phone: "phone",
-  video: "video",
-  other: "other",
-} as const;
-
-export type TouchTouchType =
-  (typeof TouchTouchType)[keyof typeof TouchTouchType];
-
-export const TouchTouchType = {
-  outbound: "outbound",
-  reply: "reply",
-  call: "call",
-  meeting: "meeting",
-  note: "note",
-} as const;
-
-export type TouchDirection =
-  (typeof TouchDirection)[keyof typeof TouchDirection];
-
-export const TouchDirection = {
-  outbound: "outbound",
-  inbound: "inbound",
-} as const;
-
-export type TouchOutcome =
-  | (typeof TouchOutcome)[keyof typeof TouchOutcome]
-  | null;
-
-export const TouchOutcome = {
-  sent: "sent",
-  replied: "replied",
-  booked: "booked",
-  no_reply: "no_reply",
-  objection: "objection",
-  opted_out: "opted_out",
-  voicemail: "voicemail",
-  connected: "connected",
-} as const;
-
-export interface Touch {
-  id: number;
-  prospectId: number;
-  contactId?: number | null;
-  sequenceId?: number | null;
-  channel: TouchChannel;
-  touchType: TouchTouchType;
-  direction: TouchDirection;
+export interface Activity {
+  id: string;
+  accountId: string;
+  contactId: string;
+  channel: string;
+  activityType: string;
   subject?: string | null;
   body?: string | null;
-  outcome?: TouchOutcome;
-  objectionText?: string | null;
-  nextAction?: string | null;
-  nextActionDue?: string | null;
-  performedAt: string;
+  sentAt: string;
+  repliedAt?: string | null;
   createdAt: string;
 }
 
-export type ProspectDetail = Prospect & {
+export type AccountDetailResponseData = Account & {
   contacts?: Contact[];
   analyses?: Analysis[];
-  sequences?: Sequence[];
-  recentTouches?: Touch[];
+  recentActivities?: Activity[];
 };
 
-export interface ProspectListResponse {
-  prospects: Prospect[];
-  total: number;
-  page: number;
-  pageSize: number;
+export interface AccountDetailResponse {
+  data: AccountDetailResponseData;
 }
 
-export type CreateProspectRequestEmployeeCountBand =
-  (typeof CreateProspectRequestEmployeeCountBand)[keyof typeof CreateProspectRequestEmployeeCountBand];
+export interface AccountListResponse {
+  data: Account[];
+  meta: PaginatedMeta;
+}
 
-export const CreateProspectRequestEmployeeCountBand = {
-  "1-10": "1-10",
-  "11-50": "11-50",
-  "51-100": "51-100",
-  "101-250": "101-250",
-  "250+": "250+",
-} as const;
-
-export type CreateProspectRequestPriorityTier =
-  (typeof CreateProspectRequestPriorityTier)[keyof typeof CreateProspectRequestPriorityTier];
-
-export const CreateProspectRequestPriorityTier = {
-  A: "A",
-  B: "B",
-  C: "C",
-} as const;
-
-export type CreateProspectRequestIcpType =
-  (typeof CreateProspectRequestIcpType)[keyof typeof CreateProspectRequestIcpType];
-
-export const CreateProspectRequestIcpType = {
-  founder: "founder",
-  marketing_manager: "marketing_manager",
-  agency: "agency",
-} as const;
-
-export interface CreateProspectRequest {
+export interface CreateAccountRequest {
   companyName: string;
-  domain: string;
-  websiteUrl: string;
-  industry: string;
+  domain?: string | null;
+  websiteUrl?: string | null;
+  industry?: string | null;
   subIndustry?: string | null;
-  employeeCountBand: CreateProspectRequestEmployeeCountBand;
+  employeeBand?: string | null;
   revenueBand?: string | null;
   geography?: string | null;
-  source: string;
+  icpType?: string | null;
+  fitScore?: number | null;
+  priorityTier?: string | null;
+  source?: string | null;
   sourceDetail?: string | null;
-  accountOwner?: string | null;
-  priorityTier: CreateProspectRequestPriorityTier;
-  icpType: CreateProspectRequestIcpType;
-  /**
-   * @minimum 0
-   * @maximum 100
-   */
-  fitScore: number;
-  notes?: string | null;
 }
 
-export type UpdateProspectRequestEmployeeCountBand =
-  (typeof UpdateProspectRequestEmployeeCountBand)[keyof typeof UpdateProspectRequestEmployeeCountBand];
-
-export const UpdateProspectRequestEmployeeCountBand = {
-  "1-10": "1-10",
-  "11-50": "11-50",
-  "51-100": "51-100",
-  "101-250": "101-250",
-  "250+": "250+",
-} as const;
-
-export type UpdateProspectRequestPriorityTier =
-  (typeof UpdateProspectRequestPriorityTier)[keyof typeof UpdateProspectRequestPriorityTier];
-
-export const UpdateProspectRequestPriorityTier = {
-  A: "A",
-  B: "B",
-  C: "C",
-} as const;
-
-export type UpdateProspectRequestIcpType =
-  (typeof UpdateProspectRequestIcpType)[keyof typeof UpdateProspectRequestIcpType];
-
-export const UpdateProspectRequestIcpType = {
-  founder: "founder",
-  marketing_manager: "marketing_manager",
-  agency: "agency",
-} as const;
-
-export type UpdateProspectRequestOutreachStatus =
-  (typeof UpdateProspectRequestOutreachStatus)[keyof typeof UpdateProspectRequestOutreachStatus];
-
-export const UpdateProspectRequestOutreachStatus = {
-  not_started: "not_started",
-  in_sequence: "in_sequence",
-  replied: "replied",
-  booked: "booked",
-  showed: "showed",
-  closed_won: "closed_won",
-  closed_lost: "closed_lost",
-  nurture: "nurture",
-} as const;
-
-export type UpdateProspectRequestPersonalizationLevel =
-  | (typeof UpdateProspectRequestPersonalizationLevel)[keyof typeof UpdateProspectRequestPersonalizationLevel]
-  | null;
-
-export const UpdateProspectRequestPersonalizationLevel = {
-  high: "high",
-  medium: "medium",
-  low: "low",
-} as const;
-
-export interface UpdateProspectRequest {
+export interface UpdateAccountRequest {
   companyName?: string;
-  domain?: string;
-  websiteUrl?: string;
-  industry?: string;
+  domain?: string | null;
+  websiteUrl?: string | null;
+  industry?: string | null;
   subIndustry?: string | null;
-  employeeCountBand?: UpdateProspectRequestEmployeeCountBand;
+  employeeBand?: string | null;
   revenueBand?: string | null;
   geography?: string | null;
-  accountOwner?: string | null;
-  priorityTier?: UpdateProspectRequestPriorityTier;
-  icpType?: UpdateProspectRequestIcpType;
-  /**
-   * @minimum 0
-   * @maximum 100
-   */
-  fitScore?: number;
-  outreachStatus?: UpdateProspectRequestOutreachStatus;
-  likelyPrimaryProblem?: string | null;
-  likelySecondaryProblem?: string | null;
-  likelyAssetToOffer?: string | null;
-  personalizationLevel?: UpdateProspectRequestPersonalizationLevel;
-  sequenceFamily?: string | null;
-  notes?: string | null;
+  icpType?: string | null;
+  fitScore?: number | null;
+  priorityTier?: string | null;
+  source?: string | null;
+  sourceDetail?: string | null;
 }
 
-export type ImportProspectsRequestRowsItem = { [key: string]: unknown };
+export type ImportAccountsRequestRowsItem = { [key: string]: unknown };
 
-export interface ImportProspectsRequest {
-  rows: ImportProspectsRequestRowsItem[];
+export interface ImportAccountsRequest {
+  rows: ImportAccountsRequestRowsItem[];
 }
 
 export interface ImportResult {
@@ -468,15 +164,19 @@ export interface ImportResult {
   errors: string[];
 }
 
+export interface ContactResponse {
+  data: Contact;
+}
+
 export interface ContactListResponse {
-  contacts: Contact[];
-  total: number;
+  data: Contact[];
+  meta: PaginatedMeta;
 }
 
 export interface CreateContactRequest {
-  prospectId: number;
-  firstName: string;
-  lastName: string;
+  accountId: string;
+  firstName?: string | null;
+  lastName?: string | null;
   jobTitle?: string | null;
   seniority?: string | null;
   email?: string | null;
@@ -486,397 +186,230 @@ export interface CreateContactRequest {
   notes?: string | null;
 }
 
-export type UpdateContactRequestOutreachStatus =
-  (typeof UpdateContactRequestOutreachStatus)[keyof typeof UpdateContactRequestOutreachStatus];
-
-export const UpdateContactRequestOutreachStatus = {
-  not_started: "not_started",
-  in_sequence: "in_sequence",
-  replied: "replied",
-  booked: "booked",
-  opted_out: "opted_out",
-} as const;
-
 export interface UpdateContactRequest {
-  firstName?: string;
-  lastName?: string;
+  firstName?: string | null;
+  lastName?: string | null;
   jobTitle?: string | null;
   seniority?: string | null;
   email?: string | null;
   phone?: string | null;
   linkedinUrl?: string | null;
-  outreachStatus?: UpdateContactRequestOutreachStatus;
+  outreachStatus?: string;
   notes?: string | null;
 }
 
+export interface AnalysisResponse {
+  data: Analysis;
+}
+
 export interface AnalysisListResponse {
-  analyses: Analysis[];
+  data: Analysis[];
   total: number;
 }
 
-export type CreateAnalysisRequestPageType =
-  (typeof CreateAnalysisRequestPageType)[keyof typeof CreateAnalysisRequestPageType];
-
-export const CreateAnalysisRequestPageType = {
-  homepage: "homepage",
-  landing_page: "landing_page",
-  pricing: "pricing",
-  about: "about",
-  other: "other",
-} as const;
-
 export interface CreateAnalysisRequest {
-  prospectId?: number | null;
+  accountId: string;
   domain: string;
   pageUrl: string;
-  pageType: CreateAnalysisRequestPageType;
+  pageType: string;
 }
 
-export type UpdateAnalysisRequestStatus =
-  (typeof UpdateAnalysisRequestStatus)[keyof typeof UpdateAnalysisRequestStatus];
-
-export const UpdateAnalysisRequestStatus = {
-  pending: "pending",
-  complete: "complete",
-  failed: "failed",
-} as const;
-
 export interface UpdateAnalysisRequest {
-  status?: UpdateAnalysisRequestStatus;
-  heroClarityScore?: number | null;
-  ctaClarityScore?: number | null;
-  ctaProminenceScore?: number | null;
-  visualHierarchyScore?: number | null;
-  messageOrderScore?: number | null;
-  outcomeClarityScore?: number | null;
-  trustSignalScore?: number | null;
-  frictionScore?: number | null;
-  mobileReadabilityScore?: number | null;
-  overallScore?: number | null;
+  heroClarity?: number | null;
+  ctaClarity?: number | null;
+  ctaProminence?: number | null;
+  visualHierarchy?: number | null;
+  messageOrder?: number | null;
+  outcomeClarity?: number | null;
+  trustSignal?: number | null;
+  friction?: number | null;
+  mobileReadability?: number | null;
   primaryIssueCode?: string | null;
   secondaryIssueCode?: string | null;
   tertiaryIssueCode?: string | null;
   issueSummaryShort?: string | null;
   issueSummaryDetailed?: string | null;
-  strengthsDetected?: string | null;
   recommendedPriorityFix?: string | null;
   confidenceScore?: number | null;
-  rawNotes?: string | null;
   screenshotUrl?: string | null;
 }
 
-export interface IssueCluster {
-  issueCode: string;
-  count: number;
-  affectedProspects: number;
-  topIcps: string[];
-  avgFitScore: number;
-}
-
-export interface IssueClustersResponse {
-  clusters: IssueCluster[];
-}
-
-export type InsightSeverityHint =
-  | (typeof InsightSeverityHint)[keyof typeof InsightSeverityHint]
-  | null;
-
-export const InsightSeverityHint = {
-  critical: "critical",
-  high: "high",
-  medium: "medium",
-  low: "low",
-} as const;
-
 export interface Insight {
-  id: number;
-  insightId: string;
+  id: string;
   issueCode: string;
-  icp: string[];
-  industries: string[];
+  icp: string;
   shortInsightLine: string;
   longerExplainer?: string | null;
   businessConsequence?: string | null;
-  severityHint?: InsightSeverityHint;
-  suitableChannels: string[];
-  suitableSequenceStep: number[];
-  ctaPairings: string[];
-  proofAssetPairings: string[];
-  confidenceNotes?: string | null;
-  useCount: number;
-  replyCount: number;
+  severityHint?: string | null;
+  active: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface InsightListResponse {
-  insights: Insight[];
-  total: number;
+export interface InsightResponse {
+  data: Insight;
 }
 
-export type CreateInsightRequestSeverityHint =
-  | (typeof CreateInsightRequestSeverityHint)[keyof typeof CreateInsightRequestSeverityHint]
-  | null;
-
-export const CreateInsightRequestSeverityHint = {
-  critical: "critical",
-  high: "high",
-  medium: "medium",
-  low: "low",
-} as const;
+export interface InsightListResponse {
+  data: Insight[];
+  total: number;
+}
 
 export interface CreateInsightRequest {
   issueCode: string;
-  icp: string[];
-  industries: string[];
+  icp: string;
   shortInsightLine: string;
   longerExplainer?: string | null;
   businessConsequence?: string | null;
-  severityHint?: CreateInsightRequestSeverityHint;
-  suitableChannels: string[];
-  suitableSequenceStep: number[];
-  ctaPairings: string[];
-  proofAssetPairings: string[];
-  confidenceNotes?: string | null;
+  severityHint?: string | null;
 }
 
-export type UpdateInsightRequestSeverityHint =
-  | (typeof UpdateInsightRequestSeverityHint)[keyof typeof UpdateInsightRequestSeverityHint]
-  | null;
-
-export const UpdateInsightRequestSeverityHint = {
-  critical: "critical",
-  high: "high",
-  medium: "medium",
-  low: "low",
-} as const;
-
 export interface UpdateInsightRequest {
-  issueCode?: string;
-  icp?: string[];
-  industries?: string[];
   shortInsightLine?: string;
   longerExplainer?: string | null;
   businessConsequence?: string | null;
-  severityHint?: UpdateInsightRequestSeverityHint;
-  suitableChannels?: string[];
-  suitableSequenceStep?: number[];
-  ctaPairings?: string[];
-  proofAssetPairings?: string[];
-  confidenceNotes?: string | null;
+  severityHint?: string | null;
+  active?: boolean;
+}
+
+export interface Sequence {
+  id: string;
+  sequenceName: string;
+  icp?: string | null;
+  issueCluster?: string | null;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SequenceResponse {
+  data: Sequence;
 }
 
 export interface SequenceListResponse {
-  sequences: Sequence[];
+  data: Sequence[];
   total: number;
 }
-
-export type CreateSequenceRequestPersonalizationLevel =
-  (typeof CreateSequenceRequestPersonalizationLevel)[keyof typeof CreateSequenceRequestPersonalizationLevel];
-
-export const CreateSequenceRequestPersonalizationLevel = {
-  high: "high",
-  medium: "medium",
-  low: "low",
-} as const;
-
-export type CreateSequenceRequestStepsItemChannel =
-  (typeof CreateSequenceRequestStepsItemChannel)[keyof typeof CreateSequenceRequestStepsItemChannel];
-
-export const CreateSequenceRequestStepsItemChannel = {
-  email: "email",
-  linkedin: "linkedin",
-  phone: "phone",
-  video: "video",
-  other: "other",
-} as const;
-
-export type CreateSequenceRequestStepsItem = {
-  stepNumber: number;
-  channel: CreateSequenceRequestStepsItemChannel;
-  dayOffset: number;
-  subject?: string | null;
-  body: string;
-  ctaText?: string | null;
-  assetOffered?: string | null;
-};
 
 export interface CreateSequenceRequest {
-  prospectId: number;
-  contactId?: number | null;
-  name: string;
-  personalizationLevel: CreateSequenceRequestPersonalizationLevel;
-  steps: CreateSequenceRequestStepsItem[];
+  sequenceName: string;
+  icp?: string | null;
+  issueCluster?: string | null;
+  priorityTier?: string | null;
 }
 
-export type UpdateSequenceRequestStatus =
-  (typeof UpdateSequenceRequestStatus)[keyof typeof UpdateSequenceRequestStatus];
-
-export const UpdateSequenceRequestStatus = {
-  draft: "draft",
-  active: "active",
-  paused: "paused",
-  completed: "completed",
-  archived: "archived",
-} as const;
-
-export interface UpdateSequenceRequest {
-  name?: string;
-  status?: UpdateSequenceRequestStatus;
-  currentStep?: number;
+export interface ActivityResponse {
+  data: Activity;
 }
 
-export type GenerateSequenceRequestIcpType =
-  (typeof GenerateSequenceRequestIcpType)[keyof typeof GenerateSequenceRequestIcpType];
-
-export const GenerateSequenceRequestIcpType = {
-  founder: "founder",
-  marketing_manager: "marketing_manager",
-  agency: "agency",
-} as const;
-
-export type GenerateSequenceRequestPersonalizationLevel =
-  (typeof GenerateSequenceRequestPersonalizationLevel)[keyof typeof GenerateSequenceRequestPersonalizationLevel];
-
-export const GenerateSequenceRequestPersonalizationLevel = {
-  high: "high",
-  medium: "medium",
-  low: "low",
-} as const;
-
-export interface GenerateSequenceRequest {
-  prospectId: number;
-  analysisId?: number | null;
-  icpType: GenerateSequenceRequestIcpType;
-  personalizationLevel: GenerateSequenceRequestPersonalizationLevel;
-  /**
-   * @minimum 2
-   * @maximum 8
-   */
-  touchCount: number;
-}
-
-export interface GeneratedSequenceStep {
-  stepNumber: number;
-  channel: string;
-  dayOffset: number;
-  subject?: string | null;
-  body: string;
-  ctaText: string;
-  insightUsed?: string | null;
-  assetSuggested?: string | null;
-}
-
-export interface GeneratedSequence {
-  prospectId: number;
-  icpType: string;
-  personalizationLevel: string;
-  steps: GeneratedSequenceStep[];
-}
-
-export interface TouchListResponse {
-  touches: Touch[];
+export interface ActivityListResponse {
+  data: Activity[];
   total: number;
 }
 
-export type CreateTouchRequestChannel =
-  (typeof CreateTouchRequestChannel)[keyof typeof CreateTouchRequestChannel];
-
-export const CreateTouchRequestChannel = {
-  email: "email",
-  linkedin: "linkedin",
-  phone: "phone",
-  video: "video",
-  other: "other",
-} as const;
-
-export type CreateTouchRequestTouchType =
-  (typeof CreateTouchRequestTouchType)[keyof typeof CreateTouchRequestTouchType];
-
-export const CreateTouchRequestTouchType = {
-  outbound: "outbound",
-  reply: "reply",
-  call: "call",
-  meeting: "meeting",
-  note: "note",
-} as const;
-
-export type CreateTouchRequestDirection =
-  (typeof CreateTouchRequestDirection)[keyof typeof CreateTouchRequestDirection];
-
-export const CreateTouchRequestDirection = {
-  outbound: "outbound",
-  inbound: "inbound",
-} as const;
-
-export type CreateTouchRequestOutcome =
-  | (typeof CreateTouchRequestOutcome)[keyof typeof CreateTouchRequestOutcome]
-  | null;
-
-export const CreateTouchRequestOutcome = {
-  sent: "sent",
-  replied: "replied",
-  booked: "booked",
-  no_reply: "no_reply",
-  objection: "objection",
-  opted_out: "opted_out",
-  voicemail: "voicemail",
-  connected: "connected",
-} as const;
-
-export interface CreateTouchRequest {
-  prospectId: number;
-  contactId?: number | null;
-  sequenceId?: number | null;
-  channel: CreateTouchRequestChannel;
-  touchType: CreateTouchRequestTouchType;
-  direction: CreateTouchRequestDirection;
+export interface CreateActivityRequest {
+  accountId: string;
+  contactId: string;
+  channel: string;
+  activityType: string;
   subject?: string | null;
   body?: string | null;
-  outcome?: CreateTouchRequestOutcome;
-  objectionText?: string | null;
-  nextAction?: string | null;
-  nextActionDue?: string | null;
-  performedAt?: string | null;
 }
 
-export type UpdateTouchRequestOutcome =
-  (typeof UpdateTouchRequestOutcome)[keyof typeof UpdateTouchRequestOutcome];
+export interface Opportunity {
+  id: string;
+  accountId: string;
+  contactId: string;
+  stage: string;
+  valueEstimate?: number | null;
+  closedStatus?: string | null;
+  lossReason?: string | null;
+  winReason?: string | null;
+  notes?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
 
-export const UpdateTouchRequestOutcome = {
-  sent: "sent",
-  replied: "replied",
-  booked: "booked",
-  no_reply: "no_reply",
-  objection: "objection",
-  opted_out: "opted_out",
-  voicemail: "voicemail",
-  connected: "connected",
-} as const;
+export interface OpportunityResponse {
+  data: Opportunity;
+}
 
-export interface UpdateTouchRequest {
-  outcome?: UpdateTouchRequestOutcome;
-  objectionText?: string | null;
-  nextAction?: string | null;
-  nextActionDue?: string | null;
+export interface OpportunityListResponse {
+  data: Opportunity[];
+  total: number;
+}
+
+export interface CreateOpportunityRequest {
+  accountId: string;
+  contactId: string;
+  stage: string;
+  valueEstimate?: number | null;
+  notes?: string | null;
+}
+
+export interface UpdateOpportunityRequest {
+  stage?: string;
+  valueEstimate?: number | null;
+  closedStatus?: string | null;
+  lossReason?: string | null;
+  winReason?: string | null;
+  notes?: string | null;
+}
+
+export interface Experiment {
+  id: string;
+  name: string;
+  hypothesis?: string | null;
+  variableTested?: string | null;
+  controlVariant?: string | null;
+  testVariant?: string | null;
+  status: string;
+  resultSummary?: string | null;
+  decision?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ExperimentResponse {
+  data: Experiment;
+}
+
+export interface ExperimentListResponse {
+  data: Experiment[];
+  total: number;
+}
+
+export interface CreateExperimentRequest {
+  name: string;
+  hypothesis?: string | null;
+  variableTested?: string | null;
+  controlVariant?: string | null;
+  testVariant?: string | null;
+}
+
+export interface UpdateExperimentRequest {
+  status?: string;
+  resultSummary?: string | null;
+  decision?: string | null;
 }
 
 export interface DashboardMetrics {
   callsBookedThisWeek: number;
   positiveRepliesThisWeek: number;
-  overallReplyRate: number;
-  showRate: number;
-  closeRate: number;
   activeProspects: number;
-  totalProspects: number;
-  avgResponseTime?: number | null;
+  accountsAnalyzed: number;
+  tasksDueToday: number;
   hotProspectsCount: number;
+  totalAccounts: number;
+  totalContacts: number;
+  overallReplyRate: number;
+  closeRate: number;
 }
 
 export interface PipelineStage {
   stage: string;
   count: number;
-  change: number;
 }
 
 export interface PipelineSnapshot {
@@ -884,170 +417,79 @@ export interface PipelineSnapshot {
 }
 
 export interface HotProspect {
-  id: number;
+  id: string;
   companyName: string;
   contactName?: string | null;
-  icpType: string;
+  icpType?: string | null;
   outreachStatus: string;
-  lastTouchAt?: string | null;
-  nextActionDue?: string | null;
-  nextAction?: string | null;
   urgencyReason: string;
 }
 
 export interface ActivityToday {
   tasksDue: number;
   hotProspects: HotProspect[];
-  upcomingCalls: Touch[];
+  recentActivities: Activity[];
 }
 
-export interface ChannelPerformance {
-  channel: string;
-  sent: number;
-  replied: number;
-  replyRate: number;
-  booked: number;
-  bookingRate: number;
-}
-
-export interface ChannelPerformanceResponse {
-  channels: ChannelPerformance[];
-}
-
-export type TopHookType = (typeof TopHookType)[keyof typeof TopHookType];
-
-export const TopHookType = {
-  hook: "hook",
-  cta: "cta",
-  subject: "subject",
-} as const;
-
-export interface TopHook {
-  text: string;
-  type: TopHookType;
-  uses: number;
-  replies: number;
-  replyRate: number;
-}
-
-export interface TopHooksResponse {
-  hooks: TopHook[];
-}
-
-export type ExperimentStatus =
-  (typeof ExperimentStatus)[keyof typeof ExperimentStatus];
-
-export const ExperimentStatus = {
-  running: "running",
-  complete: "complete",
-  paused: "paused",
-} as const;
-
-export type ExperimentWinner =
-  | (typeof ExperimentWinner)[keyof typeof ExperimentWinner]
-  | null;
-
-export const ExperimentWinner = {
-  A: "A",
-  B: "B",
-  inconclusive: "inconclusive",
-} as const;
-
-export interface Experiment {
-  id: number;
-  name: string;
-  hypothesis: string;
-  variantA: string;
-  variantB: string;
-  metric: string;
-  status: ExperimentStatus;
-  aReplies: number;
-  bReplies: number;
-  aSent: number;
-  bSent: number;
-  winner?: ExperimentWinner;
-  notes?: string | null;
-  startedAt?: string | null;
-  completedAt?: string | null;
+export interface Settings {
+  id: string;
+  defaultSenderEmail?: string | null;
+  defaultSenderName?: string | null;
+  homepageAnalyserApiUrl?: string | null;
+  hasAnthropicKey: boolean;
+  hasOpenaiKey: boolean;
+  hasAnalyserKey: boolean;
   createdAt: string;
+  updatedAt: string;
 }
 
-export interface ExperimentListResponse {
-  experiments: Experiment[];
-  total: number;
+export interface SettingsResponse {
+  data: Settings;
 }
 
-export interface CreateExperimentRequest {
-  name: string;
-  hypothesis: string;
-  variantA: string;
-  variantB: string;
-  metric: string;
-  notes?: string | null;
+export interface SaveSettingsRequest {
+  defaultSenderEmail?: string | null;
+  defaultSenderName?: string | null;
+  homepageAnalyserApiUrl?: string | null;
+  anthropicApiKey?: string | null;
+  openaiApiKey?: string | null;
+  analyserApiKey?: string | null;
 }
 
-export type UpdateExperimentRequestStatus =
-  (typeof UpdateExperimentRequestStatus)[keyof typeof UpdateExperimentRequestStatus];
-
-export const UpdateExperimentRequestStatus = {
-  running: "running",
-  complete: "complete",
-  paused: "paused",
-} as const;
-
-export type UpdateExperimentRequestWinner =
-  | (typeof UpdateExperimentRequestWinner)[keyof typeof UpdateExperimentRequestWinner]
-  | null;
-
-export const UpdateExperimentRequestWinner = {
-  A: "A",
-  B: "B",
-  inconclusive: "inconclusive",
-} as const;
-
-export interface UpdateExperimentRequest {
-  status?: UpdateExperimentRequestStatus;
-  aReplies?: number;
-  bReplies?: number;
-  aSent?: number;
-  bSent?: number;
-  winner?: UpdateExperimentRequestWinner;
-  notes?: string | null;
-}
-
-export type ListProspectsParams = {
+export type ListAccountsParams = {
   page?: number;
   pageSize?: number;
   priorityTier?: string;
   icpType?: string;
-  outreachStatus?: string;
   search?: string;
 };
 
 export type ListContactsParams = {
-  prospectId?: number;
+  accountId?: string;
+  outreachStatus?: string;
   search?: string;
+  page?: number;
+  pageSize?: number;
 };
 
 export type ListAnalysesParams = {
-  prospectId?: number;
+  accountId?: string;
   issueCode?: string;
 };
 
 export type ListInsightsParams = {
   issueCode?: string;
   icp?: string;
-  channel?: string;
 };
 
-export type ListSequencesParams = {
-  prospectId?: number;
-  status?: string;
-};
-
-export type ListTouchesParams = {
-  prospectId?: number;
-  contactId?: number;
-  channel?: string;
+export type ListActivitiesParams = {
+  accountId?: string;
+  contactId?: string;
+  activityType?: string;
   dueToday?: boolean;
+};
+
+export type ListOpportunitiesParams = {
+  stage?: string;
+  accountId?: string;
 };

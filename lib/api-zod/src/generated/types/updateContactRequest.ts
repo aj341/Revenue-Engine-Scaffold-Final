@@ -5,16 +5,15 @@
  * Design Bees Outbound Revenue Engine API
  * OpenAPI spec version: 0.1.0
  */
-import type { UpdateContactRequestOutreachStatus } from "./updateContactRequestOutreachStatus";
 
 export interface UpdateContactRequest {
-  firstName?: string;
-  lastName?: string;
+  firstName?: string | null;
+  lastName?: string | null;
   jobTitle?: string | null;
   seniority?: string | null;
   email?: string | null;
   phone?: string | null;
   linkedinUrl?: string | null;
-  outreachStatus?: UpdateContactRequestOutreachStatus;
+  outreachStatus?: string;
   notes?: string | null;
 }

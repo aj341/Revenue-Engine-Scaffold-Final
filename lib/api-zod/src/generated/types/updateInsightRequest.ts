@@ -5,19 +5,11 @@
  * Design Bees Outbound Revenue Engine API
  * OpenAPI spec version: 0.1.0
  */
-import type { UpdateInsightRequestSeverityHint } from "./updateInsightRequestSeverityHint";
 
 export interface UpdateInsightRequest {
-  issueCode?: string;
-  icp?: string[];
-  industries?: string[];
   shortInsightLine?: string;
   longerExplainer?: string | null;
   businessConsequence?: string | null;
-  severityHint?: UpdateInsightRequestSeverityHint;
-  suitableChannels?: string[];
-  suitableSequenceStep?: number[];
-  ctaPairings?: string[];
-  proofAssetPairings?: string[];
-  confidenceNotes?: string | null;
+  severityHint?: string | null;
+  active?: boolean;
 }

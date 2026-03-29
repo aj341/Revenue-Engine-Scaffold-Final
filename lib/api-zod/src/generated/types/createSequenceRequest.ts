@@ -5,13 +5,10 @@
  * Design Bees Outbound Revenue Engine API
  * OpenAPI spec version: 0.1.0
  */
-import type { CreateSequenceRequestPersonalizationLevel } from "./createSequenceRequestPersonalizationLevel";
-import type { CreateSequenceRequestStepsItem } from "./createSequenceRequestStepsItem";
 
 export interface CreateSequenceRequest {
-  prospectId: number;
-  contactId?: number | null;
-  name: string;
-  personalizationLevel: CreateSequenceRequestPersonalizationLevel;
-  steps: CreateSequenceRequestStepsItem[];
+  sequenceName: string;
+  icp?: string | null;
+  issueCluster?: string | null;
+  priorityTier?: string | null;
 }

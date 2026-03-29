@@ -8,6 +8,6 @@
 import type { Sequence } from "./sequence";
 
 export interface SequenceListResponse {
-  sequences: Sequence[];
+  data: Sequence[];
   total: number;
 }

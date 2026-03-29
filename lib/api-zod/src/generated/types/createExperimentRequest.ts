@@ -8,9 +8,8 @@
 
 export interface CreateExperimentRequest {
   name: string;
-  hypothesis: string;
-  variantA: string;
-  variantB: string;
-  metric: string;
-  notes?: string | null;
+  hypothesis?: string | null;
+  variableTested?: string | null;
+  controlVariant?: string | null;
+  testVariant?: string | null;
 }

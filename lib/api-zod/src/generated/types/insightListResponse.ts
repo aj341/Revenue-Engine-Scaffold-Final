@@ -8,6 +8,6 @@
 import type { Insight } from "./insight";
 
 export interface InsightListResponse {
-  insights: Insight[];
+  data: Insight[];
   total: number;
 }

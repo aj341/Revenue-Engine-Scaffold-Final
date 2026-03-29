@@ -1,0 +1,2197 @@
+# Phase 1 Foundation: Replit Agent Build Brief
+## Design Bees Outbound Revenue Engine — Next.js + Supabase
+
+**Target Deliverable:** Production-ready scaffold with authentication, complete database schema, and functional pages for Dashboard, Accounts, Contacts, and Settings. All navigation items exist as routes but only the above four have content.
+
+---
+
+## Part 1: Project Initialization & Environment Setup
+
+### 1.1 Create Next.js 14+ Project
+```bash
+# Create a new Next.js project with TypeScript and Tailwind
+npx create-next-app@latest design-bees-engine --typescript --tailwind --app
+cd design-bees-engine
+```
+
+**Critical settings during prompts:**
+- Use App Router (yes)
+- Use TypeScript (yes)
+- Use Tailwind CSS (yes)
+- Use ESLint (yes)
+- Do NOT use `src/` directory
+- Import alias: `@/*`
+
+### 1.2 Install Dependencies
+
+```bash
+npm install \
+  @supabase/supabase-js @supabase/auth-helpers-nextjs \
+  @prisma/client \
+  @tanstack/react-query \
+  next-themes \
+  next-auth \
+  zod \
+  react-hook-form \
+  @radix-ui/react-dialog \
+  @radix-ui/react-select \
+  @radix-ui/react-dropdown-menu \
+  @radix-ui/react-sheet \
+  @radix-ui/react-tabs \
+  class-variance-authority \
+  clsx tailwind-merge \
+  lucide-react
+
+npm install -D prisma @types/node @types/react
+```
+
+### 1.3 Install shadcn/ui
+
+```bash
+npx shadcn-ui@latest init
+# When prompted, use default theme colors and style. Yes to CSS variables.
+
+# Install required components
+npx shadcn-ui@latest add button
+npx shadcn-ui@latest add card
+npx shadcn-ui@latest add input
+npx shadcn-ui@latest add label
+npx shadcn-ui@latest add select
+npx shadcn-ui@latest add dialog
+npx shadcn-ui@latest add dropdown-menu
+npx shadcn-ui@latest add sheet
+npx shadcn-ui@latest add table
+npx shadcn-ui@latest add badge
+npx shadcn-ui@latest add tabs
+npx shadcn-ui@latest add form
+npx shadcn-ui@latest add toast
+npx shadcn-ui@latest add scroll-area
+```
+
+### 1.4 Create Environment Variables File
+
+Create `.env.local`:
+```env
+# Supabase
+DATABASE_URL="postgresql://[user]:[password]@[host]:[port]/[database]"
+NEXT_PUBLIC_SUPABASE_URL="https://[project].supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="[anon-key]"
+SUPABASE_SERVICE_ROLE_KEY="[service-role-key]"
+
+# Auth
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="[generate-with-openssl-rand-base64-32]"
+
+# Encryption (for sensitive settings)
+ENCRYPTION_KEY="[32-byte-hex-string-for-aes-256]"
+```
+
+---
+
+## Part 2: Prisma Setup & Database Schema
+
+### 2.1 Initialize Prisma
+
+```bash
+npx prisma init
+```
+
+Update `prisma/.env` to point to your Supabase PostgreSQL database:
+```env
+DATABASE_URL="postgresql://[credentials]@[host]:[port]/[database]"
+```
+
+### 2.2 Define Complete Schema
+
+Replace `prisma/schema.prisma` with the complete schema below:
+
+```prisma
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// AUTHENTICATION & USERS
+// ============================================================================
+
+// Note: auth.users is managed by Supabase Auth. We reference it via UUID.
+// No need to create a separate users table — Supabase provides this.
+
+// ============================================================================
+// CORE ENTITIES
+// ============================================================================
+
+model Account {
+  id                    String   @id @default(uuid()) @db.Uuid
+  companyName           String   @db.Text
+  domain                String?  @db.Text
+  websiteUrl            String?  @db.Text
+  industry              String?  @db.Text
+  subIndustry           String?  @db.Text
+  employeeBand          String?  @db.Text // "1-10", "11-50", "51-100", "101-250", "250+"
+  revenueBand           String?  @db.Text
+  geography             String?  @db.Text
+  icpType               String?  @db.Text // "founder", "marketing_manager", "agency"
+  fitScore              Int?     @default(0) // 0-100
+  priorityTier          String?  @db.Text // "tier_1", "tier_2", "tier_3"
+  source                String?  @db.Text
+  sourceDetail          String?  @db.Text
+  sourceCaptureDate     DateTime? @db.Timestamp
+
+  ownerId               String   @db.Uuid
+  createdAt             DateTime @default(now()) @db.Timestamp
+  updatedAt             DateTime @updatedAt @db.Timestamp
+
+  // Relations
+  contacts              Contact[]
+  analyses              Analysis[]
+  activities            Activity[]
+  opportunities         Opportunity[]
+  assetUsages           AssetUsage[]
+  prospectSequences     ProspectSequence[]
+
+  @@index([ownerId])
+  @@index([domain])
+}
+
+model Contact {
+  id                String   @id @default(uuid()) @db.Uuid
+  accountId         String   @db.Uuid
+  firstName         String?  @db.Text
+  lastName          String?  @db.Text
+  fullName          String?  @db.Text // Generated/denormalized from firstName + lastName
+  jobTitle          String?  @db.Text
+  seniority         String?  @db.Text // "c_level", "vp", "director", "manager", "individual_contributor"
+  email             String?  @db.Text
+  phone             String?  @db.Text
+  linkedinUrl       String?  @db.Text
+  contactSource     String?  @db.Text
+  sourceDate        DateTime? @db.Timestamp
+  outreachStatus    String   @default("new") @db.Text // "new", "queued", "contacted", "replied", "booked", "held", "closed_won", "closed_lost", "nurture", "blocked"
+  notes             String?  @db.Text
+
+  createdAt         DateTime @default(now()) @db.Timestamp
+  updatedAt         DateTime @updatedAt @db.Timestamp
+
+  // Relations
+  account           Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  activities        Activity[]
+  assetUsages       AssetUsage[]
+  prospectSequences ProspectSequence[]
+  opportunities     Opportunity[]
+  replies           Reply[]
+
+  @@index([accountId])
+  @@index([email])
+  @@index([outreachStatus])
+}
+
+// ============================================================================
+// ANALYSIS & INSIGHTS
+// ============================================================================
+
+model Analysis {
+  id                        String   @id @default(uuid()) @db.Uuid
+  accountId                 String   @db.Uuid
+  domain                    String   @db.Text
+  pageUrl                   String   @db.Text
+  pageType                  String   @db.Text // "homepage", "landing_page", "product_page", "about_page"
+  analyzedAt                DateTime @default(now()) @db.Timestamp
+
+  heroClarity               Int?     @default(0) // 0-100
+  ctaClarity                Int?     @default(0) // 0-100
+  ctaProminence             Int?     @default(0) // 0-100
+  visualHierarchy           Int?     @default(0) // 0-100
+  messageOrder              Int?     @default(0) // 0-100
+  outcomeClarity            Int?     @default(0) // 0-100
+  trustSignal               Int?     @default(0) // 0-100
+  friction                  Int?     @default(0) // 0-100
+  mobileReadability         Int?     @default(0) // 0-100
+
+  primaryIssueCode          String?  @db.Text
+  secondaryIssueCode        String?  @db.Text
+  tertiaryIssueCode         String?  @db.Text
+  issueSummaryShort         String?  @db.Text
+  issueSummaryDetailed      String?  @db.Text
+  strengthsDetected         Json?    @db.JsonB
+  recommendedPriorityFix    String?  @db.Text
+  confidenceScore           Int?     @default(0) // 0-100
+  rawNotes                  Json?    @db.JsonB
+  screenshotUrl             String?  @db.Text
+
+  // Relations
+  account                   Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId])
+  @@index([domain])
+  @@index([pageType])
+}
+
+model IssueCluster {
+  id                String   @id @default(uuid()) @db.Uuid
+  issueCode         String   @unique @db.Text
+  issueName         String   @db.Text
+  description       String?  @db.Text
+  severityDefault   String?  @db.Text // "critical", "high", "medium", "low"
+  category          String?  @db.Text // "messaging", "visual", "conversion", "trust", "navigation", "mobile"
+
+  // Relations
+  insightBlocks     InsightBlock[]
+
+  @@unique([issueCode])
+}
+
+model InsightBlock {
+  id                    String   @id @default(uuid()) @db.Uuid
+  issueCode             String   @db.Text
+  icp                   String   @db.Text // "founder", "marketing_manager", "agency", "all"
+  industries            Json?    @db.JsonB // Array of industry strings
+  shortInsightLine      String   @db.Text
+  longerExplainer       String?  @db.Text
+  businessConsequence   String?  @db.Text
+  severityHint          String?  @db.Text
+  suitableChannels      Json?    @db.JsonB // ["email", "linkedin", "phone"]
+  suitableSteps         Json?    @db.JsonB // [1, 2, 3]
+  ctaPairings           Json?    @db.JsonB
+  assetPairings         Json?    @db.JsonB
+  confidenceNotes       String?  @db.Text
+  active                Boolean  @default(true)
+
+  createdAt             DateTime @default(now()) @db.Timestamp
+  updatedAt             DateTime @updatedAt @db.Timestamp
+
+  // Relations
+  issueCluster          IssueCluster @relation(fields: [issueCode], references: [issueCode], onDelete: Cascade)
+
+  @@index([issueCode])
+  @@index([icp])
+}
+
+// ============================================================================
+// SEQUENCES & MESSAGING
+// ============================================================================
+
+model Sequence {
+  id                String   @id @default(uuid()) @db.Uuid
+  sequenceName      String   @db.Text
+  icp               String?  @db.Text
+  issueCluster      String?  @db.Text
+  industryFilter    String?  @db.Text
+  priorityTier      String?  @db.Text
+  channelMix        Json?    @db.JsonB // E.g., {"email": 3, "linkedin": 2, "phone": 1}
+  ctaStrategy       String?  @db.Text
+  assetStrategy     String?  @db.Text
+  active            Boolean  @default(true)
+
+  createdAt         DateTime @default(now()) @db.Timestamp
+  updatedAt         DateTime @updatedAt @db.Timestamp
+
+  // Relations
+  sequenceSteps     SequenceStep[]
+  prospectSequences ProspectSequence[]
+
+  @@index([icp])
+  @@index([issueCluster])
+}
+
+model SequenceStep {
+  id                        String   @id @default(uuid()) @db.Uuid
+  sequenceId                String   @db.Uuid
+  stepNumber                Int      @db.Integer
+  dayOffset                 Int      @db.Integer // Days after sequence start
+  channel                   String   @db.Text // "email", "linkedin", "phone", "video"
+  objective                 String?  @db.Text
+  angle                     String?  @db.Text
+  templateId                String?  @db.Uuid // FK to MessageTemplate
+  assetToInclude            String?  @db.Text
+  personalizationRequiredFields Json? @db.JsonB
+  sendWindow                String?  @db.Text // E.g., "9am-12pm EST"
+  fallbackBehavior          String?  @db.Text
+
+  // Relations
+  sequence                  Sequence @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+  template                  MessageTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+
+  @@index([sequenceId])
+  @@index([templateId])
+}
+
+model MessageTemplate {
+  id                String   @id @default(uuid()) @db.Uuid
+  channel           String   @db.Text // "email", "linkedin", "phone"
+  icp               String?  @db.Text
+  issueCode         String?  @db.Text
+  tone              String?  @db.Text // "concise", "consultative", "direct", "assertive"
+  stage             String?  @db.Text // "first_touch", "follow_up_1", "follow_up_2", "follow_up_3", "follow_up_4", "breakup"
+  variantName       String?  @db.Text
+  subjectTemplate   String?  @db.Text // For email
+  bodyTemplate      String   @db.Text
+  ctaStyle          String?  @db.Text // "permission", "interest", "soft_close", "direct"
+  active            Boolean  @default(true)
+
+  createdAt         DateTime @default(now()) @db.Timestamp
+  updatedAt         DateTime @updatedAt @db.Timestamp
+
+  // Relations
+  sequenceSteps     SequenceStep[]
+
+  @@index([channel])
+  @@index([icp])
+  @@index([issueCode])
+}
+
+model ProspectSequence {
+  id                String   @id @default(uuid()) @db.Uuid
+  accountId         String   @db.Uuid
+  contactId         String   @db.Uuid
+  sequenceId        String   @db.Uuid
+  status            String   @default("active") @db.Text // "active", "paused", "completed", "stopped"
+  currentStep       Int?     @db.Integer
+  startedAt         DateTime @default(now()) @db.Timestamp
+  completedAt       DateTime? @db.Timestamp
+  stoppedReason     String?  @db.Text
+
+  // Relations
+  account           Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  contact           Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  sequence          Sequence @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+  activities        Activity[]
+
+  @@index([accountId])
+  @@index([contactId])
+  @@index([sequenceId])
+  @@index([status])
+}
+
+// ============================================================================
+// ACTIVITIES & COMMUNICATION
+// ============================================================================
+
+model Activity {
+  id                    String   @id @default(uuid()) @db.Uuid
+  accountId             String   @db.Uuid
+  contactId             String   @db.Uuid
+  prospectSequenceId    String?  @db.Uuid
+  channel               String   @db.Text // "email", "linkedin", "phone", "video"
+  activityType          String   @db.Text // "email_sent", "linkedin_sent", "phone_call", "video_sent", "email_opened", "email_replied", "linkedin_replied", "call_completed", "meeting_booked", "asset_shared"
+  subject               String?  @db.Text
+  body                  String?  @db.Text
+  sentAt                DateTime @default(now()) @db.Timestamp
+  deliveredAt           DateTime? @db.Timestamp
+  openedAt              DateTime? @db.Timestamp
+  repliedAt             DateTime? @db.Timestamp
+  metadata              Json?    @db.JsonB
+
+  // Relations
+  account               Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  contact               Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  prospectSequence      ProspectSequence? @relation(fields: [prospectSequenceId], references: [id], onDelete: SetNull)
+  reply                 Reply?
+  assetUsages           AssetUsage[]
+
+  @@index([accountId])
+  @@index([contactId])
+  @@index([prospectSequenceId])
+  @@index([activityType])
+}
+
+model Reply {
+  id                    String   @id @default(uuid()) @db.Uuid
+  activityId            String   @db.Uuid
+  contactId             String   @db.Uuid
+  rawReply              String   @db.Text
+  classifiedAs          String?  @db.Text // "positive_interest", "neutral_curiosity", "soft_no", "hard_no", "referral_to_other", "timing_not_now", "objection_budget", "objection_need", "objection_internal_resource", "objection_already_have_designer", "do_not_contact", "special_request", "out_of_office"
+  sentiment             String?  @db.Text // "positive", "neutral", "negative"
+  urgency               String?  @db.Text // "immediate", "high", "medium", "low"
+  suggestedNextAction   String?  @db.Text
+  draftResponse         String?  @db.Text
+  humanReviewRequired   Boolean  @default(false)
+
+  createdAt             DateTime @default(now()) @db.Timestamp
+
+  // Relations
+  activity              Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  contact               Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@unique([activityId])
+  @@index([contactId])
+  @@index([classifiedAs])
+}
+
+// ============================================================================
+// ASSETS & ENGAGEMENT
+// ============================================================================
+
+model Asset {
+  id                String   @id @default(uuid()) @db.Uuid
+  assetName         String   @db.Text
+  assetType         String   @db.Text // "analyser", "calculator", "brief_builder", "campaign_planner", "checklist", "education"
+  description       String?  @db.Text
+  funnelStageBest   String?  @db.Text // "cold", "warm", "hot", "post_call"
+  icpFit            Json?    @db.JsonB
+  issueFit          Json?    @db.JsonB
+  deliveryModes     Json?    @db.JsonB // ["link", "summary", "screenshot", "pdf"]
+  existingUrl       String?  @db.Text
+  active            Boolean  @default(true)
+
+  // Relations
+  assetUsages       AssetUsage[]
+
+  @@index([assetType])
+}
+
+model AssetUsage {
+  id                String   @id @default(uuid()) @db.Uuid
+  assetId           String   @db.Uuid
+  accountId         String   @db.Uuid
+  contactId         String   @db.Uuid
+  activityId        String?  @db.Uuid
+  stage             String?  @db.Text
+  sharedAt          DateTime @default(now()) @db.Timestamp
+  engagedAt         DateTime? @db.Timestamp
+  engagementType    String?  @db.Text
+
+  // Relations
+  asset             Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  account           Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  contact           Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  activity          Activity? @relation(fields: [activityId], references: [id], onDelete: SetNull)
+
+  @@index([assetId])
+  @@index([accountId])
+  @@index([contactId])
+}
+
+// ============================================================================
+// OPPORTUNITIES & DEALS
+// ============================================================================
+
+model Opportunity {
+  id                String   @id @default(uuid()) @db.Uuid
+  accountId         String   @db.Uuid
+  contactId         String   @db.Uuid
+  stage             String   @db.Text // "booked", "held", "proposal_sent", "negotiation", "closed_won", "closed_lost"
+  valueEstimate     Decimal? @db.Decimal(12, 2)
+  bookedAt          DateTime? @db.Timestamp
+  heldAt            DateTime? @db.Timestamp
+  proposalSentAt    DateTime? @db.Timestamp
+  closedAt          DateTime? @db.Timestamp
+  closedStatus      String?  @db.Text // "won", "lost"
+  lossReason        String?  @db.Text
+  winReason         String?  @db.Text
+  notes             String?  @db.Text
+
+  createdAt         DateTime @default(now()) @db.Timestamp
+  updatedAt         DateTime @updatedAt @db.Timestamp
+
+  // Relations
+  account           Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  contact           Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@index([accountId])
+  @@index([contactId])
+  @@index([stage])
+}
+
+// ============================================================================
+// EXPERIMENTS & OPTIMIZATION
+// ============================================================================
+
+model Experiment {
+  id                String   @id @default(uuid()) @db.Uuid
+  name              String   @db.Text
+  hypothesis        String?  @db.Text
+  variableTested    String?  @db.Text // "subject_line", "first_line", "cta_type", "channel", "issue_cluster", "sequence_family", "asset_timing", "icp_segment", "industry_segment"
+  controlVariant    String?  @db.Text
+  testVariant       String?  @db.Text
+  segment           Json?    @db.JsonB
+  startDate         DateTime? @db.Date
+  endDate           DateTime? @db.Date
+  status            String   @default("draft") @db.Text // "draft", "active", "completed", "cancelled"
+  resultSummary     String?  @db.Text
+  decision          String?  @db.Text // "winner_control", "winner_test", "inconclusive", "needs_more_data"
+
+  createdAt         DateTime @default(now()) @db.Timestamp
+  updatedAt         DateTime @updatedAt @db.Timestamp
+
+  @@index([status])
+}
+
+// ============================================================================
+// EVENTS & AUDIT
+// ============================================================================
+
+model Event {
+  id                String   @id @default(uuid()) @db.Uuid
+  eventName         String   @db.Text // "prospect_imported", "homepage_analyzed", "message_sent", "reply_received", "call_booked", "deal_closed"
+  accountId         String?  @db.Uuid
+  contactId         String?  @db.Uuid
+  relatedId         String?  @db.Uuid
+  relatedType       String?  @db.Text
+  payload           Json?    @db.JsonB
+  occurredAt        DateTime @default(now()) @db.Timestamp
+
+  @@index([eventName])
+  @@index([accountId])
+  @@index([contactId])
+}
+
+// ============================================================================
+// PLAYBOOK & REFERENCE
+// ============================================================================
+
+model PlaybookEntry {
+  id                String   @id @default(uuid()) @db.Uuid
+  category          String   @db.Text // "daily_workflow", "weekly_workflow", "first_touch_rules", "follow_up_rules", "asset_rules", "call_rules", "experiment_rules", "objection_handling", "icp_playbook", "industry_playbook"
+  title             String   @db.Text
+  bodyMarkdown      String   @db.Text
+  version           Int      @default(1)
+  active            Boolean  @default(true)
+
+  createdAt         DateTime @default(now()) @db.Timestamp
+  updatedAt         DateTime @updatedAt @db.Timestamp
+
+  @@index([category])
+}
+
+// ============================================================================
+// USER SETTINGS & CONFIGURATION
+// ============================================================================
+
+model Settings {
+  id                          String   @id @default(uuid()) @db.Uuid
+  userId                      String   @unique @db.Uuid // FK to Supabase auth.users
+  anthropicApiKeyEncrypted    String?  @db.Text
+  openaiApiKeyEncrypted       String?  @db.Text
+  defaultSenderEmail          String?  @db.Text
+  defaultSenderName           String?  @db.Text
+  homepageAnalyserApiUrl      String?  @db.Text
+  homepageAnalyserApiKey      String?  @db.Text
+  notificationPreferences     Json?    @db.JsonB
+
+  createdAt                   DateTime @default(now()) @db.Timestamp
+  updatedAt                   DateTime @updatedAt @db.Timestamp
+
+  @@index([userId])
+}
+```
+
+### 2.3 Create Prisma Migration
+
+```bash
+npx prisma migrate dev --name init
+# Name the migration: "init"
+```
+
+This will:
+1. Push the schema to your Supabase PostgreSQL database
+2. Generate the Prisma Client
+
+### 2.4 Create Seed File
+
+Create `prisma/seed.ts`:
+
+```typescript
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
+async function main() {
+  console.log("Seeding database...");
+
+  // Create initial IssueCluster entries (reference data)
+  const issueCluster1 = await prisma.issueCluster.upsert({
+    where: { issueCode: "unclear_hero" },
+    update: {},
+    create: {
+      issueCode: "unclear_hero",
+      issueName: "Unclear Hero Message",
+      description: "Website homepage hero does not clearly communicate value proposition",
+      severityDefault: "high",
+      category: "messaging",
+    },
+  });
+
+  const issueCluster2 = await prisma.issueCluster.upsert({
+    where: { issueCode: "weak_cta" },
+    update: {},
+    create: {
+      issueCode: "weak_cta",
+      issueName: "Weak Call-to-Action",
+      description: "Primary CTA is not prominent or compelling",
+      severityDefault: "critical",
+      category: "conversion",
+    },
+  });
+
+  // Create initial MessageTemplate entries
+  await prisma.messageTemplate.upsert({
+    where: { id: "template-001" },
+    update: {},
+    create: {
+      id: "template-001",
+      channel: "email",
+      icp: "founder",
+      tone: "consultative",
+      stage: "first_touch",
+      variantName: "Standard First Touch",
+      subjectTemplate: "Quick insight about {{domain}}",
+      bodyTemplate:
+        "Hi {{firstName}},\n\nI took a look at {{domain}} and noticed something that might be impacting your conversions...",
+      ctaStyle: "permission",
+      active: true,
+    },
+  });
+
+  console.log("Seed completed successfully");
+}
+
+main()
+  .then(async () => {
+    await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
+```
+
+Add to `package.json`:
+```json
+"prisma": {
+  "seed": "ts-node --compiler-options {\"module\":\"commonjs\"} prisma/seed.ts"
+}
+```
+
+Run seed:
+```bash
+npx prisma db seed
+```
+
+---
+
+## Part 3: Supabase Authentication Setup
+
+### 3.1 Create Authentication Middleware
+
+Create `middleware.ts` in the root directory:
+
+```typescript
+import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
+export async function middleware(request: NextRequest) {
+  const res = NextResponse.next();
+  const supabase = createMiddlewareClient({ req: request, res });
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  // Protect all routes except /auth and /
+  if (
+    !session &&
+    !request.nextUrl.pathname.startsWith("/auth") &&
+    request.nextUrl.pathname !== "/"
+  ) {
+    return NextResponse.redirect(new URL("/auth/login", request.url));
+  }
+
+  return res;
+}
+
+export const config = {
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+  ],
+};
+```
+
+### 3.2 Create Supabase Client Library
+
+Create `lib/supabase.ts`:
+
+```typescript
+import { createBrowserClient } from "@supabase/auth-helpers-nextjs";
+
+export function createClient() {
+  return createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+}
+```
+
+### 3.3 Create Prisma Client Library
+
+Create `lib/prisma.ts`:
+
+```typescript
+import { PrismaClient } from "@prisma/client";
+
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
+
+export const prisma =
+  globalForPrisma.prisma ||
+  new PrismaClient({
+    log: ["query", "error", "warn"],
+  });
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+```
+
+### 3.4 Create Encryption Utilities
+
+Create `lib/encryption.ts`:
+
+```typescript
+import crypto from "crypto";
+
+const encryptionKey = process.env.ENCRYPTION_KEY!;
+
+export function encryptValue(value: string): string {
+  const iv = crypto.randomBytes(16);
+  const cipher = crypto.createCipheriv(
+    "aes-256-cbc",
+    Buffer.from(encryptionKey, "hex"),
+    iv
+  );
+  let encrypted = cipher.update(value, "utf8", "hex");
+  encrypted += cipher.final("hex");
+  return iv.toString("hex") + ":" + encrypted;
+}
+
+export function decryptValue(encrypted: string): string {
+  const [iv, encryptedData] = encrypted.split(":");
+  const decipher = crypto.createDecipheriv(
+    "aes-256-cbc",
+    Buffer.from(encryptionKey, "hex"),
+    Buffer.from(iv, "hex")
+  );
+  let decrypted = decipher.update(encryptedData, "hex", "utf8");
+  decrypted += decipher.final("utf8");
+  return decrypted;
+}
+```
+
+---
+
+## Part 4: Project Structure & Type Definitions
+
+### 4.1 Create Types File
+
+Create `types/index.ts`:
+
+```typescript
+// Core Entity Types
+export interface Account {
+  id: string;
+  companyName: string;
+  domain?: string | null;
+  websiteUrl?: string | null;
+  industry?: string | null;
+  subIndustry?: string | null;
+  employeeBand?: string | null;
+  revenueBand?: string | null;
+  geography?: string | null;
+  icpType?: string | null;
+  fitScore?: number | null;
+  priorityTier?: string | null;
+  source?: string | null;
+  sourceDetail?: string | null;
+  sourceCaptureDate?: Date | null;
+  ownerId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Contact {
+  id: string;
+  accountId: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  fullName?: string | null;
+  jobTitle?: string | null;
+  seniority?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  linkedinUrl?: string | null;
+  contactSource?: string | null;
+  sourceDate?: Date | null;
+  outreachStatus: string;
+  notes?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Settings {
+  id: string;
+  userId: string;
+  anthropicApiKeyEncrypted?: string | null;
+  openaiApiKeyEncrypted?: string | null;
+  defaultSenderEmail?: string | null;
+  defaultSenderName?: string | null;
+  homepageAnalyserApiUrl?: string | null;
+  homepageAnalyserApiKey?: string | null;
+  notificationPreferences?: Record<string, any> | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// API Response Types
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
+```
+
+### 4.2 Create Tailwind Configuration
+
+Update `tailwind.config.ts` to include dark mode:
+
+```typescript
+import type { Config } from "tailwindcss";
+import defaultTheme from "tailwindcss/defaultTheme";
+
+const config: Config = {
+  darkMode: ["class"],
+  content: [
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ["var(--font-sans)", ...defaultTheme.fontFamily.sans],
+      },
+    },
+  },
+  plugins: [require("tailwindcss-animate")],
+};
+
+export default config;
+```
+
+---
+
+## Part 5: Layout & Navigation Components
+
+### 5.1 Create App Root Layout
+
+Create `app/layout.tsx`:
+
+```typescript
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
+import { RootLayoutClient } from "@/components/layout/root-layout-client";
+import { Toaster } from "@/components/ui/toaster";
+
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "Design Bees Revenue Engine",
+  description: "Outbound revenue engine for Design Bees",
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <RootLayoutClient>{children}</RootLayoutClient>
+          <Toaster />
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+### 5.2 Create Root Layout Client Component
+
+Create `components/layout/root-layout-client.tsx`:
+
+```typescript
+"use client";
+
+import { ReactNode } from "react";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { Sidebar } from "@/components/layout/sidebar";
+import { TopBar } from "@/components/layout/topbar";
+
+const queryClient = new QueryClient();
+
+export function RootLayoutClient({ children }: { children: ReactNode }) {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <div className="flex h-screen bg-background">
+        <Sidebar />
+        <div className="flex flex-col flex-1">
+          <TopBar />
+          <main className="flex-1 overflow-auto p-6">
+            {children}
+          </main>
+        </div>
+      </div>
+    </QueryClientProvider>
+  );
+}
+```
+
+### 5.3 Create Sidebar Component
+
+Create `components/layout/sidebar.tsx`:
+
+```typescript
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import {
+  LayoutDashboard,
+  Building2,
+  Users,
+  Search,
+  Layers,
+  Lightbulb,
+  MessageSquare,
+  GitBranch,
+  ListChecks,
+  Inbox,
+  Phone,
+  Target,
+  Package,
+  FlaskConical,
+  BookOpen,
+  Settings,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+interface NavItem {
+  label: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  soon?: boolean;
+}
+
+const navItems: NavItem[] = [
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Accounts", href: "/accounts", icon: Building2 },
+  { label: "Contacts", href: "/contacts", icon: Users },
+  { label: "Analyses", href: "/analyses", icon: Search, soon: true },
+  { label: "Issue Clusters", href: "/issues", icon: Layers, soon: true },
+  { label: "Insight Library", href: "/insights", icon: Lightbulb, soon: true },
+  { label: "Message Generator", href: "/messages", icon: MessageSquare, soon: true },
+  { label: "Sequences", href: "/sequences", icon: GitBranch, soon: true },
+  { label: "Execution Queue", href: "/queue", icon: ListChecks, soon: true },
+  { label: "Reply Inbox", href: "/inbox", icon: Inbox, soon: true },
+  { label: "Call Prep", href: "/calls", icon: Phone, soon: true },
+  { label: "Opportunities", href: "/opportunities", icon: Target, soon: true },
+  { label: "Assets", href: "/assets", icon: Package, soon: true },
+  { label: "Experiments", href: "/experiments", icon: FlaskConical, soon: true },
+  { label: "Playbook", href: "/playbook", icon: BookOpen, soon: true },
+  { label: "Settings", href: "/settings", icon: Settings },
+];
+
+export function Sidebar() {
+  const pathname = usePathname();
+
+  return (
+    <div className="w-64 border-r border-border bg-card">
+      <div className="p-6">
+        <h1 className="text-xl font-bold">Design Bees</h1>
+      </div>
+      <ScrollArea className="h-[calc(100vh-80px)]">
+        <div className="space-y-2 px-4 pb-4">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+
+            return (
+              <Link key={item.href} href={item.href}>
+                <Button
+                  variant={isActive ? "default" : "ghost"}
+                  className="w-full justify-start"
+                  disabled={item.soon}
+                >
+                  <Icon className="mr-2 h-4 w-4" />
+                  <span>{item.label}</span>
+                  {item.soon && (
+                    <span className="ml-auto text-xs text-muted-foreground">Soon</span>
+                  )}
+                </Button>
+              </Link>
+            );
+          })}
+        </div>
+      </ScrollArea>
+    </div>
+  );
+}
+```
+
+### 5.4 Create TopBar Component
+
+Create `components/layout/topbar.tsx`:
+
+```typescript
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { LogOut, User } from "lucide-react";
+
+export function TopBar() {
+  const [user, setUser] = useState<any>(null);
+  const router = useRouter();
+  const supabase = createClient();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, [supabase]);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/auth/login");
+  };
+
+  return (
+    <div className="border-b border-border bg-card px-6 py-4 flex justify-between items-center">
+      <h2 className="text-lg font-semibold">Revenue Engine</h2>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm">
+            <User className="mr-2 h-4 w-4" />
+            {user?.email || "User"}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={handleLogout}>
+            <LogOut className="mr-2 h-4 w-4" />
+            Logout
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+}
+```
+
+### 5.5 Create Theme Provider
+
+Create `components/theme-provider.tsx`:
+
+```typescript
+"use client";
+
+import * as React from "react";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
+import type { ThemeProviderProps } from "next-themes/dist/types";
+
+export function ThemeProvider(props: ThemeProviderProps) {
+  return <NextThemesProvider {...props} />;
+}
+```
+
+---
+
+## Part 6: Authentication Pages
+
+### 6.1 Create Auth Layout
+
+Create `app/auth/layout.tsx`:
+
+```typescript
+export default function AuthLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted">
+      <div className="w-full max-w-md">{children}</div>
+    </div>
+  );
+}
+```
+
+### 6.2 Create Login Page
+
+Create `app/auth/login/page.tsx`:
+
+```typescript
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
+
+export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const supabase = createClient();
+  const { toast } = useToast();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      router.push("/dashboard");
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Login failed",
+        description: error.message,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Sign In</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Signing in..." : "Sign In"}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+---
+
+## Part 7: Core Pages
+
+### 7.1 Create Dashboard Page
+
+Create `app/dashboard/page.tsx`:
+
+```typescript
+"use client";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Phone,
+  MessageSquare,
+  Users,
+  Search,
+  CheckCircle2,
+  Zap,
+} from "lucide-react";
+
+export default function DashboardPage() {
+  const kpis = [
+    {
+      title: "Calls Booked This Week",
+      value: 0,
+      icon: Phone,
+      color: "text-blue-500",
+    },
+    {
+      title: "Positive Replies This Week",
+      value: 0,
+      icon: MessageSquare,
+      color: "text-green-500",
+    },
+    {
+      title: "Active Prospects",
+      value: 0,
+      icon: Users,
+      color: "text-purple-500",
+    },
+    {
+      title: "Accounts Analyzed",
+      value: 0,
+      icon: Search,
+      color: "text-orange-500",
+    },
+    {
+      title: "Tasks Due Today",
+      value: 0,
+      icon: CheckCircle2,
+      color: "text-red-500",
+    },
+    {
+      title: "Hot Prospects",
+      value: 0,
+      icon: Zap,
+      color: "text-yellow-500",
+    },
+  ];
+
+  return (
+    <div className="space-y-8">
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {kpis.map((kpi) => {
+          const Icon = kpi.icon;
+          return (
+            <Card key={kpi.title}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">{kpi.title}</CardTitle>
+                <Icon className={`h-4 w-4 ${kpi.color}`} />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{kpi.value}</div>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+
+      {/* Quick Actions */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Quick Actions</CardTitle>
+        </CardHeader>
+        <CardContent className="flex gap-4">
+          <Button>Import Prospects</Button>
+          <Button variant="outline">Run Analysis</Button>
+          <Button variant="outline">Generate Message</Button>
+        </CardContent>
+      </Card>
+
+      {/* Recent Activity */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Activity</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-muted-foreground text-center py-8">
+            No recent activity yet
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+```
+
+### 7.2 Create Accounts Page
+
+Create `app/accounts/page.tsx`:
+
+```typescript
+"use client";
+
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Plus } from "lucide-react";
+import Link from "next/link";
+
+export default function AccountsPage() {
+  const { data: accounts, isLoading } = useQuery({
+    queryKey: ["accounts"],
+    queryFn: async () => {
+      const res = await fetch("/api/accounts");
+      return res.json();
+    },
+  });
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold">Accounts</h1>
+        <Button>
+          <Plus className="mr-2 h-4 w-4" />
+          New Account
+        </Button>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>All Accounts</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {isLoading ? (
+            <div className="text-center py-8">Loading...</div>
+          ) : accounts?.data?.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              No accounts yet. Create one to get started.
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Company Name</TableHead>
+                  <TableHead>Domain</TableHead>
+                  <TableHead>Industry</TableHead>
+                  <TableHead>Fit Score</TableHead>
+                  <TableHead>Priority</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {accounts?.data?.map((account: any) => (
+                  <TableRow key={account.id}>
+                    <TableCell className="font-medium">
+                      {account.companyName}
+                    </TableCell>
+                    <TableCell>{account.domain || "—"}</TableCell>
+                    <TableCell>{account.industry || "—"}</TableCell>
+                    <TableCell>{account.fitScore || "—"}</TableCell>
+                    <TableCell>{account.priorityTier || "—"}</TableCell>
+                    <TableCell className="text-right">
+                      <Link href={`/accounts/${account.id}`}>
+                        <Button variant="ghost" size="sm">
+                          View
+                        </Button>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+```
+
+### 7.3 Create Contacts Page
+
+Create `app/contacts/page.tsx`:
+
+```typescript
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Plus } from "lucide-react";
+
+export default function ContactsPage() {
+  const { data: contacts, isLoading } = useQuery({
+    queryKey: ["contacts"],
+    queryFn: async () => {
+      const res = await fetch("/api/contacts");
+      return res.json();
+    },
+  });
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold">Contacts</h1>
+        <Button>
+          <Plus className="mr-2 h-4 w-4" />
+          New Contact
+        </Button>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>All Contacts</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {isLoading ? (
+            <div className="text-center py-8">Loading...</div>
+          ) : contacts?.data?.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              No contacts yet. Create one to get started.
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Company</TableHead>
+                  <TableHead>Job Title</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {contacts?.data?.map((contact: any) => (
+                  <TableRow key={contact.id}>
+                    <TableCell className="font-medium">
+                      {contact.fullName || "—"}
+                    </TableCell>
+                    <TableCell>{contact.account?.companyName || "—"}</TableCell>
+                    <TableCell>{contact.jobTitle || "—"}</TableCell>
+                    <TableCell>{contact.email || "—"}</TableCell>
+                    <TableCell>{contact.outreachStatus}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+```
+
+### 7.4 Create Settings Page
+
+Create `app/settings/page.tsx`:
+
+```typescript
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Eye, EyeOff } from "lucide-react";
+
+export default function SettingsPage() {
+  const [settings, setSettings] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [showApiKeys, setShowApiKeys] = useState({
+    anthropic: false,
+    openai: false,
+    analyser: false,
+  });
+  const router = useRouter();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const res = await fetch("/api/settings");
+      const data = await res.json();
+      setSettings(data.data || {});
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to load settings",
+      });
+    }
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(settings),
+      });
+
+      if (!res.ok) throw new Error("Failed to save");
+
+      toast({
+        title: "Success",
+        description: "Settings saved successfully",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    setSettings((prev: any) => ({ ...prev, [field]: value }));
+  };
+
+  if (!settings) return <div>Loading...</div>;
+
+  return (
+    <div className="space-y-6">
+      <h1 className="text-3xl font-bold">Settings</h1>
+
+      <form onSubmit={handleSave}>
+        <Tabs defaultValue="api-keys" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="api-keys">API Keys</TabsTrigger>
+            <TabsTrigger value="sender">Sender Info</TabsTrigger>
+            <TabsTrigger value="analyser">Homepage Analyser</TabsTrigger>
+          </TabsList>
+
+          {/* API Keys Tab */}
+          <TabsContent value="api-keys">
+            <Card>
+              <CardHeader>
+                <CardTitle>API Keys</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="anthropic-key">Anthropic API Key</Label>
+                  <div className="relative">
+                    <Input
+                      id="anthropic-key"
+                      type={showApiKeys.anthropic ? "text" : "password"}
+                      value={settings.anthropicApiKeyEncrypted || ""}
+                      onChange={(e) =>
+                        handleInputChange("anthropicApiKeyEncrypted", e.target.value)
+                      }
+                      placeholder="sk-ant-..."
+                    />
+                    <button
+                      type="button"
+                      className="absolute right-2 top-2"
+                      onClick={() =>
+                        setShowApiKeys((prev) => ({
+                          ...prev,
+                          anthropic: !prev.anthropic,
+                        }))
+                      }
+                    >
+                      {showApiKeys.anthropic ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="openai-key">OpenAI API Key</Label>
+                  <div className="relative">
+                    <Input
+                      id="openai-key"
+                      type={showApiKeys.openai ? "text" : "password"}
+                      value={settings.openaiApiKeyEncrypted || ""}
+                      onChange={(e) =>
+                        handleInputChange("openaiApiKeyEncrypted", e.target.value)
+                      }
+                      placeholder="sk-..."
+                    />
+                    <button
+                      type="button"
+                      className="absolute right-2 top-2"
+                      onClick={() =>
+                        setShowApiKeys((prev) => ({
+                          ...prev,
+                          openai: !prev.openai,
+                        }))
+                      }
+                    >
+                      {showApiKeys.openai ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Sender Info Tab */}
+          <TabsContent value="sender">
+            <Card>
+              <CardHeader>
+                <CardTitle>Default Sender Information</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="sender-name">Sender Name</Label>
+                  <Input
+                    id="sender-name"
+                    value={settings.defaultSenderName || ""}
+                    onChange={(e) =>
+                      handleInputChange("defaultSenderName", e.target.value)
+                    }
+                    placeholder="Your Name"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="sender-email">Sender Email</Label>
+                  <Input
+                    id="sender-email"
+                    type="email"
+                    value={settings.defaultSenderEmail || ""}
+                    onChange={(e) =>
+                      handleInputChange("defaultSenderEmail", e.target.value)
+                    }
+                    placeholder="you@example.com"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Analyser Tab */}
+          <TabsContent value="analyser">
+            <Card>
+              <CardHeader>
+                <CardTitle>Homepage Analyser Configuration</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="analyser-url">API URL</Label>
+                  <Input
+                    id="analyser-url"
+                    value={settings.homepageAnalyserApiUrl || ""}
+                    onChange={(e) =>
+                      handleInputChange("homepageAnalyserApiUrl", e.target.value)
+                    }
+                    placeholder="https://api.example.com"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="analyser-key">API Key</Label>
+                  <div className="relative">
+                    <Input
+                      id="analyser-key"
+                      type={showApiKeys.analyser ? "text" : "password"}
+                      value={settings.homepageAnalyserApiKey || ""}
+                      onChange={(e) =>
+                        handleInputChange("homepageAnalyserApiKey", e.target.value)
+                      }
+                      placeholder="your-api-key"
+                    />
+                    <button
+                      type="button"
+                      className="absolute right-2 top-2"
+                      onClick={() =>
+                        setShowApiKeys((prev) => ({
+                          ...prev,
+                          analyser: !prev.analyser,
+                        }))
+                      }
+                    >
+                      {showApiKeys.analyser ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+
+        <div className="flex justify-end gap-4 mt-6">
+          <Button type="button" variant="outline" onClick={() => fetchSettings()}>
+            Cancel
+          </Button>
+          <Button type="submit" disabled={loading}>
+            {loading ? "Saving..." : "Save Settings"}
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
+}
+```
+
+### 7.5 Create Placeholder Pages for Future Features
+
+For each of the remaining navigation items, create a placeholder page. Example for `app/analyses/page.tsx`:
+
+```typescript
+"use client";
+
+export default function AnalysesPage() {
+  return (
+    <div className="flex items-center justify-center h-[60vh]">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold mb-2">Analyses</h1>
+        <p className="text-muted-foreground">Coming in Phase 2</p>
+      </div>
+    </div>
+  );
+}
+```
+
+Repeat this pattern for:
+- `app/issues/page.tsx`
+- `app/insights/page.tsx`
+- `app/messages/page.tsx`
+- `app/sequences/page.tsx`
+- `app/queue/page.tsx`
+- `app/inbox/page.tsx`
+- `app/calls/page.tsx`
+- `app/opportunities/page.tsx`
+- `app/assets/page.tsx`
+- `app/experiments/page.tsx`
+- `app/playbook/page.tsx`
+
+---
+
+## Part 8: API Routes
+
+### 8.1 Create Accounts API Route
+
+Create `app/api/accounts/route.ts`:
+
+```typescript
+import { prisma } from "@/lib/prisma";
+import { createServerClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
+
+export async function GET(request: Request) {
+  try {
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      { cookies }
+    );
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const accounts = await prisma.account.findMany({
+      where: { ownerId: user.id },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return NextResponse.json({ success: true, data: accounts });
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      { cookies }
+    );
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const account = await prisma.account.create({
+      data: {
+        ...body,
+        ownerId: user.id,
+      },
+    });
+
+    return NextResponse.json({ success: true, data: account }, { status: 201 });
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    );
+  }
+}
+```
+
+### 8.2 Create Contacts API Route
+
+Create `app/api/contacts/route.ts`:
+
+```typescript
+import { prisma } from "@/lib/prisma";
+import { createServerClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
+
+export async function GET(request: Request) {
+  try {
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      { cookies }
+    );
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const contacts = await prisma.contact.findMany({
+      include: { account: true },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return NextResponse.json({ success: true, data: contacts });
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    );
+  }
+}
+```
+
+### 8.3 Create Settings API Route
+
+Create `app/api/settings/route.ts`:
+
+```typescript
+import { prisma } from "@/lib/prisma";
+import { createServerClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
+import { encryptValue, decryptValue } from "@/lib/encryption";
+
+export async function GET(request: Request) {
+  try {
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      { cookies }
+    );
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    let settings = await prisma.settings.findUnique({
+      where: { userId: user.id },
+    });
+
+    // Create default settings if they don't exist
+    if (!settings) {
+      settings = await prisma.settings.create({
+        data: { userId: user.id },
+      });
+    }
+
+    return NextResponse.json({ success: true, data: settings });
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      { cookies }
+    );
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await request.json();
+
+    // Encrypt sensitive fields
+    const encryptedData = {
+      ...body,
+      anthropicApiKeyEncrypted: body.anthropicApiKeyEncrypted
+        ? encryptValue(body.anthropicApiKeyEncrypted)
+        : undefined,
+      openaiApiKeyEncrypted: body.openaiApiKeyEncrypted
+        ? encryptValue(body.openaiApiKeyEncrypted)
+        : undefined,
+      homepageAnalyserApiKey: body.homepageAnalyserApiKey
+        ? encryptValue(body.homepageAnalyserApiKey)
+        : undefined,
+    };
+
+    const settings = await prisma.settings.upsert({
+      where: { userId: user.id },
+      update: encryptedData,
+      create: { userId: user.id, ...encryptedData },
+    });
+
+    return NextResponse.json({ success: true, data: settings });
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    );
+  }
+}
+```
+
+---
+
+## Part 9: Final Configuration
+
+### 9.1 Update Global CSS
+
+Replace `app/globals.css`:
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.6%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.6%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.6%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 9.2%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --primary: 0 0% 9.2%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9.2%;
+    --ring: 0 0% 3.7%;
+  }
+
+  .dark {
+    --background: 0 0% 3.6%;
+    --foreground: 0 0% 98.2%;
+    --card: 0 0% 10.2%;
+    --card-foreground: 0 0% 98.2%;
+    --popover: 0 0% 10.2%;
+    --popover-foreground: 0 0% 98.2%;
+    --muted: 0 0% 14.3%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 98.2%;
+    --accent-foreground: 0 0% 9.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 9.2%;
+    --border: 0 0% 14.3%;
+    --input: 0 0% 14.3%;
+    --primary: 0 0% 98.2%;
+    --primary-foreground: 0 0% 9.2%;
+    --secondary: 0 0% 14.3%;
+    --secondary-foreground: 0 0% 98.2%;
+    --ring: 0 0% 83.3%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+```
+
+### 9.2 Update Next Config
+
+Update `next.config.js`:
+
+```javascript
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+};
+
+module.exports = nextConfig;
+```
+
+---
+
+## Part 10: Testing & Verification
+
+### 10.1 Start Development Server
+
+```bash
+npm run dev
+```
+
+### 10.2 Verify Database Connection
+
+Check that Prisma can connect and generate client:
+
+```bash
+npx prisma db push
+npx prisma generate
+```
+
+### 10.3 Create Test User
+
+In Supabase console, manually create a test user:
+- Email: `aj@designbees.com`
+- Password: (set a secure password)
+
+### 10.4 Test All Navigation Routes
+
+Visit each page in the sidebar to confirm they load without errors.
+
+---
+
+## Deliverables Checklist
+
+- [x] Next.js 14+ project with TypeScript, Tailwind, App Router
+- [x] Supabase PostgreSQL database connected via Prisma
+- [x] Complete database schema with all 15+ tables created
+- [x] Supabase Auth setup with email/password login
+- [x] Protected middleware and auth pages
+- [x] Settings page with encrypted API key storage
+- [x] Sidebar navigation with all 16 items (4 functional, 12 placeholders)
+- [x] Dashboard with KPI cards and quick actions
+- [x] Accounts page with table listing
+- [x] Contacts page with table listing
+- [x] Settings page with API keys, sender info, analyser config
+- [x] API routes for accounts, contacts, settings
+- [x] React Query integration for data fetching
+- [x] shadcn/ui components throughout
+- [x] Dark mode support via next-themes
+- [x] Responsive design with Tailwind
+- [x] Seed file for initial data
+- [x] TypeScript types for all entities
+- [x] Environment variables configured
+- [x] Encryption utilities for sensitive settings
+
+---
+
+## Next Steps (Phase 2+)
+
+1. **Analyses Module** — Implement homepage analyzer integration and display results
+2. **Insight Library** — Build insight cluster management and insight block creation
+3. **Message Generator** — Connect to LLM APIs for template-based message generation
+4. **Sequences & Execution** — Implement sequence builder and execution queue
+5. **Reply Inbox & Classification** — Build reply ingestion and AI classification
+6. **Call Prep & Opportunities** — Add call preparation flows and deal tracking
+
+---
+
+**Instructions for Replit Agent:**
+
+Build this project step-by-step in the exact order presented. Test after each major section. If any errors occur, fix them before proceeding to the next section. Once complete, run `npm run dev` and verify all pages load correctly. The app should be ready for Phase 2 feature development with a solid foundation of authentication, database schema, and basic UI scaffolding.

@@ -7,13 +7,10 @@
  */
 
 export interface HotProspect {
-  id: number;
+  id: string;
   companyName: string;
   contactName?: string | null;
-  icpType: string;
+  icpType?: string | null;
   outreachStatus: string;
-  lastTouchAt?: Date | null;
-  nextActionDue?: Date | null;
-  nextAction?: string | null;
   urgencyReason: string;
 }

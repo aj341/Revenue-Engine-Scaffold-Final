@@ -5,11 +5,11 @@
  * Design Bees Outbound Revenue Engine API
  * OpenAPI spec version: 0.1.0
  */
+import type { Activity } from "./activity";
 import type { HotProspect } from "./hotProspect";
-import type { Touch } from "./touch";
 
 export interface ActivityToday {
   tasksDue: number;
   hotProspects: HotProspect[];
-  upcomingCalls: Touch[];
+  recentActivities: Activity[];
 }

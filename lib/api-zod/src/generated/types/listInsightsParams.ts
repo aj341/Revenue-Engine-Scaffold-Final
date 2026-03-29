@@ -9,5 +9,4 @@
 export type ListInsightsParams = {
   issueCode?: string;
   icp?: string;
-  channel?: string;
 };

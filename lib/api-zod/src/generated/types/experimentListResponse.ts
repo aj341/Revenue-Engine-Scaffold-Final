@@ -8,6 +8,6 @@
 import type { Experiment } from "./experiment";
 
 export interface ExperimentListResponse {
-  experiments: Experiment[];
+  data: Experiment[];
   total: number;
 }

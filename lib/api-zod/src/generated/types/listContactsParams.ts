@@ -7,6 +7,9 @@
  */
 
 export type ListContactsParams = {
-  prospectId?: number;
+  accountId?: string;
+  outreachStatus?: string;
   search?: string;
+  page?: number;
+  pageSize?: number;
 };

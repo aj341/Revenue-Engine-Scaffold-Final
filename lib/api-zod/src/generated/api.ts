@@ -15,465 +15,289 @@ export const HealthCheckResponse = zod.object({
 });
 
 /**
- * @summary List all prospect accounts
+ * @summary List all accounts
  */
-export const listProspectsQueryPageDefault = 1;
-export const listProspectsQueryPageSizeDefault = 20;
+export const listAccountsQueryPageDefault = 1;
+export const listAccountsQueryPageSizeDefault = 20;
 
-export const ListProspectsQueryParams = zod.object({
-  page: zod.coerce.number().default(listProspectsQueryPageDefault),
-  pageSize: zod.coerce.number().default(listProspectsQueryPageSizeDefault),
+export const ListAccountsQueryParams = zod.object({
+  page: zod.coerce.number().default(listAccountsQueryPageDefault),
+  pageSize: zod.coerce.number().default(listAccountsQueryPageSizeDefault),
   priorityTier: zod.coerce.string().optional(),
   icpType: zod.coerce.string().optional(),
-  outreachStatus: zod.coerce.string().optional(),
   search: zod.coerce.string().optional(),
 });
 
-export const listProspectsResponseProspectsItemFitScoreMin = 0;
-export const listProspectsResponseProspectsItemFitScoreMax = 100;
-
-export const ListProspectsResponse = zod.object({
-  prospects: zod.array(
+export const ListAccountsResponse = zod.object({
+  data: zod.array(
     zod.object({
-      id: zod.number(),
+      id: zod.string(),
       companyName: zod.string(),
-      domain: zod.string(),
-      websiteUrl: zod.string(),
-      industry: zod.string(),
-      subIndustry: zod.string().optional(),
-      employeeCountBand: zod
-        .enum(["1-10", "11-50", "51-100", "101-250", "250+"])
-        .optional(),
+      domain: zod.string().nullish(),
+      websiteUrl: zod.string().nullish(),
+      industry: zod.string().nullish(),
+      subIndustry: zod.string().nullish(),
+      employeeBand: zod.string().nullish(),
       revenueBand: zod.string().nullish(),
       geography: zod.string().nullish(),
-      source: zod.string(),
+      icpType: zod.string().nullish(),
+      fitScore: zod.number().nullish(),
+      priorityTier: zod.string().nullish(),
+      source: zod.string().nullish(),
       sourceDetail: zod.string().nullish(),
       sourceCaptureDate: zod.coerce.date().nullish(),
-      accountOwner: zod.string().nullish(),
-      priorityTier: zod.enum(["A", "B", "C"]),
-      icpType: zod.enum(["founder", "marketing_manager", "agency"]),
-      fitScore: zod
-        .number()
-        .min(listProspectsResponseProspectsItemFitScoreMin)
-        .max(listProspectsResponseProspectsItemFitScoreMax),
-      outreachStatus: zod.enum([
-        "not_started",
-        "in_sequence",
-        "replied",
-        "booked",
-        "showed",
-        "closed_won",
-        "closed_lost",
-        "nurture",
-      ]),
-      likelyPrimaryProblem: zod.string().nullish(),
-      likelySecondaryProblem: zod.string().nullish(),
-      likelyAssetToOffer: zod.string().nullish(),
-      personalizationLevel: zod.enum(["high", "medium", "low"]).nullish(),
-      sequenceFamily: zod.string().nullish(),
-      notes: zod.string().nullish(),
-      latestAnalysisId: zod.number().nullish(),
+      ownerId: zod.string(),
       createdAt: zod.coerce.date(),
       updatedAt: zod.coerce.date(),
+      contactCount: zod.number().nullish(),
     }),
   ),
-  total: zod.number(),
-  page: zod.number(),
-  pageSize: zod.number(),
+  meta: zod.object({
+    total: zod.number(),
+    page: zod.number(),
+    pageSize: zod.number(),
+  }),
 });
 
 /**
- * @summary Create a new prospect account
+ * @summary Create a new account
  */
-export const createProspectBodyFitScoreMin = 0;
-export const createProspectBodyFitScoreMax = 100;
-
-export const CreateProspectBody = zod.object({
+export const CreateAccountBody = zod.object({
   companyName: zod.string(),
-  domain: zod.string(),
-  websiteUrl: zod.string(),
-  industry: zod.string(),
+  domain: zod.string().nullish(),
+  websiteUrl: zod.string().nullish(),
+  industry: zod.string().nullish(),
   subIndustry: zod.string().nullish(),
-  employeeCountBand: zod.enum(["1-10", "11-50", "51-100", "101-250", "250+"]),
+  employeeBand: zod.string().nullish(),
   revenueBand: zod.string().nullish(),
   geography: zod.string().nullish(),
-  source: zod.string(),
+  icpType: zod.string().nullish(),
+  fitScore: zod.number().nullish(),
+  priorityTier: zod.string().nullish(),
+  source: zod.string().nullish(),
   sourceDetail: zod.string().nullish(),
-  accountOwner: zod.string().nullish(),
-  priorityTier: zod.enum(["A", "B", "C"]),
-  icpType: zod.enum(["founder", "marketing_manager", "agency"]),
-  fitScore: zod
-    .number()
-    .min(createProspectBodyFitScoreMin)
-    .max(createProspectBodyFitScoreMax),
-  notes: zod.string().nullish(),
 });
 
 /**
- * @summary Import prospects from CSV data
+ * @summary Bulk import accounts from CSV row data
  */
-export const ImportProspectsBody = zod.object({
+export const ImportAccountsBody = zod.object({
   rows: zod.array(zod.record(zod.string(), zod.unknown())),
 });
 
-export const ImportProspectsResponse = zod.object({
+export const ImportAccountsResponse = zod.object({
   imported: zod.number(),
   skipped: zod.number(),
   errors: zod.array(zod.string()),
 });
 
 /**
- * @summary Get a prospect by ID
+ * @summary Get account by ID
  */
-export const GetProspectParams = zod.object({
-  id: zod.coerce.number(),
+export const GetAccountParams = zod.object({
+  id: zod.coerce.string(),
 });
 
-export const getProspectResponseOneFitScoreMin = 0;
-export const getProspectResponseOneFitScoreMax = 100;
+export const GetAccountResponse = zod.object({
+  data: zod
+    .object({
+      id: zod.string(),
+      companyName: zod.string(),
+      domain: zod.string().nullish(),
+      websiteUrl: zod.string().nullish(),
+      industry: zod.string().nullish(),
+      subIndustry: zod.string().nullish(),
+      employeeBand: zod.string().nullish(),
+      revenueBand: zod.string().nullish(),
+      geography: zod.string().nullish(),
+      icpType: zod.string().nullish(),
+      fitScore: zod.number().nullish(),
+      priorityTier: zod.string().nullish(),
+      source: zod.string().nullish(),
+      sourceDetail: zod.string().nullish(),
+      sourceCaptureDate: zod.coerce.date().nullish(),
+      ownerId: zod.string(),
+      createdAt: zod.coerce.date(),
+      updatedAt: zod.coerce.date(),
+      contactCount: zod.number().nullish(),
+    })
+    .and(
+      zod.object({
+        contacts: zod
+          .array(
+            zod.object({
+              id: zod.string(),
+              accountId: zod.string(),
+              firstName: zod.string().nullish(),
+              lastName: zod.string().nullish(),
+              fullName: zod.string().nullish(),
+              jobTitle: zod.string().nullish(),
+              seniority: zod.string().nullish(),
+              email: zod.string().nullish(),
+              phone: zod.string().nullish(),
+              linkedinUrl: zod.string().nullish(),
+              contactSource: zod.string().nullish(),
+              outreachStatus: zod.string(),
+              notes: zod.string().nullish(),
+              createdAt: zod.coerce.date(),
+              updatedAt: zod.coerce.date(),
+              accountName: zod.string().nullish(),
+            }),
+          )
+          .optional(),
+        analyses: zod
+          .array(
+            zod.object({
+              id: zod.string(),
+              accountId: zod.string(),
+              domain: zod.string(),
+              pageUrl: zod.string(),
+              pageType: zod.string(),
+              analyzedAt: zod.coerce.date(),
+              heroClarity: zod.number().nullish(),
+              ctaClarity: zod.number().nullish(),
+              ctaProminence: zod.number().nullish(),
+              visualHierarchy: zod.number().nullish(),
+              messageOrder: zod.number().nullish(),
+              outcomeClarity: zod.number().nullish(),
+              trustSignal: zod.number().nullish(),
+              friction: zod.number().nullish(),
+              mobileReadability: zod.number().nullish(),
+              primaryIssueCode: zod.string().nullish(),
+              secondaryIssueCode: zod.string().nullish(),
+              tertiaryIssueCode: zod.string().nullish(),
+              issueSummaryShort: zod.string().nullish(),
+              issueSummaryDetailed: zod.string().nullish(),
+              recommendedPriorityFix: zod.string().nullish(),
+              confidenceScore: zod.number().nullish(),
+              screenshotUrl: zod.string().nullish(),
+              createdAt: zod.coerce.date(),
+            }),
+          )
+          .optional(),
+        recentActivities: zod
+          .array(
+            zod.object({
+              id: zod.string(),
+              accountId: zod.string(),
+              contactId: zod.string(),
+              channel: zod.string(),
+              activityType: zod.string(),
+              subject: zod.string().nullish(),
+              body: zod.string().nullish(),
+              sentAt: zod.coerce.date(),
+              repliedAt: zod.coerce.date().nullish(),
+              createdAt: zod.coerce.date(),
+            }),
+          )
+          .optional(),
+      }),
+    ),
+});
 
-export const GetProspectResponse = zod
-  .object({
-    id: zod.number(),
+/**
+ * @summary Update an account
+ */
+export const UpdateAccountParams = zod.object({
+  id: zod.coerce.string(),
+});
+
+export const UpdateAccountBody = zod.object({
+  companyName: zod.string().optional(),
+  domain: zod.string().nullish(),
+  websiteUrl: zod.string().nullish(),
+  industry: zod.string().nullish(),
+  subIndustry: zod.string().nullish(),
+  employeeBand: zod.string().nullish(),
+  revenueBand: zod.string().nullish(),
+  geography: zod.string().nullish(),
+  icpType: zod.string().nullish(),
+  fitScore: zod.number().nullish(),
+  priorityTier: zod.string().nullish(),
+  source: zod.string().nullish(),
+  sourceDetail: zod.string().nullish(),
+});
+
+export const UpdateAccountResponse = zod.object({
+  data: zod.object({
+    id: zod.string(),
     companyName: zod.string(),
-    domain: zod.string(),
-    websiteUrl: zod.string(),
-    industry: zod.string(),
-    subIndustry: zod.string().optional(),
-    employeeCountBand: zod
-      .enum(["1-10", "11-50", "51-100", "101-250", "250+"])
-      .optional(),
+    domain: zod.string().nullish(),
+    websiteUrl: zod.string().nullish(),
+    industry: zod.string().nullish(),
+    subIndustry: zod.string().nullish(),
+    employeeBand: zod.string().nullish(),
     revenueBand: zod.string().nullish(),
     geography: zod.string().nullish(),
-    source: zod.string(),
+    icpType: zod.string().nullish(),
+    fitScore: zod.number().nullish(),
+    priorityTier: zod.string().nullish(),
+    source: zod.string().nullish(),
     sourceDetail: zod.string().nullish(),
     sourceCaptureDate: zod.coerce.date().nullish(),
-    accountOwner: zod.string().nullish(),
-    priorityTier: zod.enum(["A", "B", "C"]),
-    icpType: zod.enum(["founder", "marketing_manager", "agency"]),
-    fitScore: zod
-      .number()
-      .min(getProspectResponseOneFitScoreMin)
-      .max(getProspectResponseOneFitScoreMax),
-    outreachStatus: zod.enum([
-      "not_started",
-      "in_sequence",
-      "replied",
-      "booked",
-      "showed",
-      "closed_won",
-      "closed_lost",
-      "nurture",
-    ]),
-    likelyPrimaryProblem: zod.string().nullish(),
-    likelySecondaryProblem: zod.string().nullish(),
-    likelyAssetToOffer: zod.string().nullish(),
-    personalizationLevel: zod.enum(["high", "medium", "low"]).nullish(),
-    sequenceFamily: zod.string().nullish(),
-    notes: zod.string().nullish(),
-    latestAnalysisId: zod.number().nullish(),
+    ownerId: zod.string(),
     createdAt: zod.coerce.date(),
     updatedAt: zod.coerce.date(),
-  })
-  .and(
-    zod.object({
-      contacts: zod
-        .array(
-          zod.object({
-            id: zod.number(),
-            prospectId: zod.number(),
-            firstName: zod.string(),
-            lastName: zod.string(),
-            fullName: zod.string(),
-            jobTitle: zod.string().nullish(),
-            seniority: zod.string().nullish(),
-            email: zod.string().nullish(),
-            phone: zod.string().nullish(),
-            linkedinUrl: zod.string().nullish(),
-            contactSource: zod.string().nullish(),
-            outreachStatus: zod.enum([
-              "not_started",
-              "in_sequence",
-              "replied",
-              "booked",
-              "opted_out",
-            ]),
-            notes: zod.string().nullish(),
-            createdAt: zod.coerce.date(),
-          }),
-        )
-        .optional(),
-      analyses: zod
-        .array(
-          zod.object({
-            id: zod.number(),
-            prospectId: zod.number().nullish(),
-            domain: zod.string(),
-            pageUrl: zod.string(),
-            pageType: zod.enum([
-              "homepage",
-              "landing_page",
-              "pricing",
-              "about",
-              "other",
-            ]),
-            analyzedAt: zod.coerce.date().nullish(),
-            status: zod.enum(["pending", "complete", "failed"]),
-            heroClarityScore: zod.number().nullish(),
-            ctaClarityScore: zod.number().nullish(),
-            ctaProminenceScore: zod.number().nullish(),
-            visualHierarchyScore: zod.number().nullish(),
-            messageOrderScore: zod.number().nullish(),
-            outcomeClarityScore: zod.number().nullish(),
-            trustSignalScore: zod.number().nullish(),
-            frictionScore: zod.number().nullish(),
-            mobileReadabilityScore: zod.number().nullish(),
-            overallScore: zod.number().nullish(),
-            primaryIssueCode: zod.string().nullish(),
-            secondaryIssueCode: zod.string().nullish(),
-            tertiaryIssueCode: zod.string().nullish(),
-            issueSummaryShort: zod.string().nullish(),
-            issueSummaryDetailed: zod.string().nullish(),
-            strengthsDetected: zod.string().nullish(),
-            recommendedPriorityFix: zod.string().nullish(),
-            confidenceScore: zod.number().nullish(),
-            rawNotes: zod.string().nullish(),
-            screenshotUrl: zod.string().nullish(),
-            createdAt: zod.coerce.date(),
-          }),
-        )
-        .optional(),
-      sequences: zod
-        .array(
-          zod.object({
-            id: zod.number(),
-            prospectId: zod.number(),
-            contactId: zod.number().nullish(),
-            name: zod.string(),
-            personalizationLevel: zod.enum(["high", "medium", "low"]),
-            status: zod.enum([
-              "draft",
-              "active",
-              "paused",
-              "completed",
-              "archived",
-            ]),
-            currentStep: zod.number(),
-            totalSteps: zod.number(),
-            startedAt: zod.coerce.date().nullish(),
-            completedAt: zod.coerce.date().nullish(),
-            steps: zod.array(
-              zod.object({
-                id: zod.number(),
-                sequenceId: zod.number(),
-                stepNumber: zod.number(),
-                channel: zod.enum([
-                  "email",
-                  "linkedin",
-                  "phone",
-                  "video",
-                  "other",
-                ]),
-                dayOffset: zod.number(),
-                subject: zod.string().nullish(),
-                body: zod.string(),
-                ctaText: zod.string().nullish(),
-                insightId: zod.number().nullish(),
-                assetOffered: zod.string().nullish(),
-                status: zod.enum(["pending", "sent", "replied", "skipped"]),
-                sentAt: zod.coerce.date().nullish(),
-              }),
-            ),
-            createdAt: zod.coerce.date(),
-          }),
-        )
-        .optional(),
-      recentTouches: zod
-        .array(
-          zod.object({
-            id: zod.number(),
-            prospectId: zod.number(),
-            contactId: zod.number().nullish(),
-            sequenceId: zod.number().nullish(),
-            channel: zod.enum(["email", "linkedin", "phone", "video", "other"]),
-            touchType: zod.enum([
-              "outbound",
-              "reply",
-              "call",
-              "meeting",
-              "note",
-            ]),
-            direction: zod.enum(["outbound", "inbound"]),
-            subject: zod.string().nullish(),
-            body: zod.string().nullish(),
-            outcome: zod
-              .enum([
-                "sent",
-                "replied",
-                "booked",
-                "no_reply",
-                "objection",
-                "opted_out",
-                "voicemail",
-                "connected",
-              ])
-              .nullish(),
-            objectionText: zod.string().nullish(),
-            nextAction: zod.string().nullish(),
-            nextActionDue: zod.coerce.date().nullish(),
-            performedAt: zod.coerce.date(),
-            createdAt: zod.coerce.date(),
-          }),
-        )
-        .optional(),
-    }),
-  );
-
-/**
- * @summary Update a prospect
- */
-export const UpdateProspectParams = zod.object({
-  id: zod.coerce.number(),
-});
-
-export const updateProspectBodyFitScoreMin = 0;
-export const updateProspectBodyFitScoreMax = 100;
-
-export const UpdateProspectBody = zod.object({
-  companyName: zod.string().optional(),
-  domain: zod.string().optional(),
-  websiteUrl: zod.string().optional(),
-  industry: zod.string().optional(),
-  subIndustry: zod.string().nullish(),
-  employeeCountBand: zod
-    .enum(["1-10", "11-50", "51-100", "101-250", "250+"])
-    .optional(),
-  revenueBand: zod.string().nullish(),
-  geography: zod.string().nullish(),
-  accountOwner: zod.string().nullish(),
-  priorityTier: zod.enum(["A", "B", "C"]).optional(),
-  icpType: zod.enum(["founder", "marketing_manager", "agency"]).optional(),
-  fitScore: zod
-    .number()
-    .min(updateProspectBodyFitScoreMin)
-    .max(updateProspectBodyFitScoreMax)
-    .optional(),
-  outreachStatus: zod
-    .enum([
-      "not_started",
-      "in_sequence",
-      "replied",
-      "booked",
-      "showed",
-      "closed_won",
-      "closed_lost",
-      "nurture",
-    ])
-    .optional(),
-  likelyPrimaryProblem: zod.string().nullish(),
-  likelySecondaryProblem: zod.string().nullish(),
-  likelyAssetToOffer: zod.string().nullish(),
-  personalizationLevel: zod.enum(["high", "medium", "low"]).nullish(),
-  sequenceFamily: zod.string().nullish(),
-  notes: zod.string().nullish(),
-});
-
-export const updateProspectResponseFitScoreMin = 0;
-export const updateProspectResponseFitScoreMax = 100;
-
-export const UpdateProspectResponse = zod.object({
-  id: zod.number(),
-  companyName: zod.string(),
-  domain: zod.string(),
-  websiteUrl: zod.string(),
-  industry: zod.string(),
-  subIndustry: zod.string().optional(),
-  employeeCountBand: zod
-    .enum(["1-10", "11-50", "51-100", "101-250", "250+"])
-    .optional(),
-  revenueBand: zod.string().nullish(),
-  geography: zod.string().nullish(),
-  source: zod.string(),
-  sourceDetail: zod.string().nullish(),
-  sourceCaptureDate: zod.coerce.date().nullish(),
-  accountOwner: zod.string().nullish(),
-  priorityTier: zod.enum(["A", "B", "C"]),
-  icpType: zod.enum(["founder", "marketing_manager", "agency"]),
-  fitScore: zod
-    .number()
-    .min(updateProspectResponseFitScoreMin)
-    .max(updateProspectResponseFitScoreMax),
-  outreachStatus: zod.enum([
-    "not_started",
-    "in_sequence",
-    "replied",
-    "booked",
-    "showed",
-    "closed_won",
-    "closed_lost",
-    "nurture",
-  ]),
-  likelyPrimaryProblem: zod.string().nullish(),
-  likelySecondaryProblem: zod.string().nullish(),
-  likelyAssetToOffer: zod.string().nullish(),
-  personalizationLevel: zod.enum(["high", "medium", "low"]).nullish(),
-  sequenceFamily: zod.string().nullish(),
-  notes: zod.string().nullish(),
-  latestAnalysisId: zod.number().nullish(),
-  createdAt: zod.coerce.date(),
-  updatedAt: zod.coerce.date(),
+    contactCount: zod.number().nullish(),
+  }),
 });
 
 /**
- * @summary Delete a prospect
+ * @summary Delete an account
  */
-export const DeleteProspectParams = zod.object({
-  id: zod.coerce.number(),
+export const DeleteAccountParams = zod.object({
+  id: zod.coerce.string(),
 });
 
 /**
  * @summary List contacts
  */
+export const listContactsQueryPageDefault = 1;
+export const listContactsQueryPageSizeDefault = 20;
+
 export const ListContactsQueryParams = zod.object({
-  prospectId: zod.coerce.number().optional(),
+  accountId: zod.coerce.string().optional(),
+  outreachStatus: zod.coerce.string().optional(),
   search: zod.coerce.string().optional(),
+  page: zod.coerce.number().default(listContactsQueryPageDefault),
+  pageSize: zod.coerce.number().default(listContactsQueryPageSizeDefault),
 });
 
 export const ListContactsResponse = zod.object({
-  contacts: zod.array(
+  data: zod.array(
     zod.object({
-      id: zod.number(),
-      prospectId: zod.number(),
-      firstName: zod.string(),
-      lastName: zod.string(),
-      fullName: zod.string(),
+      id: zod.string(),
+      accountId: zod.string(),
+      firstName: zod.string().nullish(),
+      lastName: zod.string().nullish(),
+      fullName: zod.string().nullish(),
       jobTitle: zod.string().nullish(),
       seniority: zod.string().nullish(),
       email: zod.string().nullish(),
       phone: zod.string().nullish(),
       linkedinUrl: zod.string().nullish(),
       contactSource: zod.string().nullish(),
-      outreachStatus: zod.enum([
-        "not_started",
-        "in_sequence",
-        "replied",
-        "booked",
-        "opted_out",
-      ]),
+      outreachStatus: zod.string(),
       notes: zod.string().nullish(),
       createdAt: zod.coerce.date(),
+      updatedAt: zod.coerce.date(),
+      accountName: zod.string().nullish(),
     }),
   ),
-  total: zod.number(),
+  meta: zod.object({
+    total: zod.number(),
+    page: zod.number(),
+    pageSize: zod.number(),
+  }),
 });
 
 /**
  * @summary Create a contact
  */
 export const CreateContactBody = zod.object({
-  prospectId: zod.number(),
-  firstName: zod.string(),
-  lastName: zod.string(),
+  accountId: zod.string(),
+  firstName: zod.string().nullish(),
+  lastName: zod.string().nullish(),
   jobTitle: zod.string().nullish(),
   seniority: zod.string().nullish(),
   email: zod.string().nullish(),
@@ -487,119 +311,110 @@ export const CreateContactBody = zod.object({
  * @summary Get a contact by ID
  */
 export const GetContactParams = zod.object({
-  id: zod.coerce.number(),
+  id: zod.coerce.string(),
 });
 
 export const GetContactResponse = zod.object({
-  id: zod.number(),
-  prospectId: zod.number(),
-  firstName: zod.string(),
-  lastName: zod.string(),
-  fullName: zod.string(),
-  jobTitle: zod.string().nullish(),
-  seniority: zod.string().nullish(),
-  email: zod.string().nullish(),
-  phone: zod.string().nullish(),
-  linkedinUrl: zod.string().nullish(),
-  contactSource: zod.string().nullish(),
-  outreachStatus: zod.enum([
-    "not_started",
-    "in_sequence",
-    "replied",
-    "booked",
-    "opted_out",
-  ]),
-  notes: zod.string().nullish(),
-  createdAt: zod.coerce.date(),
+  data: zod.object({
+    id: zod.string(),
+    accountId: zod.string(),
+    firstName: zod.string().nullish(),
+    lastName: zod.string().nullish(),
+    fullName: zod.string().nullish(),
+    jobTitle: zod.string().nullish(),
+    seniority: zod.string().nullish(),
+    email: zod.string().nullish(),
+    phone: zod.string().nullish(),
+    linkedinUrl: zod.string().nullish(),
+    contactSource: zod.string().nullish(),
+    outreachStatus: zod.string(),
+    notes: zod.string().nullish(),
+    createdAt: zod.coerce.date(),
+    updatedAt: zod.coerce.date(),
+    accountName: zod.string().nullish(),
+  }),
 });
 
 /**
  * @summary Update a contact
  */
 export const UpdateContactParams = zod.object({
-  id: zod.coerce.number(),
+  id: zod.coerce.string(),
 });
 
 export const UpdateContactBody = zod.object({
-  firstName: zod.string().optional(),
-  lastName: zod.string().optional(),
+  firstName: zod.string().nullish(),
+  lastName: zod.string().nullish(),
   jobTitle: zod.string().nullish(),
   seniority: zod.string().nullish(),
   email: zod.string().nullish(),
   phone: zod.string().nullish(),
   linkedinUrl: zod.string().nullish(),
-  outreachStatus: zod
-    .enum(["not_started", "in_sequence", "replied", "booked", "opted_out"])
-    .optional(),
+  outreachStatus: zod.string().optional(),
   notes: zod.string().nullish(),
 });
 
 export const UpdateContactResponse = zod.object({
-  id: zod.number(),
-  prospectId: zod.number(),
-  firstName: zod.string(),
-  lastName: zod.string(),
-  fullName: zod.string(),
-  jobTitle: zod.string().nullish(),
-  seniority: zod.string().nullish(),
-  email: zod.string().nullish(),
-  phone: zod.string().nullish(),
-  linkedinUrl: zod.string().nullish(),
-  contactSource: zod.string().nullish(),
-  outreachStatus: zod.enum([
-    "not_started",
-    "in_sequence",
-    "replied",
-    "booked",
-    "opted_out",
-  ]),
-  notes: zod.string().nullish(),
-  createdAt: zod.coerce.date(),
+  data: zod.object({
+    id: zod.string(),
+    accountId: zod.string(),
+    firstName: zod.string().nullish(),
+    lastName: zod.string().nullish(),
+    fullName: zod.string().nullish(),
+    jobTitle: zod.string().nullish(),
+    seniority: zod.string().nullish(),
+    email: zod.string().nullish(),
+    phone: zod.string().nullish(),
+    linkedinUrl: zod.string().nullish(),
+    contactSource: zod.string().nullish(),
+    outreachStatus: zod.string(),
+    notes: zod.string().nullish(),
+    createdAt: zod.coerce.date(),
+    updatedAt: zod.coerce.date(),
+    accountName: zod.string().nullish(),
+  }),
+});
+
+/**
+ * @summary Delete a contact
+ */
+export const DeleteContactParams = zod.object({
+  id: zod.coerce.string(),
 });
 
 /**
  * @summary List homepage analyses
  */
 export const ListAnalysesQueryParams = zod.object({
-  prospectId: zod.coerce.number().optional(),
+  accountId: zod.coerce.string().optional(),
   issueCode: zod.coerce.string().optional(),
 });
 
 export const ListAnalysesResponse = zod.object({
-  analyses: zod.array(
+  data: zod.array(
     zod.object({
-      id: zod.number(),
-      prospectId: zod.number().nullish(),
+      id: zod.string(),
+      accountId: zod.string(),
       domain: zod.string(),
       pageUrl: zod.string(),
-      pageType: zod.enum([
-        "homepage",
-        "landing_page",
-        "pricing",
-        "about",
-        "other",
-      ]),
-      analyzedAt: zod.coerce.date().nullish(),
-      status: zod.enum(["pending", "complete", "failed"]),
-      heroClarityScore: zod.number().nullish(),
-      ctaClarityScore: zod.number().nullish(),
-      ctaProminenceScore: zod.number().nullish(),
-      visualHierarchyScore: zod.number().nullish(),
-      messageOrderScore: zod.number().nullish(),
-      outcomeClarityScore: zod.number().nullish(),
-      trustSignalScore: zod.number().nullish(),
-      frictionScore: zod.number().nullish(),
-      mobileReadabilityScore: zod.number().nullish(),
-      overallScore: zod.number().nullish(),
+      pageType: zod.string(),
+      analyzedAt: zod.coerce.date(),
+      heroClarity: zod.number().nullish(),
+      ctaClarity: zod.number().nullish(),
+      ctaProminence: zod.number().nullish(),
+      visualHierarchy: zod.number().nullish(),
+      messageOrder: zod.number().nullish(),
+      outcomeClarity: zod.number().nullish(),
+      trustSignal: zod.number().nullish(),
+      friction: zod.number().nullish(),
+      mobileReadability: zod.number().nullish(),
       primaryIssueCode: zod.string().nullish(),
       secondaryIssueCode: zod.string().nullish(),
       tertiaryIssueCode: zod.string().nullish(),
       issueSummaryShort: zod.string().nullish(),
       issueSummaryDetailed: zod.string().nullish(),
-      strengthsDetected: zod.string().nullish(),
       recommendedPriorityFix: zod.string().nullish(),
       confidenceScore: zod.number().nullish(),
-      rawNotes: zod.string().nullish(),
       screenshotUrl: zod.string().nullish(),
       createdAt: zod.coerce.date(),
     }),
@@ -608,128 +423,105 @@ export const ListAnalysesResponse = zod.object({
 });
 
 /**
- * @summary Submit a homepage for analysis
+ * @summary Submit a page for analysis
  */
 export const CreateAnalysisBody = zod.object({
-  prospectId: zod.number().nullish(),
+  accountId: zod.string(),
   domain: zod.string(),
   pageUrl: zod.string(),
-  pageType: zod.enum(["homepage", "landing_page", "pricing", "about", "other"]),
+  pageType: zod.string(),
 });
 
 /**
  * @summary Get an analysis by ID
  */
 export const GetAnalysisParams = zod.object({
-  id: zod.coerce.number(),
+  id: zod.coerce.string(),
 });
 
 export const GetAnalysisResponse = zod.object({
-  id: zod.number(),
-  prospectId: zod.number().nullish(),
-  domain: zod.string(),
-  pageUrl: zod.string(),
-  pageType: zod.enum(["homepage", "landing_page", "pricing", "about", "other"]),
-  analyzedAt: zod.coerce.date().nullish(),
-  status: zod.enum(["pending", "complete", "failed"]),
-  heroClarityScore: zod.number().nullish(),
-  ctaClarityScore: zod.number().nullish(),
-  ctaProminenceScore: zod.number().nullish(),
-  visualHierarchyScore: zod.number().nullish(),
-  messageOrderScore: zod.number().nullish(),
-  outcomeClarityScore: zod.number().nullish(),
-  trustSignalScore: zod.number().nullish(),
-  frictionScore: zod.number().nullish(),
-  mobileReadabilityScore: zod.number().nullish(),
-  overallScore: zod.number().nullish(),
-  primaryIssueCode: zod.string().nullish(),
-  secondaryIssueCode: zod.string().nullish(),
-  tertiaryIssueCode: zod.string().nullish(),
-  issueSummaryShort: zod.string().nullish(),
-  issueSummaryDetailed: zod.string().nullish(),
-  strengthsDetected: zod.string().nullish(),
-  recommendedPriorityFix: zod.string().nullish(),
-  confidenceScore: zod.number().nullish(),
-  rawNotes: zod.string().nullish(),
-  screenshotUrl: zod.string().nullish(),
-  createdAt: zod.coerce.date(),
+  data: zod.object({
+    id: zod.string(),
+    accountId: zod.string(),
+    domain: zod.string(),
+    pageUrl: zod.string(),
+    pageType: zod.string(),
+    analyzedAt: zod.coerce.date(),
+    heroClarity: zod.number().nullish(),
+    ctaClarity: zod.number().nullish(),
+    ctaProminence: zod.number().nullish(),
+    visualHierarchy: zod.number().nullish(),
+    messageOrder: zod.number().nullish(),
+    outcomeClarity: zod.number().nullish(),
+    trustSignal: zod.number().nullish(),
+    friction: zod.number().nullish(),
+    mobileReadability: zod.number().nullish(),
+    primaryIssueCode: zod.string().nullish(),
+    secondaryIssueCode: zod.string().nullish(),
+    tertiaryIssueCode: zod.string().nullish(),
+    issueSummaryShort: zod.string().nullish(),
+    issueSummaryDetailed: zod.string().nullish(),
+    recommendedPriorityFix: zod.string().nullish(),
+    confidenceScore: zod.number().nullish(),
+    screenshotUrl: zod.string().nullish(),
+    createdAt: zod.coerce.date(),
+  }),
 });
 
 /**
- * @summary Update / complete an analysis
+ * @summary Update an analysis result
  */
 export const UpdateAnalysisParams = zod.object({
-  id: zod.coerce.number(),
+  id: zod.coerce.string(),
 });
 
 export const UpdateAnalysisBody = zod.object({
-  status: zod.enum(["pending", "complete", "failed"]).optional(),
-  heroClarityScore: zod.number().nullish(),
-  ctaClarityScore: zod.number().nullish(),
-  ctaProminenceScore: zod.number().nullish(),
-  visualHierarchyScore: zod.number().nullish(),
-  messageOrderScore: zod.number().nullish(),
-  outcomeClarityScore: zod.number().nullish(),
-  trustSignalScore: zod.number().nullish(),
-  frictionScore: zod.number().nullish(),
-  mobileReadabilityScore: zod.number().nullish(),
-  overallScore: zod.number().nullish(),
+  heroClarity: zod.number().nullish(),
+  ctaClarity: zod.number().nullish(),
+  ctaProminence: zod.number().nullish(),
+  visualHierarchy: zod.number().nullish(),
+  messageOrder: zod.number().nullish(),
+  outcomeClarity: zod.number().nullish(),
+  trustSignal: zod.number().nullish(),
+  friction: zod.number().nullish(),
+  mobileReadability: zod.number().nullish(),
   primaryIssueCode: zod.string().nullish(),
   secondaryIssueCode: zod.string().nullish(),
   tertiaryIssueCode: zod.string().nullish(),
   issueSummaryShort: zod.string().nullish(),
   issueSummaryDetailed: zod.string().nullish(),
-  strengthsDetected: zod.string().nullish(),
   recommendedPriorityFix: zod.string().nullish(),
   confidenceScore: zod.number().nullish(),
-  rawNotes: zod.string().nullish(),
   screenshotUrl: zod.string().nullish(),
 });
 
 export const UpdateAnalysisResponse = zod.object({
-  id: zod.number(),
-  prospectId: zod.number().nullish(),
-  domain: zod.string(),
-  pageUrl: zod.string(),
-  pageType: zod.enum(["homepage", "landing_page", "pricing", "about", "other"]),
-  analyzedAt: zod.coerce.date().nullish(),
-  status: zod.enum(["pending", "complete", "failed"]),
-  heroClarityScore: zod.number().nullish(),
-  ctaClarityScore: zod.number().nullish(),
-  ctaProminenceScore: zod.number().nullish(),
-  visualHierarchyScore: zod.number().nullish(),
-  messageOrderScore: zod.number().nullish(),
-  outcomeClarityScore: zod.number().nullish(),
-  trustSignalScore: zod.number().nullish(),
-  frictionScore: zod.number().nullish(),
-  mobileReadabilityScore: zod.number().nullish(),
-  overallScore: zod.number().nullish(),
-  primaryIssueCode: zod.string().nullish(),
-  secondaryIssueCode: zod.string().nullish(),
-  tertiaryIssueCode: zod.string().nullish(),
-  issueSummaryShort: zod.string().nullish(),
-  issueSummaryDetailed: zod.string().nullish(),
-  strengthsDetected: zod.string().nullish(),
-  recommendedPriorityFix: zod.string().nullish(),
-  confidenceScore: zod.number().nullish(),
-  rawNotes: zod.string().nullish(),
-  screenshotUrl: zod.string().nullish(),
-  createdAt: zod.coerce.date(),
-});
-
-/**
- * @summary Get issue clusters grouped by issue code
- */
-export const GetIssueClustersResponse = zod.object({
-  clusters: zod.array(
-    zod.object({
-      issueCode: zod.string(),
-      count: zod.number(),
-      affectedProspects: zod.number(),
-      topIcps: zod.array(zod.string()),
-      avgFitScore: zod.number(),
-    }),
-  ),
+  data: zod.object({
+    id: zod.string(),
+    accountId: zod.string(),
+    domain: zod.string(),
+    pageUrl: zod.string(),
+    pageType: zod.string(),
+    analyzedAt: zod.coerce.date(),
+    heroClarity: zod.number().nullish(),
+    ctaClarity: zod.number().nullish(),
+    ctaProminence: zod.number().nullish(),
+    visualHierarchy: zod.number().nullish(),
+    messageOrder: zod.number().nullish(),
+    outcomeClarity: zod.number().nullish(),
+    trustSignal: zod.number().nullish(),
+    friction: zod.number().nullish(),
+    mobileReadability: zod.number().nullish(),
+    primaryIssueCode: zod.string().nullish(),
+    secondaryIssueCode: zod.string().nullish(),
+    tertiaryIssueCode: zod.string().nullish(),
+    issueSummaryShort: zod.string().nullish(),
+    issueSummaryDetailed: zod.string().nullish(),
+    recommendedPriorityFix: zod.string().nullish(),
+    confidenceScore: zod.number().nullish(),
+    screenshotUrl: zod.string().nullish(),
+    createdAt: zod.coerce.date(),
+  }),
 });
 
 /**
@@ -738,28 +530,19 @@ export const GetIssueClustersResponse = zod.object({
 export const ListInsightsQueryParams = zod.object({
   issueCode: zod.coerce.string().optional(),
   icp: zod.coerce.string().optional(),
-  channel: zod.coerce.string().optional(),
 });
 
 export const ListInsightsResponse = zod.object({
-  insights: zod.array(
+  data: zod.array(
     zod.object({
-      id: zod.number(),
-      insightId: zod.string(),
+      id: zod.string(),
       issueCode: zod.string(),
-      icp: zod.array(zod.string()),
-      industries: zod.array(zod.string()),
+      icp: zod.string(),
       shortInsightLine: zod.string(),
       longerExplainer: zod.string().nullish(),
       businessConsequence: zod.string().nullish(),
-      severityHint: zod.enum(["critical", "high", "medium", "low"]).nullish(),
-      suitableChannels: zod.array(zod.string()),
-      suitableSequenceStep: zod.array(zod.number()),
-      ctaPairings: zod.array(zod.string()),
-      proofAssetPairings: zod.array(zod.string()),
-      confidenceNotes: zod.string().nullish(),
-      useCount: zod.number(),
-      replyCount: zod.number(),
+      severityHint: zod.string().nullish(),
+      active: zod.boolean(),
       createdAt: zod.coerce.date(),
       updatedAt: zod.coerce.date(),
     }),
@@ -772,316 +555,100 @@ export const ListInsightsResponse = zod.object({
  */
 export const CreateInsightBody = zod.object({
   issueCode: zod.string(),
-  icp: zod.array(zod.string()),
-  industries: zod.array(zod.string()),
+  icp: zod.string(),
   shortInsightLine: zod.string(),
   longerExplainer: zod.string().nullish(),
   businessConsequence: zod.string().nullish(),
-  severityHint: zod.enum(["critical", "high", "medium", "low"]).nullish(),
-  suitableChannels: zod.array(zod.string()),
-  suitableSequenceStep: zod.array(zod.number()),
-  ctaPairings: zod.array(zod.string()),
-  proofAssetPairings: zod.array(zod.string()),
-  confidenceNotes: zod.string().nullish(),
-});
-
-/**
- * @summary Get an insight block
- */
-export const GetInsightParams = zod.object({
-  id: zod.coerce.number(),
-});
-
-export const GetInsightResponse = zod.object({
-  id: zod.number(),
-  insightId: zod.string(),
-  issueCode: zod.string(),
-  icp: zod.array(zod.string()),
-  industries: zod.array(zod.string()),
-  shortInsightLine: zod.string(),
-  longerExplainer: zod.string().nullish(),
-  businessConsequence: zod.string().nullish(),
-  severityHint: zod.enum(["critical", "high", "medium", "low"]).nullish(),
-  suitableChannels: zod.array(zod.string()),
-  suitableSequenceStep: zod.array(zod.number()),
-  ctaPairings: zod.array(zod.string()),
-  proofAssetPairings: zod.array(zod.string()),
-  confidenceNotes: zod.string().nullish(),
-  useCount: zod.number(),
-  replyCount: zod.number(),
-  createdAt: zod.coerce.date(),
-  updatedAt: zod.coerce.date(),
+  severityHint: zod.string().nullish(),
 });
 
 /**
  * @summary Update an insight block
  */
 export const UpdateInsightParams = zod.object({
-  id: zod.coerce.number(),
+  id: zod.coerce.string(),
 });
 
 export const UpdateInsightBody = zod.object({
-  issueCode: zod.string().optional(),
-  icp: zod.array(zod.string()).optional(),
-  industries: zod.array(zod.string()).optional(),
   shortInsightLine: zod.string().optional(),
   longerExplainer: zod.string().nullish(),
   businessConsequence: zod.string().nullish(),
-  severityHint: zod.enum(["critical", "high", "medium", "low"]).nullish(),
-  suitableChannels: zod.array(zod.string()).optional(),
-  suitableSequenceStep: zod.array(zod.number()).optional(),
-  ctaPairings: zod.array(zod.string()).optional(),
-  proofAssetPairings: zod.array(zod.string()).optional(),
-  confidenceNotes: zod.string().nullish(),
+  severityHint: zod.string().nullish(),
+  active: zod.boolean().optional(),
 });
 
 export const UpdateInsightResponse = zod.object({
-  id: zod.number(),
-  insightId: zod.string(),
-  issueCode: zod.string(),
-  icp: zod.array(zod.string()),
-  industries: zod.array(zod.string()),
-  shortInsightLine: zod.string(),
-  longerExplainer: zod.string().nullish(),
-  businessConsequence: zod.string().nullish(),
-  severityHint: zod.enum(["critical", "high", "medium", "low"]).nullish(),
-  suitableChannels: zod.array(zod.string()),
-  suitableSequenceStep: zod.array(zod.number()),
-  ctaPairings: zod.array(zod.string()),
-  proofAssetPairings: zod.array(zod.string()),
-  confidenceNotes: zod.string().nullish(),
-  useCount: zod.number(),
-  replyCount: zod.number(),
-  createdAt: zod.coerce.date(),
-  updatedAt: zod.coerce.date(),
+  data: zod.object({
+    id: zod.string(),
+    issueCode: zod.string(),
+    icp: zod.string(),
+    shortInsightLine: zod.string(),
+    longerExplainer: zod.string().nullish(),
+    businessConsequence: zod.string().nullish(),
+    severityHint: zod.string().nullish(),
+    active: zod.boolean(),
+    createdAt: zod.coerce.date(),
+    updatedAt: zod.coerce.date(),
+  }),
 });
 
 /**
  * @summary Delete an insight block
  */
 export const DeleteInsightParams = zod.object({
-  id: zod.coerce.number(),
+  id: zod.coerce.string(),
 });
 
 /**
  * @summary List outreach sequences
  */
-export const ListSequencesQueryParams = zod.object({
-  prospectId: zod.coerce.number().optional(),
-  status: zod.coerce.string().optional(),
-});
-
 export const ListSequencesResponse = zod.object({
-  sequences: zod.array(
+  data: zod.array(
     zod.object({
-      id: zod.number(),
-      prospectId: zod.number(),
-      contactId: zod.number().nullish(),
-      name: zod.string(),
-      personalizationLevel: zod.enum(["high", "medium", "low"]),
-      status: zod.enum(["draft", "active", "paused", "completed", "archived"]),
-      currentStep: zod.number(),
-      totalSteps: zod.number(),
-      startedAt: zod.coerce.date().nullish(),
-      completedAt: zod.coerce.date().nullish(),
-      steps: zod.array(
-        zod.object({
-          id: zod.number(),
-          sequenceId: zod.number(),
-          stepNumber: zod.number(),
-          channel: zod.enum(["email", "linkedin", "phone", "video", "other"]),
-          dayOffset: zod.number(),
-          subject: zod.string().nullish(),
-          body: zod.string(),
-          ctaText: zod.string().nullish(),
-          insightId: zod.number().nullish(),
-          assetOffered: zod.string().nullish(),
-          status: zod.enum(["pending", "sent", "replied", "skipped"]),
-          sentAt: zod.coerce.date().nullish(),
-        }),
-      ),
+      id: zod.string(),
+      sequenceName: zod.string(),
+      icp: zod.string().nullish(),
+      issueCluster: zod.string().nullish(),
+      active: zod.boolean(),
       createdAt: zod.coerce.date(),
+      updatedAt: zod.coerce.date(),
     }),
   ),
   total: zod.number(),
 });
 
 /**
- * @summary Create an outreach sequence
+ * @summary Create a sequence
  */
 export const CreateSequenceBody = zod.object({
-  prospectId: zod.number(),
-  contactId: zod.number().nullish(),
-  name: zod.string(),
-  personalizationLevel: zod.enum(["high", "medium", "low"]),
-  steps: zod.array(
-    zod.object({
-      stepNumber: zod.number(),
-      channel: zod.enum(["email", "linkedin", "phone", "video", "other"]),
-      dayOffset: zod.number(),
-      subject: zod.string().nullish(),
-      body: zod.string(),
-      ctaText: zod.string().nullish(),
-      assetOffered: zod.string().nullish(),
-    }),
-  ),
+  sequenceName: zod.string(),
+  icp: zod.string().nullish(),
+  issueCluster: zod.string().nullish(),
+  priorityTier: zod.string().nullish(),
 });
 
 /**
- * @summary Get a sequence by ID
+ * @summary List activities
  */
-export const GetSequenceParams = zod.object({
-  id: zod.coerce.number(),
-});
-
-export const GetSequenceResponse = zod.object({
-  id: zod.number(),
-  prospectId: zod.number(),
-  contactId: zod.number().nullish(),
-  name: zod.string(),
-  personalizationLevel: zod.enum(["high", "medium", "low"]),
-  status: zod.enum(["draft", "active", "paused", "completed", "archived"]),
-  currentStep: zod.number(),
-  totalSteps: zod.number(),
-  startedAt: zod.coerce.date().nullish(),
-  completedAt: zod.coerce.date().nullish(),
-  steps: zod.array(
-    zod.object({
-      id: zod.number(),
-      sequenceId: zod.number(),
-      stepNumber: zod.number(),
-      channel: zod.enum(["email", "linkedin", "phone", "video", "other"]),
-      dayOffset: zod.number(),
-      subject: zod.string().nullish(),
-      body: zod.string(),
-      ctaText: zod.string().nullish(),
-      insightId: zod.number().nullish(),
-      assetOffered: zod.string().nullish(),
-      status: zod.enum(["pending", "sent", "replied", "skipped"]),
-      sentAt: zod.coerce.date().nullish(),
-    }),
-  ),
-  createdAt: zod.coerce.date(),
-});
-
-/**
- * @summary Update a sequence
- */
-export const UpdateSequenceParams = zod.object({
-  id: zod.coerce.number(),
-});
-
-export const UpdateSequenceBody = zod.object({
-  name: zod.string().optional(),
-  status: zod
-    .enum(["draft", "active", "paused", "completed", "archived"])
-    .optional(),
-  currentStep: zod.number().optional(),
-});
-
-export const UpdateSequenceResponse = zod.object({
-  id: zod.number(),
-  prospectId: zod.number(),
-  contactId: zod.number().nullish(),
-  name: zod.string(),
-  personalizationLevel: zod.enum(["high", "medium", "low"]),
-  status: zod.enum(["draft", "active", "paused", "completed", "archived"]),
-  currentStep: zod.number(),
-  totalSteps: zod.number(),
-  startedAt: zod.coerce.date().nullish(),
-  completedAt: zod.coerce.date().nullish(),
-  steps: zod.array(
-    zod.object({
-      id: zod.number(),
-      sequenceId: zod.number(),
-      stepNumber: zod.number(),
-      channel: zod.enum(["email", "linkedin", "phone", "video", "other"]),
-      dayOffset: zod.number(),
-      subject: zod.string().nullish(),
-      body: zod.string(),
-      ctaText: zod.string().nullish(),
-      insightId: zod.number().nullish(),
-      assetOffered: zod.string().nullish(),
-      status: zod.enum(["pending", "sent", "replied", "skipped"]),
-      sentAt: zod.coerce.date().nullish(),
-    }),
-  ),
-  createdAt: zod.coerce.date(),
-});
-
-/**
- * @summary Generate a sequence using analysis and insight data
- */
-export const generateSequenceBodyTouchCountMin = 2;
-export const generateSequenceBodyTouchCountMax = 8;
-
-export const GenerateSequenceBody = zod.object({
-  prospectId: zod.number(),
-  analysisId: zod.number().nullish(),
-  icpType: zod.enum(["founder", "marketing_manager", "agency"]),
-  personalizationLevel: zod.enum(["high", "medium", "low"]),
-  touchCount: zod
-    .number()
-    .min(generateSequenceBodyTouchCountMin)
-    .max(generateSequenceBodyTouchCountMax),
-});
-
-export const GenerateSequenceResponse = zod.object({
-  prospectId: zod.number(),
-  icpType: zod.string(),
-  personalizationLevel: zod.string(),
-  steps: zod.array(
-    zod.object({
-      stepNumber: zod.number(),
-      channel: zod.string(),
-      dayOffset: zod.number(),
-      subject: zod.string().nullish(),
-      body: zod.string(),
-      ctaText: zod.string(),
-      insightUsed: zod.string().nullish(),
-      assetSuggested: zod.string().nullish(),
-    }),
-  ),
-});
-
-/**
- * @summary List touch activities
- */
-export const ListTouchesQueryParams = zod.object({
-  prospectId: zod.coerce.number().optional(),
-  contactId: zod.coerce.number().optional(),
-  channel: zod.coerce.string().optional(),
+export const ListActivitiesQueryParams = zod.object({
+  accountId: zod.coerce.string().optional(),
+  contactId: zod.coerce.string().optional(),
+  activityType: zod.coerce.string().optional(),
   dueToday: zod.coerce.boolean().optional(),
 });
 
-export const ListTouchesResponse = zod.object({
-  touches: zod.array(
+export const ListActivitiesResponse = zod.object({
+  data: zod.array(
     zod.object({
-      id: zod.number(),
-      prospectId: zod.number(),
-      contactId: zod.number().nullish(),
-      sequenceId: zod.number().nullish(),
-      channel: zod.enum(["email", "linkedin", "phone", "video", "other"]),
-      touchType: zod.enum(["outbound", "reply", "call", "meeting", "note"]),
-      direction: zod.enum(["outbound", "inbound"]),
+      id: zod.string(),
+      accountId: zod.string(),
+      contactId: zod.string(),
+      channel: zod.string(),
+      activityType: zod.string(),
       subject: zod.string().nullish(),
       body: zod.string().nullish(),
-      outcome: zod
-        .enum([
-          "sent",
-          "replied",
-          "booked",
-          "no_reply",
-          "objection",
-          "opted_out",
-          "voicemail",
-          "connected",
-        ])
-        .nullish(),
-      objectionText: zod.string().nullish(),
-      nextAction: zod.string().nullish(),
-      nextActionDue: zod.coerce.date().nullish(),
-      performedAt: zod.coerce.date(),
+      sentAt: zod.coerce.date(),
+      repliedAt: zod.coerce.date().nullish(),
       createdAt: zod.coerce.date(),
     }),
   ),
@@ -1089,220 +656,104 @@ export const ListTouchesResponse = zod.object({
 });
 
 /**
- * @summary Log a touch activity
+ * @summary Log an activity
  */
-export const CreateTouchBody = zod.object({
-  prospectId: zod.number(),
-  contactId: zod.number().nullish(),
-  sequenceId: zod.number().nullish(),
-  channel: zod.enum(["email", "linkedin", "phone", "video", "other"]),
-  touchType: zod.enum(["outbound", "reply", "call", "meeting", "note"]),
-  direction: zod.enum(["outbound", "inbound"]),
+export const CreateActivityBody = zod.object({
+  accountId: zod.string(),
+  contactId: zod.string(),
+  channel: zod.string(),
+  activityType: zod.string(),
   subject: zod.string().nullish(),
   body: zod.string().nullish(),
-  outcome: zod
-    .enum([
-      "sent",
-      "replied",
-      "booked",
-      "no_reply",
-      "objection",
-      "opted_out",
-      "voicemail",
-      "connected",
-    ])
-    .nullish(),
-  objectionText: zod.string().nullish(),
-  nextAction: zod.string().nullish(),
-  nextActionDue: zod.coerce.date().nullish(),
-  performedAt: zod.coerce.date().nullish(),
 });
 
 /**
- * @summary Update a touch (e.g. mark replied, booked)
+ * @summary List opportunities
  */
-export const UpdateTouchParams = zod.object({
-  id: zod.coerce.number(),
+export const ListOpportunitiesQueryParams = zod.object({
+  stage: zod.coerce.string().optional(),
+  accountId: zod.coerce.string().optional(),
 });
 
-export const UpdateTouchBody = zod.object({
-  outcome: zod
-    .enum([
-      "sent",
-      "replied",
-      "booked",
-      "no_reply",
-      "objection",
-      "opted_out",
-      "voicemail",
-      "connected",
-    ])
-    .optional(),
-  objectionText: zod.string().nullish(),
-  nextAction: zod.string().nullish(),
-  nextActionDue: zod.coerce.date().nullish(),
-});
-
-export const UpdateTouchResponse = zod.object({
-  id: zod.number(),
-  prospectId: zod.number(),
-  contactId: zod.number().nullish(),
-  sequenceId: zod.number().nullish(),
-  channel: zod.enum(["email", "linkedin", "phone", "video", "other"]),
-  touchType: zod.enum(["outbound", "reply", "call", "meeting", "note"]),
-  direction: zod.enum(["outbound", "inbound"]),
-  subject: zod.string().nullish(),
-  body: zod.string().nullish(),
-  outcome: zod
-    .enum([
-      "sent",
-      "replied",
-      "booked",
-      "no_reply",
-      "objection",
-      "opted_out",
-      "voicemail",
-      "connected",
-    ])
-    .nullish(),
-  objectionText: zod.string().nullish(),
-  nextAction: zod.string().nullish(),
-  nextActionDue: zod.coerce.date().nullish(),
-  performedAt: zod.coerce.date(),
-  createdAt: zod.coerce.date(),
-});
-
-/**
- * @summary Get top-level KPI metrics
- */
-export const GetDashboardMetricsResponse = zod.object({
-  callsBookedThisWeek: zod.number(),
-  positiveRepliesThisWeek: zod.number(),
-  overallReplyRate: zod.number(),
-  showRate: zod.number(),
-  closeRate: zod.number(),
-  activeProspects: zod.number(),
-  totalProspects: zod.number(),
-  avgResponseTime: zod.number().nullish(),
-  hotProspectsCount: zod.number(),
-});
-
-/**
- * @summary Get pipeline stage counts
- */
-export const GetPipelineSnapshotResponse = zod.object({
-  stages: zod.array(
+export const ListOpportunitiesResponse = zod.object({
+  data: zod.array(
     zod.object({
+      id: zod.string(),
+      accountId: zod.string(),
+      contactId: zod.string(),
       stage: zod.string(),
-      count: zod.number(),
-      change: zod.number(),
-    }),
-  ),
-});
-
-/**
- * @summary Get today's tasks and hot prospects
- */
-export const GetActivityTodayResponse = zod.object({
-  tasksDue: zod.number(),
-  hotProspects: zod.array(
-    zod.object({
-      id: zod.number(),
-      companyName: zod.string(),
-      contactName: zod.string().nullish(),
-      icpType: zod.string(),
-      outreachStatus: zod.string(),
-      lastTouchAt: zod.coerce.date().nullish(),
-      nextActionDue: zod.coerce.date().nullish(),
-      nextAction: zod.string().nullish(),
-      urgencyReason: zod.string(),
-    }),
-  ),
-  upcomingCalls: zod.array(
-    zod.object({
-      id: zod.number(),
-      prospectId: zod.number(),
-      contactId: zod.number().nullish(),
-      sequenceId: zod.number().nullish(),
-      channel: zod.enum(["email", "linkedin", "phone", "video", "other"]),
-      touchType: zod.enum(["outbound", "reply", "call", "meeting", "note"]),
-      direction: zod.enum(["outbound", "inbound"]),
-      subject: zod.string().nullish(),
-      body: zod.string().nullish(),
-      outcome: zod
-        .enum([
-          "sent",
-          "replied",
-          "booked",
-          "no_reply",
-          "objection",
-          "opted_out",
-          "voicemail",
-          "connected",
-        ])
-        .nullish(),
-      objectionText: zod.string().nullish(),
-      nextAction: zod.string().nullish(),
-      nextActionDue: zod.coerce.date().nullish(),
-      performedAt: zod.coerce.date(),
+      valueEstimate: zod.number().nullish(),
+      closedStatus: zod.string().nullish(),
+      lossReason: zod.string().nullish(),
+      winReason: zod.string().nullish(),
+      notes: zod.string().nullish(),
       createdAt: zod.coerce.date(),
+      updatedAt: zod.coerce.date(),
     }),
   ),
+  total: zod.number(),
 });
 
 /**
- * @summary Get reply rates and performance by channel
+ * @summary Create an opportunity
  */
-export const GetChannelPerformanceResponse = zod.object({
-  channels: zod.array(
-    zod.object({
-      channel: zod.string(),
-      sent: zod.number(),
-      replied: zod.number(),
-      replyRate: zod.number(),
-      booked: zod.number(),
-      bookingRate: zod.number(),
-    }),
-  ),
+export const CreateOpportunityBody = zod.object({
+  accountId: zod.string(),
+  contactId: zod.string(),
+  stage: zod.string(),
+  valueEstimate: zod.number().nullish(),
+  notes: zod.string().nullish(),
 });
 
 /**
- * @summary Get top performing message hooks and CTAs
+ * @summary Update an opportunity
  */
-export const GetTopHooksResponse = zod.object({
-  hooks: zod.array(
-    zod.object({
-      text: zod.string(),
-      type: zod.enum(["hook", "cta", "subject"]),
-      uses: zod.number(),
-      replies: zod.number(),
-      replyRate: zod.number(),
-    }),
-  ),
+export const UpdateOpportunityParams = zod.object({
+  id: zod.coerce.string(),
+});
+
+export const UpdateOpportunityBody = zod.object({
+  stage: zod.string().optional(),
+  valueEstimate: zod.number().nullish(),
+  closedStatus: zod.string().nullish(),
+  lossReason: zod.string().nullish(),
+  winReason: zod.string().nullish(),
+  notes: zod.string().nullish(),
+});
+
+export const UpdateOpportunityResponse = zod.object({
+  data: zod.object({
+    id: zod.string(),
+    accountId: zod.string(),
+    contactId: zod.string(),
+    stage: zod.string(),
+    valueEstimate: zod.number().nullish(),
+    closedStatus: zod.string().nullish(),
+    lossReason: zod.string().nullish(),
+    winReason: zod.string().nullish(),
+    notes: zod.string().nullish(),
+    createdAt: zod.coerce.date(),
+    updatedAt: zod.coerce.date(),
+  }),
 });
 
 /**
- * @summary List A/B experiments
+ * @summary List experiments
  */
 export const ListExperimentsResponse = zod.object({
-  experiments: zod.array(
+  data: zod.array(
     zod.object({
-      id: zod.number(),
+      id: zod.string(),
       name: zod.string(),
-      hypothesis: zod.string(),
-      variantA: zod.string(),
-      variantB: zod.string(),
-      metric: zod.string(),
-      status: zod.enum(["running", "complete", "paused"]),
-      aReplies: zod.number(),
-      bReplies: zod.number(),
-      aSent: zod.number(),
-      bSent: zod.number(),
-      winner: zod.enum(["A", "B", "inconclusive"]).nullish(),
-      notes: zod.string().nullish(),
-      startedAt: zod.coerce.date().nullish(),
-      completedAt: zod.coerce.date().nullish(),
+      hypothesis: zod.string().nullish(),
+      variableTested: zod.string().nullish(),
+      controlVariant: zod.string().nullish(),
+      testVariant: zod.string().nullish(),
+      status: zod.string(),
+      resultSummary: zod.string().nullish(),
+      decision: zod.string().nullish(),
       createdAt: zod.coerce.date(),
+      updatedAt: zod.coerce.date(),
     }),
   ),
   total: zod.number(),
@@ -1313,45 +764,139 @@ export const ListExperimentsResponse = zod.object({
  */
 export const CreateExperimentBody = zod.object({
   name: zod.string(),
-  hypothesis: zod.string(),
-  variantA: zod.string(),
-  variantB: zod.string(),
-  metric: zod.string(),
-  notes: zod.string().nullish(),
+  hypothesis: zod.string().nullish(),
+  variableTested: zod.string().nullish(),
+  controlVariant: zod.string().nullish(),
+  testVariant: zod.string().nullish(),
 });
 
 /**
- * @summary Update experiment results
+ * @summary Update an experiment
  */
 export const UpdateExperimentParams = zod.object({
-  id: zod.coerce.number(),
+  id: zod.coerce.string(),
 });
 
 export const UpdateExperimentBody = zod.object({
-  status: zod.enum(["running", "complete", "paused"]).optional(),
-  aReplies: zod.number().optional(),
-  bReplies: zod.number().optional(),
-  aSent: zod.number().optional(),
-  bSent: zod.number().optional(),
-  winner: zod.enum(["A", "B", "inconclusive"]).nullish(),
-  notes: zod.string().nullish(),
+  status: zod.string().optional(),
+  resultSummary: zod.string().nullish(),
+  decision: zod.string().nullish(),
 });
 
 export const UpdateExperimentResponse = zod.object({
-  id: zod.number(),
-  name: zod.string(),
-  hypothesis: zod.string(),
-  variantA: zod.string(),
-  variantB: zod.string(),
-  metric: zod.string(),
-  status: zod.enum(["running", "complete", "paused"]),
-  aReplies: zod.number(),
-  bReplies: zod.number(),
-  aSent: zod.number(),
-  bSent: zod.number(),
-  winner: zod.enum(["A", "B", "inconclusive"]).nullish(),
-  notes: zod.string().nullish(),
-  startedAt: zod.coerce.date().nullish(),
-  completedAt: zod.coerce.date().nullish(),
-  createdAt: zod.coerce.date(),
+  data: zod.object({
+    id: zod.string(),
+    name: zod.string(),
+    hypothesis: zod.string().nullish(),
+    variableTested: zod.string().nullish(),
+    controlVariant: zod.string().nullish(),
+    testVariant: zod.string().nullish(),
+    status: zod.string(),
+    resultSummary: zod.string().nullish(),
+    decision: zod.string().nullish(),
+    createdAt: zod.coerce.date(),
+    updatedAt: zod.coerce.date(),
+  }),
+});
+
+/**
+ * @summary Get KPI metrics
+ */
+export const GetDashboardMetricsResponse = zod.object({
+  callsBookedThisWeek: zod.number(),
+  positiveRepliesThisWeek: zod.number(),
+  activeProspects: zod.number(),
+  accountsAnalyzed: zod.number(),
+  tasksDueToday: zod.number(),
+  hotProspectsCount: zod.number(),
+  totalAccounts: zod.number(),
+  totalContacts: zod.number(),
+  overallReplyRate: zod.number(),
+  closeRate: zod.number(),
+});
+
+/**
+ * @summary Get pipeline stage counts
+ */
+export const GetPipelineSnapshotResponse = zod.object({
+  stages: zod.array(
+    zod.object({
+      stage: zod.string(),
+      count: zod.number(),
+    }),
+  ),
+});
+
+/**
+ * @summary Get today's hot prospects and tasks
+ */
+export const GetActivityTodayResponse = zod.object({
+  tasksDue: zod.number(),
+  hotProspects: zod.array(
+    zod.object({
+      id: zod.string(),
+      companyName: zod.string(),
+      contactName: zod.string().nullish(),
+      icpType: zod.string().nullish(),
+      outreachStatus: zod.string(),
+      urgencyReason: zod.string(),
+    }),
+  ),
+  recentActivities: zod.array(
+    zod.object({
+      id: zod.string(),
+      accountId: zod.string(),
+      contactId: zod.string(),
+      channel: zod.string(),
+      activityType: zod.string(),
+      subject: zod.string().nullish(),
+      body: zod.string().nullish(),
+      sentAt: zod.coerce.date(),
+      repliedAt: zod.coerce.date().nullish(),
+      createdAt: zod.coerce.date(),
+    }),
+  ),
+});
+
+/**
+ * @summary Get user settings
+ */
+export const GetSettingsResponse = zod.object({
+  data: zod.object({
+    id: zod.string(),
+    defaultSenderEmail: zod.string().nullish(),
+    defaultSenderName: zod.string().nullish(),
+    homepageAnalyserApiUrl: zod.string().nullish(),
+    hasAnthropicKey: zod.boolean(),
+    hasOpenaiKey: zod.boolean(),
+    hasAnalyserKey: zod.boolean(),
+    createdAt: zod.coerce.date(),
+    updatedAt: zod.coerce.date(),
+  }),
+});
+
+/**
+ * @summary Save user settings
+ */
+export const SaveSettingsBody = zod.object({
+  defaultSenderEmail: zod.string().nullish(),
+  defaultSenderName: zod.string().nullish(),
+  homepageAnalyserApiUrl: zod.string().nullish(),
+  anthropicApiKey: zod.string().nullish(),
+  openaiApiKey: zod.string().nullish(),
+  analyserApiKey: zod.string().nullish(),
+});
+
+export const SaveSettingsResponse = zod.object({
+  data: zod.object({
+    id: zod.string(),
+    defaultSenderEmail: zod.string().nullish(),
+    defaultSenderName: zod.string().nullish(),
+    homepageAnalyserApiUrl: zod.string().nullish(),
+    hasAnthropicKey: zod.boolean(),
+    hasOpenaiKey: zod.boolean(),
+    hasAnalyserKey: zod.boolean(),
+    createdAt: zod.coerce.date(),
+    updatedAt: zod.coerce.date(),
+  }),
 });

@@ -5,21 +5,22 @@
  * Design Bees Outbound Revenue Engine API
  * OpenAPI spec version: 0.1.0
  */
-import type { ContactOutreachStatus } from "./contactOutreachStatus";
 
 export interface Contact {
-  id: number;
-  prospectId: number;
-  firstName: string;
-  lastName: string;
-  fullName: string;
+  id: string;
+  accountId: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  fullName?: string | null;
   jobTitle?: string | null;
   seniority?: string | null;
   email?: string | null;
   phone?: string | null;
   linkedinUrl?: string | null;
   contactSource?: string | null;
-  outreachStatus: ContactOutreachStatus;
+  outreachStatus: string;
   notes?: string | null;
   createdAt: Date;
+  updatedAt: Date;
+  accountName?: string | null;
 }

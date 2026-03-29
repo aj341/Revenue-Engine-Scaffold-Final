@@ -8,23 +8,16 @@ servers:
     description: Base API path
 tags:
   - name: health
-    description: Health operations
-  - name: prospects
-    description: Prospect and account management
+  - name: accounts
   - name: contacts
-    description: Contact management
   - name: analyses
-    description: Homepage analysis operations
   - name: insights
-    description: Insight library management
   - name: sequences
-    description: Outreach sequence management
-  - name: touches
-    description: Touch / activity tracking
+  - name: activities
   - name: dashboard
-    description: Dashboard metrics and KPIs
   - name: experiments
-    description: A/B experiment tracking
+  - name: settings
+  - name: opportunities
 
 paths:
   /healthz:
@@ -40,101 +33,89 @@ paths:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
 
-  # ─── PROSPECTS ──────────────────────────────────────────────────────────────
-  /prospects:
+  # ─── ACCOUNTS ───────────────────────────────────────────────────────────────
+  /accounts:
     get:
-      operationId: listProspects
-      tags: [prospects]
-      summary: List all prospect accounts
+      operationId: listAccounts
+      tags: [accounts]
+      summary: List all accounts
       parameters:
         - name: page
           in: query
-          schema:
-            type: integer
-            default: 1
+          schema: { type: integer, default: 1 }
         - name: pageSize
           in: query
-          schema:
-            type: integer
-            default: 20
+          schema: { type: integer, default: 20 }
         - name: priorityTier
           in: query
-          schema:
-            type: string
+          schema: { type: string }
         - name: icpType
           in: query
-          schema:
-            type: string
-        - name: outreachStatus
-          in: query
-          schema:
-            type: string
+          schema: { type: string }
         - name: search
           in: query
-          schema:
-            type: string
+          schema: { type: string }
       responses:
         "200":
-          description: List of prospects
+          description: List of accounts
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProspectListResponse"
+                $ref: "#/components/schemas/AccountListResponse"
     post:
-      operationId: createProspect
-      tags: [prospects]
-      summary: Create a new prospect account
+      operationId: createAccount
+      tags: [accounts]
+      summary: Create a new account
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateProspectRequest"
+              $ref: "#/components/schemas/CreateAccountRequest"
       responses:
         "201":
           description: Created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Prospect"
+                $ref: "#/components/schemas/AccountResponse"
 
-  /prospects/import:
+  /accounts/import:
     post:
-      operationId: importProspects
-      tags: [prospects]
-      summary: Import prospects from CSV data
+      operationId: importAccounts
+      tags: [accounts]
+      summary: Bulk import accounts from CSV row data
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ImportProspectsRequest"
+              $ref: "#/components/schemas/ImportAccountsRequest"
       responses:
         "200":
-          description: Import results
+          description: Import result
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ImportResult"
 
-  /prospects/{id}:
+  /accounts/{id}:
     get:
-      operationId: getProspect
-      tags: [prospects]
-      summary: Get a prospect by ID
+      operationId: getAccount
+      tags: [accounts]
+      summary: Get account by ID
       parameters:
         - name: id
           in: path
           required: true
-          schema:
-            type: integer
+          schema: { type: string }
       responses:
         "200":
-          description: Prospect details
+          description: Account detail
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProspectDetail"
+                $ref: "#/components/schemas/AccountDetailResponse"
         "404":
           description: Not found
           content:
@@ -142,38 +123,36 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
     put:
-      operationId: updateProspect
-      tags: [prospects]
-      summary: Update a prospect
+      operationId: updateAccount
+      tags: [accounts]
+      summary: Update an account
       parameters:
         - name: id
           in: path
           required: true
-          schema:
-            type: integer
+          schema: { type: string }
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateProspectRequest"
+              $ref: "#/components/schemas/UpdateAccountRequest"
       responses:
         "200":
-          description: Updated prospect
+          description: Updated account
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Prospect"
+                $ref: "#/components/schemas/AccountResponse"
     delete:
-      operationId: deleteProspect
-      tags: [prospects]
-      summary: Delete a prospect
+      operationId: deleteAccount
+      tags: [accounts]
+      summary: Delete an account
       parameters:
         - name: id
           in: path
           required: true
-          schema:
-            type: integer
+          schema: { type: string }
       responses:
         "204":
           description: Deleted
@@ -185,14 +164,21 @@ paths:
       tags: [contacts]
       summary: List contacts
       parameters:
-        - name: prospectId
+        - name: accountId
           in: query
-          schema:
-            type: integer
+          schema: { type: string }
+        - name: outreachStatus
+          in: query
+          schema: { type: string }
         - name: search
           in: query
-          schema:
-            type: string
+          schema: { type: string }
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: pageSize
+          in: query
+          schema: { type: integer, default: 20 }
       responses:
         "200":
           description: List of contacts
@@ -216,7 +202,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Contact"
+                $ref: "#/components/schemas/ContactResponse"
 
   /contacts/{id}:
     get:
@@ -227,15 +213,14 @@ paths:
         - name: id
           in: path
           required: true
-          schema:
-            type: integer
+          schema: { type: string }
       responses:
         "200":
           description: Contact
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Contact"
+                $ref: "#/components/schemas/ContactResponse"
         "404":
           description: Not found
           content:
@@ -250,8 +235,7 @@ paths:
         - name: id
           in: path
           required: true
-          schema:
-            type: integer
+          schema: { type: string }
       requestBody:
         required: true
         content:
@@ -264,7 +248,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Contact"
+                $ref: "#/components/schemas/ContactResponse"
+    delete:
+      operationId: deleteContact
+      tags: [contacts]
+      summary: Delete a contact
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204":
+          description: Deleted
 
   # ─── ANALYSES ───────────────────────────────────────────────────────────────
   /analyses:
@@ -273,14 +269,12 @@ paths:
       tags: [analyses]
       summary: List homepage analyses
       parameters:
-        - name: prospectId
+        - name: accountId
           in: query
-          schema:
-            type: integer
+          schema: { type: string }
         - name: issueCode
           in: query
-          schema:
-            type: string
+          schema: { type: string }
       responses:
         "200":
           description: List of analyses
@@ -291,7 +285,7 @@ paths:
     post:
       operationId: createAnalysis
       tags: [analyses]
-      summary: Submit a homepage for analysis
+      summary: Submit a page for analysis
       requestBody:
         required: true
         content:
@@ -300,11 +294,11 @@ paths:
               $ref: "#/components/schemas/CreateAnalysisRequest"
       responses:
         "201":
-          description: Analysis created/queued
+          description: Created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Analysis"
+                $ref: "#/components/schemas/AnalysisResponse"
 
   /analyses/{id}:
     get:
@@ -315,15 +309,14 @@ paths:
         - name: id
           in: path
           required: true
-          schema:
-            type: integer
+          schema: { type: string }
       responses:
         "200":
-          description: Analysis details
+          description: Analysis
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Analysis"
+                $ref: "#/components/schemas/AnalysisResponse"
         "404":
           description: Not found
           content:
@@ -333,13 +326,12 @@ paths:
     put:
       operationId: updateAnalysis
       tags: [analyses]
-      summary: Update / complete an analysis
+      summary: Update an analysis result
       parameters:
         - name: id
           in: path
           required: true
-          schema:
-            type: integer
+          schema: { type: string }
       requestBody:
         required: true
         content:
@@ -348,24 +340,11 @@ paths:
               $ref: "#/components/schemas/UpdateAnalysisRequest"
       responses:
         "200":
-          description: Updated analysis
+          description: Updated
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Analysis"
-
-  /analyses/clusters:
-    get:
-      operationId: getIssueClusters
-      tags: [analyses]
-      summary: Get issue clusters grouped by issue code
-      responses:
-        "200":
-          description: Issue cluster summary
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/IssueClustersResponse"
+                $ref: "#/components/schemas/AnalysisResponse"
 
   # ─── INSIGHTS ───────────────────────────────────────────────────────────────
   /insights:
@@ -376,16 +355,10 @@ paths:
       parameters:
         - name: issueCode
           in: query
-          schema:
-            type: string
+          schema: { type: string }
         - name: icp
           in: query
-          schema:
-            type: string
-        - name: channel
-          in: query
-          schema:
-            type: string
+          schema: { type: string }
       responses:
         "200":
           description: List of insight blocks
@@ -409,32 +382,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Insight"
+                $ref: "#/components/schemas/InsightResponse"
 
   /insights/{id}:
-    get:
-      operationId: getInsight
-      tags: [insights]
-      summary: Get an insight block
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: Insight
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Insight"
-        "404":
-          description: Not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
     put:
       operationId: updateInsight
       tags: [insights]
@@ -443,8 +393,7 @@ paths:
         - name: id
           in: path
           required: true
-          schema:
-            type: integer
+          schema: { type: string }
       requestBody:
         required: true
         content:
@@ -457,7 +406,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Insight"
+                $ref: "#/components/schemas/InsightResponse"
     delete:
       operationId: deleteInsight
       tags: [insights]
@@ -466,8 +415,7 @@ paths:
         - name: id
           in: path
           required: true
-          schema:
-            type: integer
+          schema: { type: string }
       responses:
         "204":
           description: Deleted
@@ -478,15 +426,6 @@ paths:
       operationId: listSequences
       tags: [sequences]
       summary: List outreach sequences
-      parameters:
-        - name: prospectId
-          in: query
-          schema:
-            type: integer
-        - name: status
-          in: query
-          schema:
-            type: string
       responses:
         "200":
           description: List of sequences
@@ -497,7 +436,7 @@ paths:
     post:
       operationId: createSequence
       tags: [sequences]
-      summary: Create an outreach sequence
+      summary: Create a sequence
       requestBody:
         required: true
         content:
@@ -510,154 +449,175 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Sequence"
+                $ref: "#/components/schemas/SequenceResponse"
 
-  /sequences/{id}:
+  # ─── ACTIVITIES ─────────────────────────────────────────────────────────────
+  /activities:
     get:
-      operationId: getSequence
-      tags: [sequences]
-      summary: Get a sequence by ID
+      operationId: listActivities
+      tags: [activities]
+      summary: List activities
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: Sequence
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Sequence"
-        "404":
-          description: Not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-    put:
-      operationId: updateSequence
-      tags: [sequences]
-      summary: Update a sequence
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateSequenceRequest"
-      responses:
-        "200":
-          description: Updated
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Sequence"
-
-  /sequences/generate:
-    post:
-      operationId: generateSequence
-      tags: [sequences]
-      summary: Generate a sequence using analysis and insight data
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/GenerateSequenceRequest"
-      responses:
-        "200":
-          description: Generated sequence steps
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneratedSequence"
-
-  # ─── TOUCHES ────────────────────────────────────────────────────────────────
-  /touches:
-    get:
-      operationId: listTouches
-      tags: [touches]
-      summary: List touch activities
-      parameters:
-        - name: prospectId
+        - name: accountId
           in: query
-          schema:
-            type: integer
+          schema: { type: string }
         - name: contactId
           in: query
-          schema:
-            type: integer
-        - name: channel
+          schema: { type: string }
+        - name: activityType
           in: query
-          schema:
-            type: string
+          schema: { type: string }
         - name: dueToday
           in: query
-          schema:
-            type: boolean
+          schema: { type: boolean }
       responses:
         "200":
-          description: List of touches
+          description: List of activities
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TouchListResponse"
+                $ref: "#/components/schemas/ActivityListResponse"
     post:
-      operationId: createTouch
-      tags: [touches]
-      summary: Log a touch activity
+      operationId: createActivity
+      tags: [activities]
+      summary: Log an activity
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateTouchRequest"
+              $ref: "#/components/schemas/CreateActivityRequest"
       responses:
         "201":
           description: Created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Touch"
+                $ref: "#/components/schemas/ActivityResponse"
 
-  /touches/{id}:
-    put:
-      operationId: updateTouch
-      tags: [touches]
-      summary: Update a touch (e.g. mark replied, booked)
+  # ─── OPPORTUNITIES ──────────────────────────────────────────────────────────
+  /opportunities:
+    get:
+      operationId: listOpportunities
+      tags: [opportunities]
+      summary: List opportunities
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
+        - name: stage
+          in: query
+          schema: { type: string }
+        - name: accountId
+          in: query
+          schema: { type: string }
+      responses:
+        "200":
+          description: List of opportunities
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OpportunityListResponse"
+    post:
+      operationId: createOpportunity
+      tags: [opportunities]
+      summary: Create an opportunity
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateTouchRequest"
+              $ref: "#/components/schemas/CreateOpportunityRequest"
       responses:
-        "200":
-          description: Updated touch
+        "201":
+          description: Created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Touch"
+                $ref: "#/components/schemas/OpportunityResponse"
+
+  /opportunities/{id}:
+    put:
+      operationId: updateOpportunity
+      tags: [opportunities]
+      summary: Update an opportunity
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOpportunityRequest"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OpportunityResponse"
+
+  # ─── EXPERIMENTS ────────────────────────────────────────────────────────────
+  /experiments:
+    get:
+      operationId: listExperiments
+      tags: [experiments]
+      summary: List experiments
+      responses:
+        "200":
+          description: List of experiments
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExperimentListResponse"
+    post:
+      operationId: createExperiment
+      tags: [experiments]
+      summary: Create an experiment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateExperimentRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExperimentResponse"
+
+  /experiments/{id}:
+    put:
+      operationId: updateExperiment
+      tags: [experiments]
+      summary: Update an experiment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateExperimentRequest"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExperimentResponse"
 
   # ─── DASHBOARD ──────────────────────────────────────────────────────────────
   /dashboard/metrics:
     get:
       operationId: getDashboardMetrics
       tags: [dashboard]
-      summary: Get top-level KPI metrics
+      summary: Get KPI metrics
       responses:
         "200":
           description: Dashboard metrics
@@ -683,365 +643,171 @@ paths:
     get:
       operationId: getActivityToday
       tags: [dashboard]
-      summary: Get today's tasks and hot prospects
+      summary: Get today's hot prospects and tasks
       responses:
         "200":
-          description: Today's activity
+          description: Activity today
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ActivityToday"
 
-  /dashboard/channel-performance:
+  # ─── SETTINGS ───────────────────────────────────────────────────────────────
+  /settings:
     get:
-      operationId: getChannelPerformance
-      tags: [dashboard]
-      summary: Get reply rates and performance by channel
+      operationId: getSettings
+      tags: [settings]
+      summary: Get user settings
       responses:
         "200":
-          description: Channel performance data
+          description: User settings
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ChannelPerformanceResponse"
-
-  /dashboard/top-hooks:
-    get:
-      operationId: getTopHooks
-      tags: [dashboard]
-      summary: Get top performing message hooks and CTAs
-      responses:
-        "200":
-          description: Top hooks
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TopHooksResponse"
-
-  # ─── EXPERIMENTS ────────────────────────────────────────────────────────────
-  /experiments:
-    get:
-      operationId: listExperiments
-      tags: [experiments]
-      summary: List A/B experiments
-      responses:
-        "200":
-          description: List of experiments
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ExperimentListResponse"
+                $ref: "#/components/schemas/SettingsResponse"
     post:
-      operationId: createExperiment
-      tags: [experiments]
-      summary: Create an experiment
+      operationId: saveSettings
+      tags: [settings]
+      summary: Save user settings
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateExperimentRequest"
-      responses:
-        "201":
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Experiment"
-
-  /experiments/{id}:
-    put:
-      operationId: updateExperiment
-      tags: [experiments]
-      summary: Update experiment results
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateExperimentRequest"
+              $ref: "#/components/schemas/SaveSettingsRequest"
       responses:
         "200":
-          description: Updated
+          description: Saved settings
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Experiment"
+                $ref: "#/components/schemas/SettingsResponse"
 
 components:
   schemas:
     HealthStatus:
       type: object
       properties:
-        status:
-          type: string
-      required:
-        - status
+        status: { type: string }
+      required: [status]
 
     ErrorResponse:
       type: object
       properties:
-        error:
-          type: string
-        message:
-          type: string
-      required:
-        - error
+        error: { type: string }
+        message: { type: string }
+      required: [error]
 
-    # ─── PROSPECT SCHEMAS ──────────────────────────────────────────────────────
-    Prospect:
+    # Pagination wrapper
+    PaginatedMeta:
       type: object
       properties:
-        id:
-          type: integer
-        companyName:
-          type: string
-        domain:
-          type: string
-        websiteUrl:
-          type: string
-        industry:
-          type: string
-        subIndustry:
-          type: string
-        employeeCountBand:
-          type: string
-          enum: ["1-10", "11-50", "51-100", "101-250", "250+"]
-        revenueBand:
-          type: string
-          nullable: true
-        geography:
-          type: string
-          nullable: true
-        source:
-          type: string
-        sourceDetail:
-          type: string
-          nullable: true
-        sourceCaptureDate:
-          type: string
-          format: date-time
-          nullable: true
-        accountOwner:
-          type: string
-          nullable: true
-        priorityTier:
-          type: string
-          enum: ["A", "B", "C"]
-        icpType:
-          type: string
-          enum: ["founder", "marketing_manager", "agency"]
-        fitScore:
-          type: integer
-          minimum: 0
-          maximum: 100
-        outreachStatus:
-          type: string
-          enum: ["not_started", "in_sequence", "replied", "booked", "showed", "closed_won", "closed_lost", "nurture"]
-        likelyPrimaryProblem:
-          type: string
-          nullable: true
-        likelySecondaryProblem:
-          type: string
-          nullable: true
-        likelyAssetToOffer:
-          type: string
-          nullable: true
-        personalizationLevel:
-          type: string
-          enum: ["high", "medium", "low"]
-          nullable: true
-        sequenceFamily:
-          type: string
-          nullable: true
-        notes:
-          type: string
-          nullable: true
-        latestAnalysisId:
-          type: integer
-          nullable: true
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-      required:
-        - id
-        - companyName
-        - domain
-        - websiteUrl
-        - industry
-        - priorityTier
-        - icpType
-        - fitScore
-        - outreachStatus
-        - source
-        - createdAt
-        - updatedAt
+        total: { type: integer }
+        page: { type: integer }
+        pageSize: { type: integer }
+      required: [total, page, pageSize]
 
-    ProspectDetail:
-      allOf:
-        - $ref: "#/components/schemas/Prospect"
-        - type: object
-          properties:
-            contacts:
-              type: array
-              items:
-                $ref: "#/components/schemas/Contact"
-            analyses:
-              type: array
-              items:
-                $ref: "#/components/schemas/Analysis"
-            sequences:
-              type: array
-              items:
-                $ref: "#/components/schemas/Sequence"
-            recentTouches:
-              type: array
-              items:
-                $ref: "#/components/schemas/Touch"
-
-    ProspectListResponse:
+    # ─── ACCOUNT ────────────────────────────────────────────────────────────
+    Account:
       type: object
       properties:
-        prospects:
+        id: { type: string }
+        companyName: { type: string }
+        domain: { type: string, nullable: true }
+        websiteUrl: { type: string, nullable: true }
+        industry: { type: string, nullable: true }
+        subIndustry: { type: string, nullable: true }
+        employeeBand: { type: string, nullable: true }
+        revenueBand: { type: string, nullable: true }
+        geography: { type: string, nullable: true }
+        icpType: { type: string, nullable: true }
+        fitScore: { type: integer, nullable: true }
+        priorityTier: { type: string, nullable: true }
+        source: { type: string, nullable: true }
+        sourceDetail: { type: string, nullable: true }
+        sourceCaptureDate: { type: string, format: date-time, nullable: true }
+        ownerId: { type: string }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+        contactCount: { type: integer, nullable: true }
+      required: [id, companyName, ownerId, createdAt, updatedAt]
+
+    AccountResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/Account"
+      required: [data]
+
+    AccountDetailResponse:
+      type: object
+      properties:
+        data:
+          allOf:
+            - $ref: "#/components/schemas/Account"
+            - type: object
+              properties:
+                contacts:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Contact"
+                analyses:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Analysis"
+                recentActivities:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Activity"
+      required: [data]
+
+    AccountListResponse:
+      type: object
+      properties:
+        data:
           type: array
           items:
-            $ref: "#/components/schemas/Prospect"
-        total:
-          type: integer
-        page:
-          type: integer
-        pageSize:
-          type: integer
-      required:
-        - prospects
-        - total
-        - page
-        - pageSize
+            $ref: "#/components/schemas/Account"
+        meta:
+          $ref: "#/components/schemas/PaginatedMeta"
+      required: [data, meta]
 
-    CreateProspectRequest:
+    CreateAccountRequest:
       type: object
       properties:
-        companyName:
-          type: string
-        domain:
-          type: string
-        websiteUrl:
-          type: string
-        industry:
-          type: string
-        subIndustry:
-          type: string
-          nullable: true
-        employeeCountBand:
-          type: string
-          enum: ["1-10", "11-50", "51-100", "101-250", "250+"]
-        revenueBand:
-          type: string
-          nullable: true
-        geography:
-          type: string
-          nullable: true
-        source:
-          type: string
-        sourceDetail:
-          type: string
-          nullable: true
-        accountOwner:
-          type: string
-          nullable: true
-        priorityTier:
-          type: string
-          enum: ["A", "B", "C"]
-        icpType:
-          type: string
-          enum: ["founder", "marketing_manager", "agency"]
-        fitScore:
-          type: integer
-          minimum: 0
-          maximum: 100
-        notes:
-          type: string
-          nullable: true
-      required:
-        - companyName
-        - domain
-        - websiteUrl
-        - industry
-        - employeeCountBand
-        - source
-        - priorityTier
-        - icpType
-        - fitScore
+        companyName: { type: string }
+        domain: { type: string, nullable: true }
+        websiteUrl: { type: string, nullable: true }
+        industry: { type: string, nullable: true }
+        subIndustry: { type: string, nullable: true }
+        employeeBand: { type: string, nullable: true }
+        revenueBand: { type: string, nullable: true }
+        geography: { type: string, nullable: true }
+        icpType: { type: string, nullable: true }
+        fitScore: { type: integer, nullable: true }
+        priorityTier: { type: string, nullable: true }
+        source: { type: string, nullable: true }
+        sourceDetail: { type: string, nullable: true }
+      required: [companyName]
 
-    UpdateProspectRequest:
+    UpdateAccountRequest:
       type: object
       properties:
-        companyName:
-          type: string
-        domain:
-          type: string
-        websiteUrl:
-          type: string
-        industry:
-          type: string
-        subIndustry:
-          type: string
-          nullable: true
-        employeeCountBand:
-          type: string
-          enum: ["1-10", "11-50", "51-100", "101-250", "250+"]
-        revenueBand:
-          type: string
-          nullable: true
-        geography:
-          type: string
-          nullable: true
-        accountOwner:
-          type: string
-          nullable: true
-        priorityTier:
-          type: string
-          enum: ["A", "B", "C"]
-        icpType:
-          type: string
-          enum: ["founder", "marketing_manager", "agency"]
-        fitScore:
-          type: integer
-          minimum: 0
-          maximum: 100
-        outreachStatus:
-          type: string
-          enum: ["not_started", "in_sequence", "replied", "booked", "showed", "closed_won", "closed_lost", "nurture"]
-        likelyPrimaryProblem:
-          type: string
-          nullable: true
-        likelySecondaryProblem:
-          type: string
-          nullable: true
-        likelyAssetToOffer:
-          type: string
-          nullable: true
-        personalizationLevel:
-          type: string
-          enum: ["high", "medium", "low"]
-          nullable: true
-        sequenceFamily:
-          type: string
-          nullable: true
-        notes:
-          type: string
-          nullable: true
+        companyName: { type: string }
+        domain: { type: string, nullable: true }
+        websiteUrl: { type: string, nullable: true }
+        industry: { type: string, nullable: true }
+        subIndustry: { type: string, nullable: true }
+        employeeBand: { type: string, nullable: true }
+        revenueBand: { type: string, nullable: true }
+        geography: { type: string, nullable: true }
+        icpType: { type: string, nullable: true }
+        fitScore: { type: integer, nullable: true }
+        priorityTier: { type: string, nullable: true }
+        source: { type: string, nullable: true }
+        sourceDetail: { type: string, nullable: true }
 
-    ImportProspectsRequest:
+    ImportAccountsRequest:
       type: object
       properties:
         rows:
@@ -1049,983 +815,436 @@ components:
           items:
             type: object
             additionalProperties: true
-      required:
-        - rows
+      required: [rows]
 
     ImportResult:
       type: object
       properties:
-        imported:
-          type: integer
-        skipped:
-          type: integer
+        imported: { type: integer }
+        skipped: { type: integer }
         errors:
           type: array
-          items:
-            type: string
-      required:
-        - imported
-        - skipped
-        - errors
+          items: { type: string }
+      required: [imported, skipped, errors]
 
-    # ─── CONTACT SCHEMAS ───────────────────────────────────────────────────────
+    # ─── CONTACT ────────────────────────────────────────────────────────────
     Contact:
       type: object
       properties:
-        id:
-          type: integer
-        prospectId:
-          type: integer
-        firstName:
-          type: string
-        lastName:
-          type: string
-        fullName:
-          type: string
-        jobTitle:
-          type: string
-          nullable: true
-        seniority:
-          type: string
-          nullable: true
-        email:
-          type: string
-          nullable: true
-        phone:
-          type: string
-          nullable: true
-        linkedinUrl:
-          type: string
-          nullable: true
-        contactSource:
-          type: string
-          nullable: true
-        outreachStatus:
-          type: string
-          enum: ["not_started", "in_sequence", "replied", "booked", "opted_out"]
-        notes:
-          type: string
-          nullable: true
-        createdAt:
-          type: string
-          format: date-time
-      required:
-        - id
-        - prospectId
-        - firstName
-        - lastName
-        - fullName
-        - outreachStatus
-        - createdAt
+        id: { type: string }
+        accountId: { type: string }
+        firstName: { type: string, nullable: true }
+        lastName: { type: string, nullable: true }
+        fullName: { type: string, nullable: true }
+        jobTitle: { type: string, nullable: true }
+        seniority: { type: string, nullable: true }
+        email: { type: string, nullable: true }
+        phone: { type: string, nullable: true }
+        linkedinUrl: { type: string, nullable: true }
+        contactSource: { type: string, nullable: true }
+        outreachStatus: { type: string }
+        notes: { type: string, nullable: true }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+        accountName: { type: string, nullable: true }
+      required: [id, accountId, outreachStatus, createdAt, updatedAt]
+
+    ContactResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/Contact"
+      required: [data]
 
     ContactListResponse:
       type: object
       properties:
-        contacts:
+        data:
           type: array
           items:
             $ref: "#/components/schemas/Contact"
-        total:
-          type: integer
-      required:
-        - contacts
-        - total
+        meta:
+          $ref: "#/components/schemas/PaginatedMeta"
+      required: [data, meta]
 
     CreateContactRequest:
       type: object
       properties:
-        prospectId:
-          type: integer
-        firstName:
-          type: string
-        lastName:
-          type: string
-        jobTitle:
-          type: string
-          nullable: true
-        seniority:
-          type: string
-          nullable: true
-        email:
-          type: string
-          nullable: true
-        phone:
-          type: string
-          nullable: true
-        linkedinUrl:
-          type: string
-          nullable: true
-        contactSource:
-          type: string
-          nullable: true
-        notes:
-          type: string
-          nullable: true
-      required:
-        - prospectId
-        - firstName
-        - lastName
+        accountId: { type: string }
+        firstName: { type: string, nullable: true }
+        lastName: { type: string, nullable: true }
+        jobTitle: { type: string, nullable: true }
+        seniority: { type: string, nullable: true }
+        email: { type: string, nullable: true }
+        phone: { type: string, nullable: true }
+        linkedinUrl: { type: string, nullable: true }
+        contactSource: { type: string, nullable: true }
+        notes: { type: string, nullable: true }
+      required: [accountId]
 
     UpdateContactRequest:
       type: object
       properties:
-        firstName:
-          type: string
-        lastName:
-          type: string
-        jobTitle:
-          type: string
-          nullable: true
-        seniority:
-          type: string
-          nullable: true
-        email:
-          type: string
-          nullable: true
-        phone:
-          type: string
-          nullable: true
-        linkedinUrl:
-          type: string
-          nullable: true
-        outreachStatus:
-          type: string
-          enum: ["not_started", "in_sequence", "replied", "booked", "opted_out"]
-        notes:
-          type: string
-          nullable: true
+        firstName: { type: string, nullable: true }
+        lastName: { type: string, nullable: true }
+        jobTitle: { type: string, nullable: true }
+        seniority: { type: string, nullable: true }
+        email: { type: string, nullable: true }
+        phone: { type: string, nullable: true }
+        linkedinUrl: { type: string, nullable: true }
+        outreachStatus: { type: string }
+        notes: { type: string, nullable: true }
 
-    # ─── ANALYSIS SCHEMAS ──────────────────────────────────────────────────────
+    # ─── ANALYSIS ───────────────────────────────────────────────────────────
     Analysis:
       type: object
       properties:
-        id:
-          type: integer
-        prospectId:
-          type: integer
-          nullable: true
-        domain:
-          type: string
-        pageUrl:
-          type: string
-        pageType:
-          type: string
-          enum: ["homepage", "landing_page", "pricing", "about", "other"]
-        analyzedAt:
-          type: string
-          format: date-time
-          nullable: true
-        status:
-          type: string
-          enum: ["pending", "complete", "failed"]
-        heroClarityScore:
-          type: number
-          nullable: true
-        ctaClarityScore:
-          type: number
-          nullable: true
-        ctaProminenceScore:
-          type: number
-          nullable: true
-        visualHierarchyScore:
-          type: number
-          nullable: true
-        messageOrderScore:
-          type: number
-          nullable: true
-        outcomeClarityScore:
-          type: number
-          nullable: true
-        trustSignalScore:
-          type: number
-          nullable: true
-        frictionScore:
-          type: number
-          nullable: true
-        mobileReadabilityScore:
-          type: number
-          nullable: true
-        overallScore:
-          type: number
-          nullable: true
-        primaryIssueCode:
-          type: string
-          nullable: true
-        secondaryIssueCode:
-          type: string
-          nullable: true
-        tertiaryIssueCode:
-          type: string
-          nullable: true
-        issueSummaryShort:
-          type: string
-          nullable: true
-        issueSummaryDetailed:
-          type: string
-          nullable: true
-        strengthsDetected:
-          type: string
-          nullable: true
-        recommendedPriorityFix:
-          type: string
-          nullable: true
-        confidenceScore:
-          type: number
-          nullable: true
-        rawNotes:
-          type: string
-          nullable: true
-        screenshotUrl:
-          type: string
-          nullable: true
-        createdAt:
-          type: string
-          format: date-time
-      required:
-        - id
-        - domain
-        - pageUrl
-        - pageType
-        - status
-        - createdAt
+        id: { type: string }
+        accountId: { type: string }
+        domain: { type: string }
+        pageUrl: { type: string }
+        pageType: { type: string }
+        analyzedAt: { type: string, format: date-time }
+        heroClarity: { type: integer, nullable: true }
+        ctaClarity: { type: integer, nullable: true }
+        ctaProminence: { type: integer, nullable: true }
+        visualHierarchy: { type: integer, nullable: true }
+        messageOrder: { type: integer, nullable: true }
+        outcomeClarity: { type: integer, nullable: true }
+        trustSignal: { type: integer, nullable: true }
+        friction: { type: integer, nullable: true }
+        mobileReadability: { type: integer, nullable: true }
+        primaryIssueCode: { type: string, nullable: true }
+        secondaryIssueCode: { type: string, nullable: true }
+        tertiaryIssueCode: { type: string, nullable: true }
+        issueSummaryShort: { type: string, nullable: true }
+        issueSummaryDetailed: { type: string, nullable: true }
+        recommendedPriorityFix: { type: string, nullable: true }
+        confidenceScore: { type: integer, nullable: true }
+        screenshotUrl: { type: string, nullable: true }
+        createdAt: { type: string, format: date-time }
+      required: [id, accountId, domain, pageUrl, pageType, analyzedAt, createdAt]
+
+    AnalysisResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/Analysis"
+      required: [data]
 
     AnalysisListResponse:
       type: object
       properties:
-        analyses:
+        data:
           type: array
           items:
             $ref: "#/components/schemas/Analysis"
-        total:
-          type: integer
-      required:
-        - analyses
-        - total
+        total: { type: integer }
+      required: [data, total]
 
     CreateAnalysisRequest:
       type: object
       properties:
-        prospectId:
-          type: integer
-          nullable: true
-        domain:
-          type: string
-        pageUrl:
-          type: string
-        pageType:
-          type: string
-          enum: ["homepage", "landing_page", "pricing", "about", "other"]
-      required:
-        - domain
-        - pageUrl
-        - pageType
+        accountId: { type: string }
+        domain: { type: string }
+        pageUrl: { type: string }
+        pageType: { type: string }
+      required: [accountId, domain, pageUrl, pageType]
 
     UpdateAnalysisRequest:
       type: object
       properties:
-        status:
-          type: string
-          enum: ["pending", "complete", "failed"]
-        heroClarityScore:
-          type: number
-          nullable: true
-        ctaClarityScore:
-          type: number
-          nullable: true
-        ctaProminenceScore:
-          type: number
-          nullable: true
-        visualHierarchyScore:
-          type: number
-          nullable: true
-        messageOrderScore:
-          type: number
-          nullable: true
-        outcomeClarityScore:
-          type: number
-          nullable: true
-        trustSignalScore:
-          type: number
-          nullable: true
-        frictionScore:
-          type: number
-          nullable: true
-        mobileReadabilityScore:
-          type: number
-          nullable: true
-        overallScore:
-          type: number
-          nullable: true
-        primaryIssueCode:
-          type: string
-          nullable: true
-        secondaryIssueCode:
-          type: string
-          nullable: true
-        tertiaryIssueCode:
-          type: string
-          nullable: true
-        issueSummaryShort:
-          type: string
-          nullable: true
-        issueSummaryDetailed:
-          type: string
-          nullable: true
-        strengthsDetected:
-          type: string
-          nullable: true
-        recommendedPriorityFix:
-          type: string
-          nullable: true
-        confidenceScore:
-          type: number
-          nullable: true
-        rawNotes:
-          type: string
-          nullable: true
-        screenshotUrl:
-          type: string
-          nullable: true
+        heroClarity: { type: integer, nullable: true }
+        ctaClarity: { type: integer, nullable: true }
+        ctaProminence: { type: integer, nullable: true }
+        visualHierarchy: { type: integer, nullable: true }
+        messageOrder: { type: integer, nullable: true }
+        outcomeClarity: { type: integer, nullable: true }
+        trustSignal: { type: integer, nullable: true }
+        friction: { type: integer, nullable: true }
+        mobileReadability: { type: integer, nullable: true }
+        primaryIssueCode: { type: string, nullable: true }
+        secondaryIssueCode: { type: string, nullable: true }
+        tertiaryIssueCode: { type: string, nullable: true }
+        issueSummaryShort: { type: string, nullable: true }
+        issueSummaryDetailed: { type: string, nullable: true }
+        recommendedPriorityFix: { type: string, nullable: true }
+        confidenceScore: { type: integer, nullable: true }
+        screenshotUrl: { type: string, nullable: true }
 
-    IssueCluster:
-      type: object
-      properties:
-        issueCode:
-          type: string
-        count:
-          type: integer
-        affectedProspects:
-          type: integer
-        topIcps:
-          type: array
-          items:
-            type: string
-        avgFitScore:
-          type: number
-      required:
-        - issueCode
-        - count
-        - affectedProspects
-        - topIcps
-        - avgFitScore
-
-    IssueClustersResponse:
-      type: object
-      properties:
-        clusters:
-          type: array
-          items:
-            $ref: "#/components/schemas/IssueCluster"
-      required:
-        - clusters
-
-    # ─── INSIGHT SCHEMAS ───────────────────────────────────────────────────────
+    # ─── INSIGHT ────────────────────────────────────────────────────────────
     Insight:
       type: object
       properties:
-        id:
-          type: integer
-        insightId:
-          type: string
-        issueCode:
-          type: string
-        icp:
-          type: array
-          items:
-            type: string
-        industries:
-          type: array
-          items:
-            type: string
-        shortInsightLine:
-          type: string
-        longerExplainer:
-          type: string
-          nullable: true
-        businessConsequence:
-          type: string
-          nullable: true
-        severityHint:
-          type: string
-          enum: ["critical", "high", "medium", "low"]
-          nullable: true
-        suitableChannels:
-          type: array
-          items:
-            type: string
-        suitableSequenceStep:
-          type: array
-          items:
-            type: integer
-        ctaPairings:
-          type: array
-          items:
-            type: string
-        proofAssetPairings:
-          type: array
-          items:
-            type: string
-        confidenceNotes:
-          type: string
-          nullable: true
-        useCount:
-          type: integer
-        replyCount:
-          type: integer
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-      required:
-        - id
-        - insightId
-        - issueCode
-        - icp
-        - industries
-        - shortInsightLine
-        - suitableChannels
-        - suitableSequenceStep
-        - ctaPairings
-        - proofAssetPairings
-        - useCount
-        - replyCount
-        - createdAt
-        - updatedAt
+        id: { type: string }
+        issueCode: { type: string }
+        icp: { type: string }
+        shortInsightLine: { type: string }
+        longerExplainer: { type: string, nullable: true }
+        businessConsequence: { type: string, nullable: true }
+        severityHint: { type: string, nullable: true }
+        active: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+      required: [id, issueCode, icp, shortInsightLine, active, createdAt, updatedAt]
+
+    InsightResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/Insight"
+      required: [data]
 
     InsightListResponse:
       type: object
       properties:
-        insights:
+        data:
           type: array
           items:
             $ref: "#/components/schemas/Insight"
-        total:
-          type: integer
-      required:
-        - insights
-        - total
+        total: { type: integer }
+      required: [data, total]
 
     CreateInsightRequest:
       type: object
       properties:
-        issueCode:
-          type: string
-        icp:
-          type: array
-          items:
-            type: string
-        industries:
-          type: array
-          items:
-            type: string
-        shortInsightLine:
-          type: string
-        longerExplainer:
-          type: string
-          nullable: true
-        businessConsequence:
-          type: string
-          nullable: true
-        severityHint:
-          type: string
-          enum: ["critical", "high", "medium", "low"]
-          nullable: true
-        suitableChannels:
-          type: array
-          items:
-            type: string
-        suitableSequenceStep:
-          type: array
-          items:
-            type: integer
-        ctaPairings:
-          type: array
-          items:
-            type: string
-        proofAssetPairings:
-          type: array
-          items:
-            type: string
-        confidenceNotes:
-          type: string
-          nullable: true
-      required:
-        - issueCode
-        - icp
-        - industries
-        - shortInsightLine
-        - suitableChannels
-        - suitableSequenceStep
-        - ctaPairings
-        - proofAssetPairings
+        issueCode: { type: string }
+        icp: { type: string }
+        shortInsightLine: { type: string }
+        longerExplainer: { type: string, nullable: true }
+        businessConsequence: { type: string, nullable: true }
+        severityHint: { type: string, nullable: true }
+      required: [issueCode, icp, shortInsightLine]
 
     UpdateInsightRequest:
       type: object
       properties:
-        issueCode:
-          type: string
-        icp:
-          type: array
-          items:
-            type: string
-        industries:
-          type: array
-          items:
-            type: string
-        shortInsightLine:
-          type: string
-        longerExplainer:
-          type: string
-          nullable: true
-        businessConsequence:
-          type: string
-          nullable: true
-        severityHint:
-          type: string
-          enum: ["critical", "high", "medium", "low"]
-          nullable: true
-        suitableChannels:
-          type: array
-          items:
-            type: string
-        suitableSequenceStep:
-          type: array
-          items:
-            type: integer
-        ctaPairings:
-          type: array
-          items:
-            type: string
-        proofAssetPairings:
-          type: array
-          items:
-            type: string
-        confidenceNotes:
-          type: string
-          nullable: true
+        shortInsightLine: { type: string }
+        longerExplainer: { type: string, nullable: true }
+        businessConsequence: { type: string, nullable: true }
+        severityHint: { type: string, nullable: true }
+        active: { type: boolean }
 
-    # ─── SEQUENCE SCHEMAS ──────────────────────────────────────────────────────
-    SequenceStep:
-      type: object
-      properties:
-        id:
-          type: integer
-        sequenceId:
-          type: integer
-        stepNumber:
-          type: integer
-        channel:
-          type: string
-          enum: ["email", "linkedin", "phone", "video", "other"]
-        dayOffset:
-          type: integer
-        subject:
-          type: string
-          nullable: true
-        body:
-          type: string
-        ctaText:
-          type: string
-          nullable: true
-        insightId:
-          type: integer
-          nullable: true
-        assetOffered:
-          type: string
-          nullable: true
-        status:
-          type: string
-          enum: ["pending", "sent", "replied", "skipped"]
-        sentAt:
-          type: string
-          format: date-time
-          nullable: true
-      required:
-        - id
-        - sequenceId
-        - stepNumber
-        - channel
-        - dayOffset
-        - body
-        - status
-
+    # ─── SEQUENCE ───────────────────────────────────────────────────────────
     Sequence:
       type: object
       properties:
-        id:
-          type: integer
-        prospectId:
-          type: integer
-        contactId:
-          type: integer
-          nullable: true
-        name:
-          type: string
-        personalizationLevel:
-          type: string
-          enum: ["high", "medium", "low"]
-        status:
-          type: string
-          enum: ["draft", "active", "paused", "completed", "archived"]
-        currentStep:
-          type: integer
-        totalSteps:
-          type: integer
-        startedAt:
-          type: string
-          format: date-time
-          nullable: true
-        completedAt:
-          type: string
-          format: date-time
-          nullable: true
-        steps:
-          type: array
-          items:
-            $ref: "#/components/schemas/SequenceStep"
-        createdAt:
-          type: string
-          format: date-time
-      required:
-        - id
-        - prospectId
-        - name
-        - personalizationLevel
-        - status
-        - currentStep
-        - totalSteps
-        - steps
-        - createdAt
+        id: { type: string }
+        sequenceName: { type: string }
+        icp: { type: string, nullable: true }
+        issueCluster: { type: string, nullable: true }
+        active: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+      required: [id, sequenceName, active, createdAt, updatedAt]
+
+    SequenceResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/Sequence"
+      required: [data]
 
     SequenceListResponse:
       type: object
       properties:
-        sequences:
+        data:
           type: array
           items:
             $ref: "#/components/schemas/Sequence"
-        total:
-          type: integer
-      required:
-        - sequences
-        - total
+        total: { type: integer }
+      required: [data, total]
 
     CreateSequenceRequest:
       type: object
       properties:
-        prospectId:
-          type: integer
-        contactId:
-          type: integer
-          nullable: true
-        name:
-          type: string
-        personalizationLevel:
-          type: string
-          enum: ["high", "medium", "low"]
-        steps:
+        sequenceName: { type: string }
+        icp: { type: string, nullable: true }
+        issueCluster: { type: string, nullable: true }
+        priorityTier: { type: string, nullable: true }
+      required: [sequenceName]
+
+    # ─── ACTIVITY ───────────────────────────────────────────────────────────
+    Activity:
+      type: object
+      properties:
+        id: { type: string }
+        accountId: { type: string }
+        contactId: { type: string }
+        channel: { type: string }
+        activityType: { type: string }
+        subject: { type: string, nullable: true }
+        body: { type: string, nullable: true }
+        sentAt: { type: string, format: date-time }
+        repliedAt: { type: string, format: date-time, nullable: true }
+        createdAt: { type: string, format: date-time }
+      required: [id, accountId, contactId, channel, activityType, sentAt, createdAt]
+
+    ActivityResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/Activity"
+      required: [data]
+
+    ActivityListResponse:
+      type: object
+      properties:
+        data:
           type: array
           items:
-            type: object
-            properties:
-              stepNumber:
-                type: integer
-              channel:
-                type: string
-                enum: ["email", "linkedin", "phone", "video", "other"]
-              dayOffset:
-                type: integer
-              subject:
-                type: string
-                nullable: true
-              body:
-                type: string
-              ctaText:
-                type: string
-                nullable: true
-              assetOffered:
-                type: string
-                nullable: true
-            required:
-              - stepNumber
-              - channel
-              - dayOffset
-              - body
-      required:
-        - prospectId
-        - name
-        - personalizationLevel
-        - steps
+            $ref: "#/components/schemas/Activity"
+        total: { type: integer }
+      required: [data, total]
 
-    UpdateSequenceRequest:
+    CreateActivityRequest:
       type: object
       properties:
-        name:
-          type: string
-        status:
-          type: string
-          enum: ["draft", "active", "paused", "completed", "archived"]
-        currentStep:
-          type: integer
+        accountId: { type: string }
+        contactId: { type: string }
+        channel: { type: string }
+        activityType: { type: string }
+        subject: { type: string, nullable: true }
+        body: { type: string, nullable: true }
+      required: [accountId, contactId, channel, activityType]
 
-    GenerateSequenceRequest:
+    # ─── OPPORTUNITY ────────────────────────────────────────────────────────
+    Opportunity:
       type: object
       properties:
-        prospectId:
-          type: integer
-        analysisId:
-          type: integer
-          nullable: true
-        icpType:
-          type: string
-          enum: ["founder", "marketing_manager", "agency"]
-        personalizationLevel:
-          type: string
-          enum: ["high", "medium", "low"]
-        touchCount:
-          type: integer
-          minimum: 2
-          maximum: 8
-      required:
-        - prospectId
-        - icpType
-        - personalizationLevel
-        - touchCount
+        id: { type: string }
+        accountId: { type: string }
+        contactId: { type: string }
+        stage: { type: string }
+        valueEstimate: { type: number, nullable: true }
+        closedStatus: { type: string, nullable: true }
+        lossReason: { type: string, nullable: true }
+        winReason: { type: string, nullable: true }
+        notes: { type: string, nullable: true }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+      required: [id, accountId, contactId, stage, createdAt, updatedAt]
 
-    GeneratedSequenceStep:
+    OpportunityResponse:
       type: object
       properties:
-        stepNumber:
-          type: integer
-        channel:
-          type: string
-        dayOffset:
-          type: integer
-        subject:
-          type: string
-          nullable: true
-        body:
-          type: string
-        ctaText:
-          type: string
-        insightUsed:
-          type: string
-          nullable: true
-        assetSuggested:
-          type: string
-          nullable: true
-      required:
-        - stepNumber
-        - channel
-        - dayOffset
-        - body
-        - ctaText
+        data:
+          $ref: "#/components/schemas/Opportunity"
+      required: [data]
 
-    GeneratedSequence:
+    OpportunityListResponse:
       type: object
       properties:
-        prospectId:
-          type: integer
-        icpType:
-          type: string
-        personalizationLevel:
-          type: string
-        steps:
+        data:
           type: array
           items:
-            $ref: "#/components/schemas/GeneratedSequenceStep"
-      required:
-        - prospectId
-        - icpType
-        - personalizationLevel
-        - steps
+            $ref: "#/components/schemas/Opportunity"
+        total: { type: integer }
+      required: [data, total]
 
-    # ─── TOUCH SCHEMAS ─────────────────────────────────────────────────────────
-    Touch:
+    CreateOpportunityRequest:
       type: object
       properties:
-        id:
-          type: integer
-        prospectId:
-          type: integer
-        contactId:
-          type: integer
-          nullable: true
-        sequenceId:
-          type: integer
-          nullable: true
-        channel:
-          type: string
-          enum: ["email", "linkedin", "phone", "video", "other"]
-        touchType:
-          type: string
-          enum: ["outbound", "reply", "call", "meeting", "note"]
-        direction:
-          type: string
-          enum: ["outbound", "inbound"]
-        subject:
-          type: string
-          nullable: true
-        body:
-          type: string
-          nullable: true
-        outcome:
-          type: string
-          enum: ["sent", "replied", "booked", "no_reply", "objection", "opted_out", "voicemail", "connected"]
-          nullable: true
-        objectionText:
-          type: string
-          nullable: true
-        nextAction:
-          type: string
-          nullable: true
-        nextActionDue:
-          type: string
-          format: date-time
-          nullable: true
-        performedAt:
-          type: string
-          format: date-time
-        createdAt:
-          type: string
-          format: date-time
-      required:
-        - id
-        - prospectId
-        - channel
-        - touchType
-        - direction
-        - performedAt
-        - createdAt
+        accountId: { type: string }
+        contactId: { type: string }
+        stage: { type: string }
+        valueEstimate: { type: number, nullable: true }
+        notes: { type: string, nullable: true }
+      required: [accountId, contactId, stage]
 
-    TouchListResponse:
+    UpdateOpportunityRequest:
       type: object
       properties:
-        touches:
+        stage: { type: string }
+        valueEstimate: { type: number, nullable: true }
+        closedStatus: { type: string, nullable: true }
+        lossReason: { type: string, nullable: true }
+        winReason: { type: string, nullable: true }
+        notes: { type: string, nullable: true }
+
+    # ─── EXPERIMENT ─────────────────────────────────────────────────────────
+    Experiment:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        hypothesis: { type: string, nullable: true }
+        variableTested: { type: string, nullable: true }
+        controlVariant: { type: string, nullable: true }
+        testVariant: { type: string, nullable: true }
+        status: { type: string }
+        resultSummary: { type: string, nullable: true }
+        decision: { type: string, nullable: true }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+      required: [id, name, status, createdAt, updatedAt]
+
+    ExperimentResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/Experiment"
+      required: [data]
+
+    ExperimentListResponse:
+      type: object
+      properties:
+        data:
           type: array
           items:
-            $ref: "#/components/schemas/Touch"
-        total:
-          type: integer
-      required:
-        - touches
-        - total
+            $ref: "#/components/schemas/Experiment"
+        total: { type: integer }
+      required: [data, total]
 
-    CreateTouchRequest:
+    CreateExperimentRequest:
       type: object
       properties:
-        prospectId:
-          type: integer
-        contactId:
-          type: integer
-          nullable: true
-        sequenceId:
-          type: integer
-          nullable: true
-        channel:
-          type: string
-          enum: ["email", "linkedin", "phone", "video", "other"]
-        touchType:
-          type: string
-          enum: ["outbound", "reply", "call", "meeting", "note"]
-        direction:
-          type: string
-          enum: ["outbound", "inbound"]
-        subject:
-          type: string
-          nullable: true
-        body:
-          type: string
-          nullable: true
-        outcome:
-          type: string
-          enum: ["sent", "replied", "booked", "no_reply", "objection", "opted_out", "voicemail", "connected"]
-          nullable: true
-        objectionText:
-          type: string
-          nullable: true
-        nextAction:
-          type: string
-          nullable: true
-        nextActionDue:
-          type: string
-          format: date-time
-          nullable: true
-        performedAt:
-          type: string
-          format: date-time
-          nullable: true
-      required:
-        - prospectId
-        - channel
-        - touchType
-        - direction
+        name: { type: string }
+        hypothesis: { type: string, nullable: true }
+        variableTested: { type: string, nullable: true }
+        controlVariant: { type: string, nullable: true }
+        testVariant: { type: string, nullable: true }
+      required: [name]
 
-    UpdateTouchRequest:
+    UpdateExperimentRequest:
       type: object
       properties:
-        outcome:
-          type: string
-          enum: ["sent", "replied", "booked", "no_reply", "objection", "opted_out", "voicemail", "connected"]
-        objectionText:
-          type: string
-          nullable: true
-        nextAction:
-          type: string
-          nullable: true
-        nextActionDue:
-          type: string
-          format: date-time
-          nullable: true
+        status: { type: string }
+        resultSummary: { type: string, nullable: true }
+        decision: { type: string, nullable: true }
 
-    # ─── DASHBOARD SCHEMAS ─────────────────────────────────────────────────────
+    # ─── DASHBOARD ──────────────────────────────────────────────────────────
     DashboardMetrics:
       type: object
       properties:
-        callsBookedThisWeek:
-          type: integer
-        positiveRepliesThisWeek:
-          type: integer
-        overallReplyRate:
-          type: number
-        showRate:
-          type: number
-        closeRate:
-          type: number
-        activeProspects:
-          type: integer
-        totalProspects:
-          type: integer
-        avgResponseTime:
-          type: number
-          nullable: true
-        hotProspectsCount:
-          type: integer
+        callsBookedThisWeek: { type: integer }
+        positiveRepliesThisWeek: { type: integer }
+        activeProspects: { type: integer }
+        accountsAnalyzed: { type: integer }
+        tasksDueToday: { type: integer }
+        hotProspectsCount: { type: integer }
+        totalAccounts: { type: integer }
+        totalContacts: { type: integer }
+        overallReplyRate: { type: number }
+        closeRate: { type: number }
       required:
         - callsBookedThisWeek
         - positiveRepliesThisWeek
-        - overallReplyRate
-        - showRate
-        - closeRate
         - activeProspects
-        - totalProspects
+        - accountsAnalyzed
+        - tasksDueToday
         - hotProspectsCount
+        - totalAccounts
+        - totalContacts
+        - overallReplyRate
+        - closeRate
 
     PipelineStage:
       type: object
       properties:
-        stage:
-          type: string
-        count:
-          type: integer
-        change:
-          type: integer
-      required:
-        - stage
-        - count
-        - change
+        stage: { type: string }
+        count: { type: integer }
+      required: [stage, count]
 
     PipelineSnapshot:
       type: object
@@ -2034,238 +1253,61 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PipelineStage"
-      required:
-        - stages
+      required: [stages]
 
     HotProspect:
       type: object
       properties:
-        id:
-          type: integer
-        companyName:
-          type: string
-        contactName:
-          type: string
-          nullable: true
-        icpType:
-          type: string
-        outreachStatus:
-          type: string
-        lastTouchAt:
-          type: string
-          format: date-time
-          nullable: true
-        nextActionDue:
-          type: string
-          format: date-time
-          nullable: true
-        nextAction:
-          type: string
-          nullable: true
-        urgencyReason:
-          type: string
-      required:
-        - id
-        - companyName
-        - icpType
-        - outreachStatus
-        - urgencyReason
+        id: { type: string }
+        companyName: { type: string }
+        contactName: { type: string, nullable: true }
+        icpType: { type: string, nullable: true }
+        outreachStatus: { type: string }
+        urgencyReason: { type: string }
+      required: [id, companyName, outreachStatus, urgencyReason]
 
     ActivityToday:
       type: object
       properties:
-        tasksDue:
-          type: integer
+        tasksDue: { type: integer }
         hotProspects:
           type: array
           items:
             $ref: "#/components/schemas/HotProspect"
-        upcomingCalls:
+        recentActivities:
           type: array
           items:
-            $ref: "#/components/schemas/Touch"
-      required:
-        - tasksDue
-        - hotProspects
-        - upcomingCalls
+            $ref: "#/components/schemas/Activity"
+      required: [tasksDue, hotProspects, recentActivities]
 
-    ChannelPerformance:
+    # ─── SETTINGS ───────────────────────────────────────────────────────────
+    Settings:
       type: object
       properties:
-        channel:
-          type: string
-        sent:
-          type: integer
-        replied:
-          type: integer
-        replyRate:
-          type: number
-        booked:
-          type: integer
-        bookingRate:
-          type: number
-      required:
-        - channel
-        - sent
-        - replied
-        - replyRate
-        - booked
-        - bookingRate
+        id: { type: string }
+        defaultSenderEmail: { type: string, nullable: true }
+        defaultSenderName: { type: string, nullable: true }
+        homepageAnalyserApiUrl: { type: string, nullable: true }
+        hasAnthropicKey: { type: boolean }
+        hasOpenaiKey: { type: boolean }
+        hasAnalyserKey: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+      required: [id, hasAnthropicKey, hasOpenaiKey, hasAnalyserKey, createdAt, updatedAt]
 
-    ChannelPerformanceResponse:
+    SettingsResponse:
       type: object
       properties:
-        channels:
-          type: array
-          items:
-            $ref: "#/components/schemas/ChannelPerformance"
-      required:
-        - channels
+        data:
+          $ref: "#/components/schemas/Settings"
+      required: [data]
 
-    TopHook:
+    SaveSettingsRequest:
       type: object
       properties:
-        text:
-          type: string
-        type:
-          type: string
-          enum: ["hook", "cta", "subject"]
-        uses:
-          type: integer
-        replies:
-          type: integer
-        replyRate:
-          type: number
-      required:
-        - text
-        - type
-        - uses
-        - replies
-        - replyRate
-
-    TopHooksResponse:
-      type: object
-      properties:
-        hooks:
-          type: array
-          items:
-            $ref: "#/components/schemas/TopHook"
-      required:
-        - hooks
-
-    # ─── EXPERIMENT SCHEMAS ────────────────────────────────────────────────────
-    Experiment:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        hypothesis:
-          type: string
-        variantA:
-          type: string
-        variantB:
-          type: string
-        metric:
-          type: string
-        status:
-          type: string
-          enum: ["running", "complete", "paused"]
-        aReplies:
-          type: integer
-        bReplies:
-          type: integer
-        aSent:
-          type: integer
-        bSent:
-          type: integer
-        winner:
-          type: string
-          enum: ["A", "B", "inconclusive"]
-          nullable: true
-        notes:
-          type: string
-          nullable: true
-        startedAt:
-          type: string
-          format: date-time
-          nullable: true
-        completedAt:
-          type: string
-          format: date-time
-          nullable: true
-        createdAt:
-          type: string
-          format: date-time
-      required:
-        - id
-        - name
-        - hypothesis
-        - variantA
-        - variantB
-        - metric
-        - status
-        - aReplies
-        - bReplies
-        - aSent
-        - bSent
-        - createdAt
-
-    ExperimentListResponse:
-      type: object
-      properties:
-        experiments:
-          type: array
-          items:
-            $ref: "#/components/schemas/Experiment"
-        total:
-          type: integer
-      required:
-        - experiments
-        - total
-
-    CreateExperimentRequest:
-      type: object
-      properties:
-        name:
-          type: string
-        hypothesis:
-          type: string
-        variantA:
-          type: string
-        variantB:
-          type: string
-        metric:
-          type: string
-        notes:
-          type: string
-          nullable: true
-      required:
-        - name
-        - hypothesis
-        - variantA
-        - variantB
-        - metric
-
-    UpdateExperimentRequest:
-      type: object
-      properties:
-        status:
-          type: string
-          enum: ["running", "complete", "paused"]
-        aReplies:
-          type: integer
-        bReplies:
-          type: integer
-        aSent:
-          type: integer
-        bSent:
-          type: integer
-        winner:
-          type: string
-          enum: ["A", "B", "inconclusive"]
-          nullable: true
-        notes:
-          type: string
-          nullable: true
+        defaultSenderEmail: { type: string, nullable: true }
+        defaultSenderName: { type: string, nullable: true }
+        homepageAnalyserApiUrl: { type: string, nullable: true }
+        anthropicApiKey: { type: string, nullable: true }
+        openaiApiKey: { type: string, nullable: true }
+        analyserApiKey: { type: string, nullable: true }

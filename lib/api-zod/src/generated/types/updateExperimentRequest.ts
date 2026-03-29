@@ -5,15 +5,9 @@
  * Design Bees Outbound Revenue Engine API
  * OpenAPI spec version: 0.1.0
  */
-import type { UpdateExperimentRequestStatus } from "./updateExperimentRequestStatus";
-import type { UpdateExperimentRequestWinner } from "./updateExperimentRequestWinner";
 
 export interface UpdateExperimentRequest {
-  status?: UpdateExperimentRequestStatus;
-  aReplies?: number;
-  bReplies?: number;
-  aSent?: number;
-  bSent?: number;
-  winner?: UpdateExperimentRequestWinner;
-  notes?: string | null;
+  status?: string;
+  resultSummary?: string | null;
+  decision?: string | null;
 }

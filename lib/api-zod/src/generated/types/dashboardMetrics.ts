@@ -9,11 +9,12 @@
 export interface DashboardMetrics {
   callsBookedThisWeek: number;
   positiveRepliesThisWeek: number;
-  overallReplyRate: number;
-  showRate: number;
-  closeRate: number;
   activeProspects: number;
-  totalProspects: number;
-  avgResponseTime?: number | null;
+  accountsAnalyzed: number;
+  tasksDueToday: number;
   hotProspectsCount: number;
+  totalAccounts: number;
+  totalContacts: number;
+  overallReplyRate: number;
+  closeRate: number;
 }

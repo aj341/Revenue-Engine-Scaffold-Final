@@ -5,28 +5,23 @@
  * Design Bees Outbound Revenue Engine API
  * OpenAPI spec version: 0.1.0
  */
-import type { UpdateAnalysisRequestStatus } from "./updateAnalysisRequestStatus";
 
 export interface UpdateAnalysisRequest {
-  status?: UpdateAnalysisRequestStatus;
-  heroClarityScore?: number | null;
-  ctaClarityScore?: number | null;
-  ctaProminenceScore?: number | null;
-  visualHierarchyScore?: number | null;
-  messageOrderScore?: number | null;
-  outcomeClarityScore?: number | null;
-  trustSignalScore?: number | null;
-  frictionScore?: number | null;
-  mobileReadabilityScore?: number | null;
-  overallScore?: number | null;
+  heroClarity?: number | null;
+  ctaClarity?: number | null;
+  ctaProminence?: number | null;
+  visualHierarchy?: number | null;
+  messageOrder?: number | null;
+  outcomeClarity?: number | null;
+  trustSignal?: number | null;
+  friction?: number | null;
+  mobileReadability?: number | null;
   primaryIssueCode?: string | null;
   secondaryIssueCode?: string | null;
   tertiaryIssueCode?: string | null;
   issueSummaryShort?: string | null;
   issueSummaryDetailed?: string | null;
-  strengthsDetected?: string | null;
   recommendedPriorityFix?: string | null;
   confidenceScore?: number | null;
-  rawNotes?: string | null;
   screenshotUrl?: string | null;
 }

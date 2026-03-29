@@ -5,24 +5,17 @@
  * Design Bees Outbound Revenue Engine API
  * OpenAPI spec version: 0.1.0
  */
-import type { ExperimentStatus } from "./experimentStatus";
-import type { ExperimentWinner } from "./experimentWinner";
 
 export interface Experiment {
-  id: number;
+  id: string;
   name: string;
-  hypothesis: string;
-  variantA: string;
-  variantB: string;
-  metric: string;
-  status: ExperimentStatus;
-  aReplies: number;
-  bReplies: number;
-  aSent: number;
-  bSent: number;
-  winner?: ExperimentWinner;
-  notes?: string | null;
-  startedAt?: Date | null;
-  completedAt?: Date | null;
+  hypothesis?: string | null;
+  variableTested?: string | null;
+  controlVariant?: string | null;
+  testVariant?: string | null;
+  status: string;
+  resultSummary?: string | null;
+  decision?: string | null;
   createdAt: Date;
+  updatedAt: Date;
 }

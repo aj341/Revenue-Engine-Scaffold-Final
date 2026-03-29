@@ -5,21 +5,13 @@
  * Design Bees Outbound Revenue Engine API
  * OpenAPI spec version: 0.1.0
  */
-import type { SequencePersonalizationLevel } from "./sequencePersonalizationLevel";
-import type { SequenceStatus } from "./sequenceStatus";
-import type { SequenceStep } from "./sequenceStep";
 
 export interface Sequence {
-  id: number;
-  prospectId: number;
-  contactId?: number | null;
-  name: string;
-  personalizationLevel: SequencePersonalizationLevel;
-  status: SequenceStatus;
-  currentStep: number;
-  totalSteps: number;
-  startedAt?: Date | null;
-  completedAt?: Date | null;
-  steps: SequenceStep[];
+  id: string;
+  sequenceName: string;
+  icp?: string | null;
+  issueCluster?: string | null;
+  active: boolean;
   createdAt: Date;
+  updatedAt: Date;
 }

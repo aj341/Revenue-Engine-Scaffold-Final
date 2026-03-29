@@ -8,6 +8,6 @@
 import type { Analysis } from "./analysis";
 
 export interface AnalysisListResponse {
-  analyses: Analysis[];
+  data: Analysis[];
   total: number;
 }
