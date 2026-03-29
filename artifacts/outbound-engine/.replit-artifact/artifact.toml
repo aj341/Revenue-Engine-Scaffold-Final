@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Design Bees Outbound Engine"
+version = "1.0.0"
+id = "artifacts/outbound-engine"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18870
+
+[services.development]
+run = "pnpm --filter @workspace/outbound-engine run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/outbound-engine", "run", "build" ]
+publicDir = "artifacts/outbound-engine/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18870"
+BASE_PATH = "/"
