@@ -26,14 +26,15 @@ export default function Settings() {
   const [showKeys, setShowKeys] = useState({ anthropic: false, openai: false, analyser: false });
 
   // Load initial data
+  const DEFAULT_ANALYSER_URL = "https://striking-prosperity-production-b017.up.railway.app/api";
+
   useEffect(() => {
     if (res?.data) {
       setFormData(prev => ({
         ...prev,
         defaultSenderName: res.data.defaultSenderName || "",
         defaultSenderEmail: res.data.defaultSenderEmail || "",
-        homepageAnalyserApiUrl: res.data.homepageAnalyserApiUrl || "",
-        // Don't overwrite typed keys with empty strings if user is typing, but for simplicity we reset on initial load
+        homepageAnalyserApiUrl: res.data.homepageAnalyserApiUrl || DEFAULT_ANALYSER_URL,
       }));
     }
   }, [res?.data]);
@@ -185,7 +186,7 @@ export default function Settings() {
                     name="homepageAnalyserApiUrl"
                     value={formData.homepageAnalyserApiUrl}
                     onChange={handleChange}
-                    placeholder="https://analyser.designbees.internal/api/v1"
+                    placeholder="https://striking-prosperity-production-b017.up.railway.app/api"
                     className="h-12 rounded-xl font-mono text-sm"
                   />
                 </div>

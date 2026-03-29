@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AppLayout } from "@/components/layout";
 import { useGetAccount, useUpdateAccount, useDeleteAccount, useListContacts, useCreateOpportunity } from "@workspace/api-client-react";
 import { useRoute, useLocation } from "wouter";
@@ -14,7 +14,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Loader2, Building2, Globe, MapPin, Users, Target, BarChart2, Activity, TrendingUp,
-  ChevronRight, Plus, RefreshCw, Mail, Phone, Edit, Trash2, ExternalLink, Zap, FileText, Calendar
+  ChevronRight, Plus, RefreshCw, Mail, Phone, Edit, Trash2, ExternalLink, Zap, FileText, Calendar, AlertTriangle
 } from "lucide-react";
 
 const SCORE_COLOR = (s: number) => s >= 75 ? "text-green-600" : s >= 50 ? "text-yellow-600" : "text-red-500";
@@ -67,6 +67,19 @@ export default function AccountDetail() {
   const [analyseUrl, setAnalyseUrl] = useState("");
   const [analyseOpen, setAnalyseOpen] = useState(false);
   const [analyseLoading, setAnalyseLoading] = useState(false);
+  const [analyseStatus, setAnalyseStatus] = useState<"idle" | "submitting" | "polling" | "done" | "error">("idle");
+  const [analyseStatusMsg, setAnalyseStatusMsg] = useState("");
+  const [analyseElapsed, setAnalyseElapsed] = useState(0);
+  const analyseTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const analysePollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const stopAnalyseTimers = () => {
+    if (analyseTimerRef.current) clearInterval(analyseTimerRef.current);
+    if (analysePollRef.current) clearInterval(analysePollRef.current);
+  };
+
+  useEffect(() => () => stopAnalyseTimers(), []);
+
   const [notesOpen, setNotesOpen] = useState(false);
   const [notes, setNotes] = useState("");
   const [opportunityOpen, setOpportunityOpen] = useState(false);
@@ -161,6 +174,12 @@ export default function AccountDetail() {
   const handleRunAnalysis = async () => {
     if (!analyseUrl) return;
     setAnalyseLoading(true);
+    setAnalyseStatus("submitting");
+    setAnalyseStatusMsg("Submitting analysis request…");
+    setAnalyseElapsed(0);
+    stopAnalyseTimers();
+
+    let analysisId = "";
     try {
       const r = await fetch("/api/analyze", {
         method: "POST",
@@ -172,15 +191,56 @@ export default function AccountDetail() {
         throw new Error(err.message || "Analysis failed");
       }
       const result = await r.json();
-      queryClient.invalidateQueries({ queryKey: [`/api/accounts/${id}`] });
-      toast({ title: "Analysis complete!", description: `Score: ${result.data?.confidenceScore}%` });
-      setAnalyseOpen(false);
-      navigate(`/analyses/${result.data?.id}`);
+      analysisId = result.data?.id;
     } catch (e: any) {
-      toast({ title: "Analysis failed", description: e.message, variant: "destructive" });
-    } finally {
+      setAnalyseStatus("error");
+      setAnalyseStatusMsg(e.message || "Submission failed");
       setAnalyseLoading(false);
+      return;
     }
+
+    setAnalyseStatus("polling");
+    setAnalyseStatusMsg("Analyzing homepage… (typically 60–90 seconds)");
+
+    let elapsed = 0;
+    analyseTimerRef.current = setInterval(() => {
+      elapsed += 1;
+      setAnalyseElapsed(elapsed);
+      if (elapsed >= 180) {
+        stopAnalyseTimers();
+        setAnalyseStatus("error");
+        setAnalyseStatusMsg("Analysis is taking longer than expected. Try again.");
+        setAnalyseLoading(false);
+      }
+    }, 1000);
+
+    const doPoll = async () => {
+      try {
+        const r = await fetch(`/api/analyses/${analysisId}/poll`);
+        if (!r.ok) return;
+        const result = await r.json();
+        const status = result.data?.status;
+        if (status === "completed") {
+          stopAnalyseTimers();
+          setAnalyseStatus("done");
+          queryClient.invalidateQueries({ queryKey: [`/api/accounts/${id}`] });
+          toast({ title: "Analysis complete!", description: `Overall score: ${result.data?.confidenceScore}%` });
+          setAnalyseOpen(false);
+          setAnalyseLoading(false);
+          navigate(`/analyses/${analysisId}`);
+        } else if (status === "failed") {
+          stopAnalyseTimers();
+          setAnalyseStatus("error");
+          setAnalyseStatusMsg(result.data?.errorMessage || "Analysis failed. Try again.");
+          setAnalyseLoading(false);
+        }
+      } catch {
+        // silent — will retry on next interval
+      }
+    };
+
+    doPoll();
+    analysePollRef.current = setInterval(doPoll, 5000);
   };
 
   if (isLoading) {
@@ -573,26 +633,66 @@ export default function AccountDetail() {
         </div>
 
         {/* Run Analysis Modal */}
-        <Dialog open={analyseOpen} onOpenChange={setAnalyseOpen}>
+        <Dialog open={analyseOpen} onOpenChange={(open) => {
+          if (!open && analyseStatus === "polling") return;
+          if (!open) { stopAnalyseTimers(); setAnalyseStatus("idle"); setAnalyseLoading(false); }
+          setAnalyseOpen(open);
+        }}>
           <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>Run Homepage Analysis</DialogTitle>
             </DialogHeader>
-            <p className="text-sm text-muted-foreground">This will analyze the homepage and identify key messaging clarity and design effectiveness issues.</p>
-            <div className="space-y-3 mt-2">
-              <Label>Homepage URL</Label>
-              <Input
-                placeholder="https://example.com"
-                value={analyseUrl}
-                onChange={e => setAnalyseUrl(e.target.value)}
-              />
-            </div>
-            <div className="flex justify-end gap-2 mt-4">
-              <Button variant="ghost" onClick={() => setAnalyseOpen(false)}>Cancel</Button>
-              <Button onClick={handleRunAnalysis} disabled={!analyseUrl || analyseLoading}>
-                {analyseLoading ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Analyzing...</> : "Analyze"}
-              </Button>
-            </div>
+
+            {analyseStatus === "idle" && (
+              <>
+                <p className="text-sm text-muted-foreground">Sends the homepage to the Design Bees analyser. Results typically take 60–90 seconds.</p>
+                <div className="space-y-3 mt-2">
+                  <Label>Homepage URL</Label>
+                  <Input
+                    placeholder="https://example.com"
+                    value={analyseUrl}
+                    onChange={e => setAnalyseUrl(e.target.value)}
+                    onKeyDown={e => e.key === "Enter" && handleRunAnalysis()}
+                  />
+                </div>
+                <div className="flex justify-end gap-2 mt-4">
+                  <Button variant="ghost" onClick={() => setAnalyseOpen(false)}>Cancel</Button>
+                  <Button onClick={handleRunAnalysis} disabled={!analyseUrl}>Analyze</Button>
+                </div>
+              </>
+            )}
+
+            {(analyseStatus === "submitting" || analyseStatus === "polling") && (
+              <div className="py-8 flex flex-col items-center gap-4 text-center">
+                <div className="relative w-20 h-20">
+                  <svg className="absolute inset-0 -rotate-90 animate-spin" style={{ animationDuration: "3s" }} viewBox="0 0 80 80">
+                    <circle cx="40" cy="40" r="34" fill="none" stroke="#e5e7eb" strokeWidth="6" />
+                    <circle cx="40" cy="40" r="34" fill="none" stroke="#6366f1" strokeWidth="6"
+                      strokeDasharray="60 154" strokeLinecap="round" />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-lg font-bold text-primary">{analyseElapsed}s</span>
+                  </div>
+                </div>
+                <div>
+                  <p className="font-semibold text-sm">{analyseStatusMsg}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Please keep this window open</p>
+                </div>
+                <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
+                  <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${Math.min(100, (analyseElapsed / 90) * 100)}%` }} />
+                </div>
+              </div>
+            )}
+
+            {analyseStatus === "error" && (
+              <div className="py-6 flex flex-col items-center gap-3 text-center">
+                <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+                  <AlertTriangle className="w-6 h-6 text-red-500" />
+                </div>
+                <p className="font-semibold text-sm text-red-600">{analyseStatusMsg}</p>
+                <Button size="sm" onClick={() => { setAnalyseStatus("idle"); }}>Try Again</Button>
+              </div>
+            )}
           </DialogContent>
         </Dialog>
 

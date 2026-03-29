@@ -1,11 +1,18 @@
 import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
 import { analysesTable, accountsTable, settingsTable } from "@workspace/db/schema";
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 const router: IRouter = Router();
 
-function computeDerivedFields(account: { priorityTier?: string | null; fitScore?: number | null; likelyPrimaryProblem?: string | null; icpType?: string | null }) {
+const ANALYSER_BASE_URL = "https://striking-prosperity-production-b017.up.railway.app/api";
+
+function computeDerivedFields(account: {
+  priorityTier?: string | null;
+  fitScore?: number | null;
+  likelyPrimaryProblem?: string | null;
+  icpType?: string | null;
+}) {
   const priorityTier = account.priorityTier;
   const fitScore = account.fitScore ?? 0;
   const issue = account.likelyPrimaryProblem;
@@ -16,9 +23,9 @@ function computeDerivedFields(account: { priorityTier?: string | null; fitScore?
   else if (fitScore >= 75) personalizationLevel = "moderate";
 
   let suggestedSequenceFamily: string | null = null;
-  if (issue && ["unclear_cta", "weak_cta", "poor_cta_prominence"].includes(issue)) {
+  if (issue && ["unclear_cta", "weak_cta", "poor_cta_prominence", "CTA_TOO_SOFT", "CTA_NOT_OUTCOME_TIED"].includes(issue)) {
     suggestedSequenceFamily = "cta_clarity_sequence";
-  } else if (issue && ["missing_trust_signals", "weak_trust", "missing_social_proof"].includes(issue)) {
+  } else if (issue && ["missing_trust_signals", "weak_trust", "missing_social_proof", "MISSING_SOCIAL_PROOF", "LOW_TRUST_SIGNAL_VISIBILITY"].includes(issue)) {
     suggestedSequenceFamily = "trust_building_sequence";
   } else if (icp === "saas_founder") {
     suggestedSequenceFamily = "founder_focused_sequence";
@@ -29,6 +36,115 @@ function computeDerivedFields(account: { priorityTier?: string | null; fitScore?
   }
 
   return { personalizationLevel, suggestedSequenceFamily };
+}
+
+function mapToIssueCode(finding: any): string {
+  if (!finding) return "WEAK_ABOVE_FOLD_STRUCTURE";
+  const category = finding.category || "";
+  const title = (finding.title || "").toLowerCase();
+
+  if (category === "Value Proposition") {
+    if (title.includes("vague") || title.includes("generic") || title.includes("unclear")) return "HERO_TOO_GENERIC";
+    if (title.includes("offer") || title.includes("buries") || title.includes("anchor")) return "UNCLEAR_OFFER";
+    if (title.includes("feature") || title.includes("process before")) return "FEATURE_FIRST_MESSAGING";
+    return "WEAK_ABOVE_FOLD_STRUCTURE";
+  }
+  if (category === "CTA Effectiveness") {
+    if (title.includes("competing") || title.includes("dilute") || title.includes("multiple")) return "TOO_MANY_COMPETING_ELEMENTS";
+    if (title.includes("outcome") || title.includes("dead end") || title.includes("no form")) return "CTA_NOT_OUTCOME_TIED";
+    return "CTA_TOO_SOFT";
+  }
+  if (category === "Social Proof") {
+    if (title.includes("trust") || title.includes("badge") || title.includes("credibility")) return "LOW_TRUST_SIGNAL_VISIBILITY";
+    return "MISSING_SOCIAL_PROOF";
+  }
+  if (category === "Pricing Clarity") {
+    if (title.includes("comparison") || title.includes("differentiation")) return "SLOW_DECISION_PATH";
+    return "HIGH_COGNITIVE_LOAD";
+  }
+  if (category === "Feature Communication") {
+    if (title.includes("hierarchy")) return "WEAK_VISUAL_HIERARCHY";
+    if (title.includes("cluttered") || title.includes("unclear")) return "CLUTTERED_LAYOUT";
+    return "FEATURE_FIRST_MESSAGING";
+  }
+  if (title.includes("mobile") || title.includes("responsive")) return "POOR_MOBILE_READABILITY";
+  if (title.includes("navigation") || title.includes("friction")) return "FRICTION_HEAVY_NAVIGATION";
+  if (title.includes("segment") || title.includes("audience")) return "MISSING_SEGMENT_CLARITY";
+  if (title.includes("cognitive") || title.includes("overwhelming")) return "HIGH_COGNITIVE_LOAD";
+  return "WEAK_ABOVE_FOLD_STRUCTURE";
+}
+
+function getTopWeakness(findings: any[], rank: number): any {
+  const weaknesses = (findings || []).filter((f: any) => f.type === "weakness");
+  return weaknesses[rank - 1] || null;
+}
+
+function findCategoryScore(scores: any[], name: string): number {
+  const s = (scores || []).find((c: any) => c.name === name);
+  return s ? Math.round(s.score) : 0;
+}
+
+function mapApiResultToRecord(result: any, accountId: string, baseUrl: string) {
+  const findings = result.findings || [];
+  const scores = result.scores || [];
+
+  const w1 = getTopWeakness(findings, 1);
+  const w2 = getTopWeakness(findings, 2);
+  const w3 = getTopWeakness(findings, 3);
+
+  const vpScore = findCategoryScore(scores, "Value Proposition");
+  const ctaScore = findCategoryScore(scores, "CTA Effectiveness");
+  const spScore = findCategoryScore(scores, "Social Proof");
+  const fcScore = findCategoryScore(scores, "Feature Communication");
+
+  const screenshotRelative = result.screenshotUrl || null;
+  const screenshotUrl = screenshotRelative
+    ? `${baseUrl}${screenshotRelative.replace("/api", "")}`
+    : null;
+
+  return {
+    accountId,
+    domain: new URL(result.url).hostname.replace("www.", ""),
+    pageUrl: result.url,
+    pageType: result.pageIntent || "Homepage",
+    pageIntent: result.pageIntent || null,
+    status: "completed" as const,
+    analyzedAt: result.completedAt ? new Date(result.completedAt) : new Date(),
+
+    heroClarity: vpScore,
+    ctaClarity: ctaScore,
+    ctaProminence: ctaScore,
+    visualHierarchy: fcScore,
+    messageOrder: fcScore,
+    outcomeClarity: vpScore,
+    trustSignal: spScore,
+    friction: Math.max(0, 100 - (result.overallScore || 50)),
+    mobileReadability: null as any,
+
+    primaryIssueCode: w1 ? mapToIssueCode(w1) : null,
+    secondaryIssueCode: w2 ? mapToIssueCode(w2) : null,
+    tertiaryIssueCode: w3 ? mapToIssueCode(w3) : null,
+
+    issueSummaryShort: result.summary || null,
+    issueSummaryDetailed: result.summary || null,
+    strengthsDetected: findings.filter((f: any) => f.type === "strength").map((f: any) => f.title),
+    recommendedPriorityFix: w1?.suggestion || null,
+    confidenceScore: Math.round(result.overallScore || 0),
+
+    findings: findings,
+    categoryScores: scores,
+    rawNotes: result,
+    screenshotUrl,
+  };
+}
+
+async function getAnalyserBaseUrl(userId: string): Promise<string> {
+  const [settings] = await db
+    .select()
+    .from(settingsTable)
+    .where(eq(settingsTable.userId, userId))
+    .limit(1);
+  return settings?.homepageAnalyserApiUrl || ANALYSER_BASE_URL;
 }
 
 router.post("/analyze", async (req, res) => {
@@ -44,136 +160,174 @@ router.post("/analyze", async (req, res) => {
     try {
       parsedUrl = new URL(url);
     } catch {
-      res.status(400).json({ error: "invalid_url", message: "URL is invalid. Please enter a valid URL like https://example.com" });
+      res.status(400).json({ error: "invalid_url", message: "Invalid URL — enter something like https://example.com" });
       return;
     }
 
     const userId = (req.session as any).userId || "system";
-    const [settings] = await db
-      .select()
-      .from(settingsTable)
-      .where(eq(settingsTable.userId, userId))
-      .limit(1);
+    const baseUrl = await getAnalyserBaseUrl(userId);
+    const accountId = account_id || "standalone";
 
-    const analyserEndpoint = settings?.homepageAnalyserApiUrl;
-    const analyserApiKey = settings?.homepageAnalyserApiKey;
+    let externalId: string;
+    try {
+      const submitRes = await fetch(`${baseUrl}/analyses`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+        signal: AbortSignal.timeout(15000),
+      });
 
-    let analysisData: any;
-
-    if (analyserEndpoint) {
-      try {
-        const headers: Record<string, string> = { "Content-Type": "application/json" };
-        if (analyserApiKey) headers["Authorization"] = `Bearer ${analyserApiKey}`;
-
-        const externalRes = await fetch(analyserEndpoint, {
-          method: "POST",
-          headers,
-          body: JSON.stringify({ url }),
-          signal: AbortSignal.timeout(30000),
-        });
-
-        if (externalRes.status === 429) {
-          res.status(429).json({ error: "rate_limited", message: "Analyzer service is busy. Please try again in a moment." });
-          return;
-        }
-        if (externalRes.status >= 500) {
-          res.status(502).json({ error: "analyser_error", message: "Analyzer service error. Please try again." });
-          return;
-        }
-        if (!externalRes.ok) {
-          res.status(502).json({ error: "analyser_error", message: `Analyzer returned ${externalRes.status}` });
-          return;
-        }
-
-        analysisData = await externalRes.json();
-      } catch (fetchErr: any) {
-        if (fetchErr.name === "TimeoutError" || fetchErr.code === "UND_ERR_CONNECT_TIMEOUT") {
-          res.status(504).json({ error: "timeout", message: "Unable to reach analyzer API. Check endpoint in Settings." });
-          return;
-        }
-        res.status(502).json({ error: "network_error", message: "Unable to reach analyzer API. Check endpoint in Settings." });
+      if (!submitRes.ok) {
+        const txt = await submitRes.text().catch(() => "");
+        req.log.warn({ status: submitRes.status, txt }, "analyser submit failed");
+        res.status(502).json({ error: "analyser_error", message: "Analyser service unavailable — check Settings." });
         return;
       }
-    } else {
-      // Mock response when no analyser is configured
-      const domain = parsedUrl.hostname.replace("www.", "");
-      const mockScore = Math.floor(Math.random() * 40) + 40;
-      analysisData = {
-        domain,
-        overall_score: mockScore,
-        primary_issue_code: "unclear_cta",
-        secondary_issue_code: "weak_hero",
-        hero_clarity: Math.floor(Math.random() * 40) + 30,
-        cta_clarity: Math.floor(Math.random() * 40) + 30,
-        cta_prominence: Math.floor(Math.random() * 30) + 40,
-        visual_hierarchy: Math.floor(Math.random() * 30) + 40,
-        message_order: Math.floor(Math.random() * 30) + 35,
-        outcome_clarity: Math.floor(Math.random() * 40) + 25,
-        trust_signal: Math.floor(Math.random() * 30) + 50,
-        friction: Math.floor(Math.random() * 30) + 20,
-        mobile_readability: Math.floor(Math.random() * 30) + 55,
-        issue_codes: ["unclear_cta", "weak_hero"],
-        issue_summaries: {
-          unclear_cta: { short: "CTA is not prominent or action-oriented", detailed: "The primary call-to-action lacks clarity and is buried within page content. Visitors cannot immediately identify the next step they should take." },
-          weak_hero: { short: "Hero section fails to communicate value", detailed: "The above-the-fold section does not clearly convey the unique value proposition or what the company does within the first 3 seconds." },
-        },
-        strengths: ["Mobile layout is responsive", "Contact information is visible"],
-        recommended_priority_fix: "Clarify and reposition the primary CTA above the fold",
-        confidence_score: 0.78,
-        screenshot_url: null,
-      };
-    }
 
-    const domain = analysisData.domain || parsedUrl.hostname.replace("www.", "");
-
-    const analysisRecord = {
-      accountId: account_id || "standalone",
-      domain,
-      pageUrl: url,
-      pageType: "homepage",
-      analyzedAt: new Date(),
-      heroClarity: analysisData.hero_clarity ?? 0,
-      ctaClarity: analysisData.cta_clarity ?? 0,
-      ctaProminence: analysisData.cta_prominence ?? 0,
-      visualHierarchy: analysisData.visual_hierarchy ?? 0,
-      messageOrder: analysisData.message_order ?? 0,
-      outcomeClarity: analysisData.outcome_clarity ?? 0,
-      trustSignal: analysisData.trust_signal ?? 0,
-      friction: analysisData.friction ?? 0,
-      mobileReadability: analysisData.mobile_readability ?? 0,
-      primaryIssueCode: analysisData.primary_issue_code ?? null,
-      secondaryIssueCode: analysisData.secondary_issue_code ?? null,
-      issueSummaryShort: analysisData.issue_summaries?.[analysisData.primary_issue_code]?.short ?? null,
-      issueSummaryDetailed: analysisData.issue_summaries?.[analysisData.primary_issue_code]?.detailed ?? null,
-      strengthsDetected: analysisData.strengths ?? [],
-      recommendedPriorityFix: analysisData.recommended_priority_fix ?? null,
-      confidenceScore: Math.round((analysisData.confidence_score ?? 0) * 100),
-      rawNotes: analysisData,
-      screenshotUrl: analysisData.screenshot_url ?? null,
-    };
-
-    const [analysis] = await db.insert(analysesTable).values(analysisRecord).returning();
-
-    if (account_id && account_id !== "standalone") {
-      const [existingAccount] = await db.select().from(accountsTable).where(eq(accountsTable.id, account_id)).limit(1);
-      if (existingAccount) {
-        const derived = computeDerivedFields({
-          ...existingAccount,
-          likelyPrimaryProblem: analysisData.primary_issue_code,
-        });
-        await db.update(accountsTable).set({
-          likelyPrimaryProblem: analysisData.primary_issue_code,
-          likelySecondaryProblem: analysisData.secondary_issue_code,
-          personalizationLevel: derived.personalizationLevel,
-          suggestedSequenceFamily: derived.suggestedSequenceFamily,
-          updatedAt: new Date(),
-        }).where(eq(accountsTable.id, account_id));
+      const submitted = await submitRes.json();
+      externalId = submitted.id;
+    } catch (err: any) {
+      if (err.name === "TimeoutError") {
+        res.status(504).json({ error: "timeout", message: "Analyser service is not responding — check Settings." });
+        return;
       }
+      res.status(502).json({ error: "network_error", message: "Unable to reach analyser — check Settings." });
+      return;
     }
 
-    res.status(201).json({ data: analysis });
+    const [analysis] = await db
+      .insert(analysesTable)
+      .values({
+        accountId,
+        domain: parsedUrl.hostname.replace("www.", ""),
+        pageUrl: url,
+        pageType: "Homepage",
+        status: "pending",
+        externalAnalysisId: externalId,
+        analyzedAt: new Date(),
+        heroClarity: 0,
+        ctaClarity: 0,
+        ctaProminence: 0,
+        visualHierarchy: 0,
+        messageOrder: 0,
+        outcomeClarity: 0,
+        trustSignal: 0,
+        friction: 0,
+        mobileReadability: 0,
+        confidenceScore: 0,
+      })
+      .returning();
+
+    res.status(202).json({ data: analysis });
   } catch (err) {
     req.log.error({ err }, "analyze error");
+    res.status(500).json({ error: "internal_error", message: "An unexpected error occurred" });
+  }
+});
+
+router.get("/analyses/:id/poll", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [analysis] = await db
+      .select()
+      .from(analysesTable)
+      .where(eq(analysesTable.id, id))
+      .limit(1);
+
+    if (!analysis) {
+      res.status(404).json({ error: "not_found", message: "Analysis not found" });
+      return;
+    }
+
+    if (analysis.status === "completed" || analysis.status === "failed") {
+      res.json({ data: analysis });
+      return;
+    }
+
+    if (!analysis.externalAnalysisId) {
+      res.json({ data: analysis });
+      return;
+    }
+
+    const userId = (req.session as any).userId || "system";
+    const baseUrl = await getAnalyserBaseUrl(userId);
+
+    let statusCheck: any;
+    try {
+      const statusRes = await fetch(`${baseUrl}/analyses/${analysis.externalAnalysisId}/status`, {
+        signal: AbortSignal.timeout(10000),
+      });
+      if (!statusRes.ok) {
+        res.json({ data: analysis });
+        return;
+      }
+      statusCheck = await statusRes.json();
+    } catch {
+      res.json({ data: analysis });
+      return;
+    }
+
+    const externalStatus = statusCheck.status;
+
+    if (externalStatus === "failed") {
+      const [updated] = await db
+        .update(analysesTable)
+        .set({ status: "failed", errorMessage: statusCheck.error || "Analysis failed" })
+        .where(eq(analysesTable.id, id))
+        .returning();
+      res.json({ data: updated });
+      return;
+    }
+
+    if (externalStatus === "completed") {
+      let fullResult: any;
+      try {
+        const resultRes = await fetch(`${baseUrl}/analyses/${analysis.externalAnalysisId}`, {
+          signal: AbortSignal.timeout(15000),
+        });
+        if (!resultRes.ok) throw new Error("Failed to fetch result");
+        fullResult = await resultRes.json();
+      } catch (err) {
+        req.log.error({ err }, "failed to fetch full analysis result");
+        res.json({ data: analysis });
+        return;
+      }
+
+      const mapped = mapApiResultToRecord(fullResult, analysis.accountId, baseUrl);
+      const [updated] = await db
+        .update(analysesTable)
+        .set(mapped)
+        .where(eq(analysesTable.id, id))
+        .returning();
+
+      if (analysis.accountId && analysis.accountId !== "standalone") {
+        const [existingAccount] = await db
+          .select()
+          .from(accountsTable)
+          .where(eq(accountsTable.id, analysis.accountId))
+          .limit(1);
+        if (existingAccount) {
+          const derived = computeDerivedFields({
+            ...existingAccount,
+            likelyPrimaryProblem: mapped.primaryIssueCode,
+          });
+          await db.update(accountsTable).set({
+            likelyPrimaryProblem: mapped.primaryIssueCode,
+            likelySecondaryProblem: mapped.secondaryIssueCode,
+            personalizationLevel: derived.personalizationLevel,
+            suggestedSequenceFamily: derived.suggestedSequenceFamily,
+            updatedAt: new Date(),
+          }).where(eq(accountsTable.id, analysis.accountId));
+        }
+      }
+
+      res.json({ data: updated });
+      return;
+    }
+
+    res.json({ data: analysis });
+  } catch (err) {
+    req.log.error({ err }, "poll error");
     res.status(500).json({ error: "internal_error", message: "An unexpected error occurred" });
   }
 });
