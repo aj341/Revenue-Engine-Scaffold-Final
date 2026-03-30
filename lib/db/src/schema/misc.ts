@@ -76,15 +76,28 @@ export const playbookEntriesTable = pgTable(
   "playbook_entries",
   {
     id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    ruleNumber: integer("rule_number"),
     category: text("category").notNull(),
+    // Legacy title field kept; new format uses ruleTitle
     title: text("title").notNull(),
+    ruleTitle: text("rule_title"),
+    priority: text("priority"),
+    // Legacy body kept; new format uses guidance
     bodyMarkdown: text("body_markdown").notNull(),
+    guidance: text("guidance"),
+    examples: jsonb("examples"),
+    edgeCases: jsonb("edge_cases"),
+    relatedRules: jsonb("related_rules"),
     version: integer("version").notNull().default(1),
     active: boolean("active").notNull().default(true),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
-  (t) => [index("playbook_category_idx").on(t.category)]
+  (t) => [
+    index("playbook_category_idx").on(t.category),
+    index("playbook_rule_number_idx").on(t.ruleNumber),
+    index("playbook_priority_idx").on(t.priority),
+  ]
 );
 
 export const insertPlaybookEntrySchema = createInsertSchema(playbookEntriesTable).omit({

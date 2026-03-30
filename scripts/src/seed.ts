@@ -97,10 +97,19 @@ interface SequencesFile {
 
 interface PlaybookFile {
   playbook_entries: Array<{
+    // New format fields
+    rule_number?: number;
+    rule_title?: string;
+    priority?: string;
+    guidance?: string;
+    examples?: string[];
+    edge_cases?: string[];
+    related_rules?: number[];
+    // Legacy / shared fields
     category: string;
-    title: string;
-    body_markdown: string;
-    version: number;
+    title?: string;
+    body_markdown?: string;
+    version?: number;
   }>;
 }
 
@@ -290,13 +299,26 @@ async function seedPlaybook() {
   // Clear and re-insert for idempotency
   await db.delete(playbookEntriesTable);
 
-  const rows = playbook_entries.map((e) => ({
-    category: e.category,
-    title: e.title,
-    bodyMarkdown: e.body_markdown,
-    version: e.version ?? 1,
-    active: true,
-  }));
+  const rows = playbook_entries.map((e) => {
+    // Support both old format (title, body_markdown) and new format (rule_title, guidance)
+    const title = e.rule_title ?? e.title ?? `Rule ${e.rule_number ?? "?"}`;
+    const bodyMarkdown = e.body_markdown ?? e.guidance ?? "";
+
+    return {
+      ruleNumber: e.rule_number ?? null,
+      category: e.category,
+      title,
+      ruleTitle: e.rule_title ?? null,
+      priority: e.priority ?? null,
+      bodyMarkdown,
+      guidance: e.guidance ?? e.body_markdown ?? null,
+      examples: e.examples ?? null,
+      edgeCases: e.edge_cases ?? null,
+      relatedRules: e.related_rules ?? null,
+      version: e.version ?? 1,
+      active: true,
+    };
+  });
 
   await db.insert(playbookEntriesTable).values(rows);
   console.log(`   ✅ ${rows.length} inserted`);
