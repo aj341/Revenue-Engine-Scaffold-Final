@@ -45,19 +45,28 @@ interface IssueTaxonomy {
 
 interface InsightBlocksFile {
   insight_blocks: Array<{
-    id: string;
+    // New format fields
+    block_id?: string;
+    insight_type?: string;
+    expanded_explanation?: string;
+    source_data_field?: string;
+    benchmark_source?: string;
+    applicable_icp_types?: string[];
+    tone_notes?: string;
+    // Legacy / shared fields
+    id?: string;
     issue_code: string;
-    icp: string;
-    industries: string[];
+    icp?: string;
+    industries?: string[];
     short_insight_line: string;
-    longer_explainer: string;
-    business_consequence: string;
-    severity_hint: string;
-    suitable_channels: string[];
-    suitable_steps: number[];
-    asset_pairings: string[];
-    cta_pairings: string[];
-    confidence_notes: string;
+    longer_explainer?: string;
+    business_consequence?: string;
+    severity_hint?: string;
+    suitable_channels?: string[];
+    suitable_steps?: number[];
+    asset_pairings?: string[];
+    cta_pairings?: string[];
+    confidence_notes?: string;
   }>;
 }
 
@@ -161,24 +170,39 @@ async function seedInsightBlocks() {
   const { insight_blocks } = readJson<InsightBlocksFile>("insight-blocks.json");
   console.log(`\n💡 Seeding ${insight_blocks.length} insight blocks…`);
 
-  // Clear and re-insert for idempotency (no unique constraint to use)
+  // Clear and re-insert for idempotency (block_id not yet unique-constrained)
   await db.delete(insightBlocksTable);
 
-  const rows = insight_blocks.map((b) => ({
-    issueCode: b.issue_code,
-    icp: b.icp,
-    industries: b.industries ?? [],
-    shortInsightLine: b.short_insight_line,
-    longerExplainer: b.longer_explainer ?? null,
-    businessConsequence: b.business_consequence ?? null,
-    severityHint: b.severity_hint ?? null,
-    suitableChannels: b.suitable_channels ?? [],
-    suitableSteps: b.suitable_steps ?? [],
-    assetPairings: b.asset_pairings ?? [],
-    ctaPairings: b.cta_pairings ?? [],
-    confidenceNotes: b.confidence_notes ?? null,
-    active: true,
-  }));
+  const rows = insight_blocks.map((b) => {
+    // Support both old format (id, icp) and new format (block_id, applicable_icp_types)
+    const blockId = b.block_id ?? b.id ?? null;
+    const applicableIcpTypes = b.applicable_icp_types ?? (b.icp ? [b.icp] : []);
+    // Backward-compat: populate legacy icp from first applicable type
+    const icp = b.icp ?? applicableIcpTypes[0] ?? null;
+
+    return {
+      blockId,
+      issueCode: b.issue_code,
+      icp,
+      insightType: b.insight_type ?? null,
+      industries: b.industries ?? [],
+      shortInsightLine: b.short_insight_line,
+      longerExplainer: b.longer_explainer ?? null,
+      expandedExplanation: b.expanded_explanation ?? b.longer_explainer ?? null,
+      businessConsequence: b.business_consequence ?? null,
+      severityHint: b.severity_hint ?? null,
+      suitableChannels: b.suitable_channels ?? [],
+      suitableSteps: b.suitable_steps ?? [],
+      assetPairings: b.asset_pairings ?? [],
+      ctaPairings: b.cta_pairings ?? [],
+      confidenceNotes: b.confidence_notes ?? null,
+      sourceDataField: b.source_data_field ?? null,
+      benchmarkSource: b.benchmark_source ?? null,
+      applicableIcpTypes,
+      toneNotes: b.tone_notes ?? null,
+      active: true,
+    };
+  });
 
   await db.insert(insightBlocksTable).values(rows);
   console.log(`   ✅ ${rows.length} inserted`);

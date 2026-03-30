@@ -25,11 +25,15 @@ export const insightBlocksTable = pgTable(
   "insight_blocks",
   {
     id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    blockId: text("block_id"),
     issueCode: text("issue_code").notNull(),
-    icp: text("icp").notNull(),
+    // Legacy single-icp field (kept for backward compat); new format uses applicableIcpTypes
+    icp: text("icp"),
+    insightType: text("insight_type"),
     industries: jsonb("industries"),
     shortInsightLine: text("short_insight_line").notNull(),
     longerExplainer: text("longer_explainer"),
+    expandedExplanation: text("expanded_explanation"),
     businessConsequence: text("business_consequence"),
     severityHint: text("severity_hint"),
     suitableChannels: jsonb("suitable_channels"),
@@ -37,6 +41,10 @@ export const insightBlocksTable = pgTable(
     ctaPairings: jsonb("cta_pairings"),
     assetPairings: jsonb("asset_pairings"),
     confidenceNotes: text("confidence_notes"),
+    sourceDataField: text("source_data_field"),
+    benchmarkSource: text("benchmark_source"),
+    applicableIcpTypes: jsonb("applicable_icp_types"),
+    toneNotes: text("tone_notes"),
     active: boolean("active").notNull().default(true),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -44,6 +52,8 @@ export const insightBlocksTable = pgTable(
   (t) => [
     index("insight_blocks_issue_idx").on(t.issueCode),
     index("insight_blocks_icp_idx").on(t.icp),
+    index("insight_blocks_type_idx").on(t.insightType),
+    index("insight_blocks_block_id_idx").on(t.blockId),
   ]
 );
 

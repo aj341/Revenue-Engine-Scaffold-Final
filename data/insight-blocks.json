@@ -1,1171 +1,550 @@
 {
   "insight_blocks": [
     {
-      "id": "IB001",
+      "block_id": "IB001",
       "issue_code": "HERO_TOO_GENERIC",
-      "icp": "founder",
-      "industries": [
-        "saas",
-        "ecommerce",
-        "professional_services"
-      ],
-      "short_insight_line": "Your hero talks about what you do, but not why someone should care right now \u2014 that usually costs you the first 3 seconds of attention.",
-      "longer_explainer": "The visitor lands on your page. Your hero says something like 'We deliver beautiful, custom design' or 'Expert design solutions for growing companies.' But they still don't know if you solve their specific problem or what happens if they don't engage with you. Generic value propositions don't create urgency.",
+      "insight_type": "specificity_gap",
+      "short_insight_line": "Your hero talks about what you do, but not why someone should care right now — that usually costs you the first 3 seconds of attention.",
+      "expanded_explanation": "The visitor lands on your page. Your hero says something like 'We deliver beautiful, custom design' or 'Expert design solutions for growing companies.' But they still don't know if you solve their specific problem or what happens if they don't engage with you. Generic value propositions don't create urgency.",
       "business_consequence": "Cold or paid traffic may understand your service but won't feel urgency to act. Enquiries drop even when traffic is strong. Conversion rate stays flat regardless of traffic quality improvements.",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "email",
-        "linkedin"
-      ],
-      "suitable_steps": [
-        1,
-        2
-      ],
-      "asset_pairings": [
-        "analyser",
-        "checklist"
-      ],
-      "confidence_notes": "Strong pattern across SaaS and ecommerce founders with $50k-$500k ARR running paid campaigns.",
-      "cta_pairings": [
-        "Worth sending the breakdown?",
-        "Open to seeing what I noticed?"
-      ]
+      "cta_pairings": ["Worth sending the breakdown?", "Open to seeing what I noticed?"],
+      "source_data_field": "hero_headline",
+      "benchmark_source": "CRO benchmarks: Unbounce, ConversionXL, VWO (2023-2024)",
+      "applicable_icp_types": ["founder"],
+      "tone_notes": "Direct and peer-level. Lead with specific revenue or time impact. Avoid design jargon."
     },
     {
-      "id": "IB002",
+      "block_id": "IB002",
       "issue_code": "HERO_TOO_GENERIC",
-      "icp": "marketing_manager",
-      "industries": [
-        "saas",
-        "b2b_tech"
-      ],
+      "insight_type": "specificity_gap",
       "short_insight_line": "Your campaign landing pages sound like every other competitor. That sameness means visitors don't see why your offer is different.",
-      "longer_explainer": "Marketing managers often inherit campaign briefs that say 'Drive enterprise deals' or 'Increase qualified leads.' The landing page hero then reflects that generic goal instead of the specific outcome or urgency that separates you from competitors.",
+      "expanded_explanation": "Marketing managers often inherit campaign briefs that say 'Drive enterprise deals' or 'Increase qualified leads.' The landing page hero then reflects that generic goal instead of the specific outcome or urgency that separates you from competitors.",
       "business_consequence": "Conversion rate drops 20-35% when the value prop isn't clear in the first 3 seconds. Adding a clear, specific value prop improves conversion 15-30%.",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "email",
-        "slack"
-      ],
-      "suitable_steps": [
-        1,
-        2
-      ],
-      "asset_pairings": [
-        "analyser",
-        "brief_builder"
-      ],
-      "confidence_notes": "Pattern appears in mid-market SaaS campaigns where traffic quality is strong but conversion rate lags industry benchmark.",
-      "cta_pairings": [
-        "Curious how your competitors frame it?",
-        "Worth a 5-min review?"
-      ]
+      "cta_pairings": ["Curious how your competitors frame it?", "Worth a 5-min review?"],
+      "source_data_field": "hero_headline",
+      "benchmark_source": "CRO benchmarks: Unbounce, ConversionXL, VWO (2023-2024)",
+      "applicable_icp_types": ["marketing_manager"],
+      "tone_notes": "Data-led and professional. Reference conversion benchmarks and campaign attribution."
     },
     {
-      "id": "IB003",
+      "block_id": "IB003",
       "issue_code": "HERO_TOO_GENERIC",
-      "icp": "agency",
-      "industries": [
-        "agencies"
-      ],
+      "insight_type": "specificity_gap",
       "short_insight_line": "Your agency portfolio site uses 'award-winning design' and 'strategic thinking' but doesn't show what clients actually achieved.",
-      "longer_explainer": "Agencies often lead with creative credibility (awards, case studies, team bios) before establishing what business outcomes they deliver. Prospective clients care about revenue impact, not awards.",
+      "expanded_explanation": "Agencies often lead with creative credibility (awards, case studies, team bios) before establishing what business outcomes they deliver. Prospective clients care about revenue impact, not awards.",
       "business_consequence": "Inbound leads from portfolio site are lower quality. Tire-kickers and budget shoppers outweigh high-value prospects. Sales team spends time on misaligned conversations.",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "linkedin",
-        "email"
-      ],
-      "suitable_steps": [
-        1,
-        2
-      ],
-      "asset_pairings": [
-        "analyser",
-        "checklist"
-      ],
-      "confidence_notes": "Applies to full-service and specialized design agencies with $500k-$5m ARR competing for retainer contracts.",
-      "cta_pairings": [
-        "Want to see what clients actually got?",
-        "Open to a quick reframe?"
-      ]
+      "cta_pairings": ["Want to see what clients actually got?", "Open to a quick reframe?"],
+      "source_data_field": "hero_headline",
+      "benchmark_source": "Design Bees homepage analysis dataset, 500+ audits",
+      "applicable_icp_types": ["agency"],
+      "tone_notes": "Commercial and peer-to-peer. Focus on client retention, new business win rate, and margin."
     },
     {
-      "id": "IB004",
+      "block_id": "IB004",
       "issue_code": "CTA_TOO_SOFT",
-      "icp": "founder",
-      "industries": [
-        "ecommerce",
-        "saas",
-        "local_services"
-      ],
-      "short_insight_line": "Your mobile site loads 40% slower than desktop, costing you 25-40% of mobile conversions.",
-      "longer_explainer": "Mobile performance matters. Every additional second of load time costs ~7% of conversions. Visitors expect mobile pages to load in under 3 seconds.",
-      "business_consequence": "CTA click-through rate appears low but the real issue is the button isn't anchored to a clear outcome. Visitors hesitate before committing their email or booking a call.",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "email",
-        "linkedin"
-      ],
-      "suitable_steps": [
-        2
-      ],
-      "asset_pairings": [
-        "brief_builder",
-        "checklist"
-      ],
-      "confidence_notes": "Consistent across founders with under 50 employees who haven't refined conversion copy.",
-      "cta_pairings": [
-        "How's your CTA performing?",
-        "Open to testing a reframe?"
-      ]
+      "insight_type": "cta_weakness",
+      "short_insight_line": "Your CTA says 'Get Started' but doesn't tell me what I'm starting, what I'll get, or why I should care enough to click.",
+      "expanded_explanation": "CTA button present but divorced from a clear next step or outcome. Visitors hesitate before clicking because the button doesn't answer 'What happens next?' or 'What's in it for me?' Every CTA should be anchored to a specific outcome the visitor will receive.",
+      "business_consequence": "CTA click-through rate is suppressed because the button isn't anchored to a clear outcome. Visitors who might have converted decide to 'think about it' and leave.",
+      "cta_pairings": ["How's your CTA performing?", "Open to testing a reframe?"],
+      "source_data_field": "cta_copy",
+      "benchmark_source": "CRO benchmarks: Unbounce, ConversionXL, VWO (2023-2024)",
+      "applicable_icp_types": ["founder"],
+      "tone_notes": "Direct and peer-level. Lead with specific revenue or time impact. Avoid design jargon."
     },
     {
-      "id": "IB005",
+      "block_id": "IB005",
       "issue_code": "CTA_NOT_OUTCOME_TIED",
-      "icp": "marketing_manager",
-      "industries": [
-        "saas",
-        "b2b_tech",
-        "fintech"
-      ],
-      "short_insight_line": "Your forms ask for information but don't explain what the visitor gets in return \u2014 they're asking for a favor, not offering a benefit.",
-      "longer_explainer": "A form that says 'Book a call' without context makes the visitor feel like they're doing you a favor. Flip it: 'Book a 15-min strategy review' or 'Get a personalized roadmap for Q2' ties the action to their outcome.",
+      "insight_type": "cta_weakness",
+      "short_insight_line": "Your forms ask for information but don't explain what the visitor gets in return — they're asking for a favor, not offering a benefit.",
+      "expanded_explanation": "A form that says 'Book a call' without context makes the visitor feel like they're doing you a favor. Flip it: 'Book a 15-min strategy review' or 'Get a personalized roadmap for Q2' ties the action to their outcome.",
       "business_consequence": "Signup and form completion rates are typically 20-35% lower with generic CTAs. Outcome-tied CTAs improve conversion 15-25% (tested across 200+ B2B SaaS companies).",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "slack",
-        "email"
-      ],
-      "suitable_steps": [
-        2,
-        3
-      ],
-      "asset_pairings": [
-        "brief_builder"
-      ],
-      "confidence_notes": "Especially true for mid-market companies where longer sales cycles require clear benefit statements.",
-      "cta_pairings": [
-        "What's your form copy saying?",
-        "Worth testing outcome language?"
-      ]
+      "cta_pairings": ["What's your form copy saying?", "Worth testing outcome language?"],
+      "source_data_field": "cta_copy",
+      "benchmark_source": "CRO benchmarks: Unbounce, ConversionXL, VWO (2023-2024)",
+      "applicable_icp_types": ["marketing_manager"],
+      "tone_notes": "Data-led and professional. Reference conversion benchmarks and campaign attribution."
     },
     {
-      "id": "IB006",
+      "block_id": "IB006",
       "issue_code": "CTA_NOT_OUTCOME_TIED",
-      "icp": "agency",
-      "industries": [
-        "agencies"
-      ],
+      "insight_type": "cta_weakness",
       "short_insight_line": "Your agency RFQ form asks 'Tell us about your project' but doesn't tell prospects why they should fill it out instead of calling the next agency.",
-      "longer_explainer": "Agencies often ask for project details upfront without establishing what the prospect gains from being thorough. Better framing: 'Share your brief and get a quick scope estimate and timeline' clarifies the benefit.",
-      "business_consequence": "Lower-quality RFQ submissions because prospects don't understand the payoff. Sales team wastes time on incomplete briefs. High-intent prospects look elsewhere. (70% of visitors don't scroll past the fold - Nielsen Norman Group eye-tracking studies). Conversion depends on above-fold clarity.",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "email",
-        "linkedin"
-      ],
-      "suitable_steps": [
-        2
-      ],
-      "cta_pairings": [
-        "How's your inquiry form positioned?",
-        "Open to testing outcome language?"
-      ],
-      "asset_pairings": [
-        "brief_builder"
-      ],
-      "confidence_notes": "Applies to agencies competing for retainer or project-based work where brief quality matters."
+      "expanded_explanation": "Agencies often ask for project details upfront without establishing what the prospect gains from being thorough. Better framing: 'Share your brief and get a quick scope estimate and timeline' clarifies the benefit.",
+      "business_consequence": "Lower-quality RFQ submissions because prospects don't understand the payoff. Sales team wastes time on incomplete briefs. High-intent prospects look elsewhere.",
+      "cta_pairings": ["How's your inquiry form positioned?", "Open to testing outcome language?"],
+      "source_data_field": "cta_copy",
+      "benchmark_source": "Design Bees homepage analysis dataset, 500+ audits",
+      "applicable_icp_types": ["agency"],
+      "tone_notes": "Commercial and peer-to-peer. Focus on client retention, new business win rate, and margin."
     },
     {
-      "id": "IB007",
+      "block_id": "IB007",
       "issue_code": "FEATURE_FIRST_MESSAGING",
-      "icp": "founder",
-      "industries": [
-        "saas",
-        "professional_services"
-      ],
+      "insight_type": "specificity_gap",
       "short_insight_line": "Your homepage spends 3 sections explaining your process before you've told me why I need you. By then I'm already scrolling away.",
-      "longer_explainer": "Founders often lead with 'Our approach,' 'Our team,' 'Our methodology' before establishing the problem or why it matters to the visitor. Features should come after you've answered 'Why should I care?'",
+      "expanded_explanation": "Founders often lead with 'Our approach,' 'Our team,' 'Our methodology' before establishing the problem or why it matters to the visitor. Features should come after you've answered 'Why should I care?'",
       "business_consequence": "Bounce rate is high for cold/paid traffic because visitors haven't seen a reason to engage. Those who do scroll get an information dump that feels impersonal.",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "email"
-      ],
-      "suitable_steps": [
-        1,
-        2
-      ],
-      "asset_pairings": [
-        "analyser",
-        "checklist"
-      ],
-      "confidence_notes": "Prevalent among service-based founders and B2B SaaS teams that lead with credentials instead of customer-centric outcomes.",
-      "cta_pairings": [
-        "Worth reordering for clarity?",
-        "Open to seeing the gap?"
-      ]
+      "cta_pairings": ["Worth reordering for clarity?", "Open to seeing the gap?"],
+      "source_data_field": "page_structure",
+      "benchmark_source": "CRO benchmarks: Unbounce, ConversionXL, VWO (2023-2024)",
+      "applicable_icp_types": ["founder"],
+      "tone_notes": "Direct and peer-level. Lead with specific revenue or time impact. Avoid design jargon."
     },
     {
-      "id": "IB008",
+      "block_id": "IB008",
       "issue_code": "FEATURE_FIRST_MESSAGING",
-      "icp": "marketing_manager",
-      "industries": [
-        "b2b_tech"
-      ],
+      "insight_type": "specificity_gap",
       "short_insight_line": "Your landing page leads with 'Seamless integration' and 'Enterprise-grade security' but never says what the customer actually wins by using you.",
-      "longer_explainer": "B2B marketing teams often prioritize feature/benefit statements (speed, reliability, compliance) before establishing the business problem or outcome. This forces prospects to translate features into value themselves.",
-      "business_consequence": "Cognitive load is high. Prospects don't see themselves winning. Form abandonment increases. Sales gets leads that aren't pre-sold on the value prop. (Google/DUDA mobile benchmark 2023)",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "slack",
-        "email"
-      ],
-      "suitable_steps": [
-        1,
-        2
-      ],
-      "asset_pairings": [
-        "analyser",
-        "brief_builder"
-      ],
-      "confidence_notes": "Common in SaaS and B2B tech companies where product teams influence messaging.",
-      "cta_pairings": [
-        "How's your page structured?",
-        "Worth testing problem-first ordering?"
-      ]
+      "expanded_explanation": "B2B marketing teams often prioritize feature/benefit statements (speed, reliability, compliance) before establishing the business problem or outcome. This forces prospects to translate features into value themselves.",
+      "business_consequence": "Cognitive load is high. Prospects don't see themselves winning. Form abandonment increases. Sales gets leads that aren't pre-sold on the value prop.",
+      "cta_pairings": ["How's your page structured?", "Worth testing problem-first ordering?"],
+      "source_data_field": "page_structure",
+      "benchmark_source": "CRO benchmarks: Unbounce, ConversionXL, VWO (2023-2024)",
+      "applicable_icp_types": ["marketing_manager"],
+      "tone_notes": "Data-led and professional. Reference conversion benchmarks and campaign attribution."
     },
     {
-      "id": "IB009",
+      "block_id": "IB009",
       "issue_code": "UNCLEAR_OFFER",
-      "icp": "founder",
-      "industries": [
-        "saas",
-        "ecommerce",
-        "professional_services"
-      ],
+      "insight_type": "clarity_gap",
       "short_insight_line": "After 10 seconds on your site, a visitor can't tell if you sell templates, done-for-you services, software, or coaching. That confusion kills conversion.",
-      "longer_explainer": "When your offering model is unclear (subscription vs. project vs. retainer, automation vs. service, DIY vs. hands-on), visitors get lost. They bounce because they can't categorize what you do into their decision-making framework.",
+      "expanded_explanation": "When your offering model is unclear (subscription vs. project vs. retainer, automation vs. service, DIY vs. hands-on), visitors get lost. They bounce because they can't categorize what you do into their decision-making framework.",
       "business_consequence": "Bounce rate is high. Qualified prospects reach out with completely wrong use cases. Sales team spends calls clarifying what you actually do instead of selling the value.",
-      "severity_hint": "critical",
-      "suitable_channels": [
-        "email",
-        "linkedin"
-      ],
-      "suitable_steps": [
-        1,
-        2
-      ],
-      "asset_pairings": [
-        "analyser",
-        "checklist"
-      ],
-      "confidence_notes": "Especially common in agencies and service companies where offering model varies by customer or year.",
-      "cta_pairings": [
-        "Worth clarifying what you actually offer?",
-        "Open to an audit?"
-      ]
+      "cta_pairings": ["Worth clarifying what you actually offer?", "Open to an audit?"],
+      "source_data_field": "offer_statement",
+      "benchmark_source": "Design Bees homepage analysis dataset, 500+ audits",
+      "applicable_icp_types": ["founder"],
+      "tone_notes": "Direct and peer-level. Lead with specific revenue or time impact. Avoid design jargon."
     },
     {
-      "id": "IB010",
+      "block_id": "IB010",
       "issue_code": "UNCLEAR_OFFER",
-      "icp": "marketing_manager",
-      "industries": [
-        "b2b_tech"
-      ],
+      "insight_type": "clarity_gap",
       "short_insight_line": "Your SaaS landing page doesn't clearly separate 'What is this tool?' from 'What will you do with it?' Prospects are confused about which problem it solves.",
-      "longer_explainer": "B2B SaaS often conflates the tool with the outcome. 'Marketing automation' is not an outcome. The outcome is 'Leads don't fall through the cracks' or 'Your team spends 15 hours less per week on manual follow-up.'",
-      "business_consequence": "Trial signups are high but activation is low because users don't know what problem they're solving with the tool. Free trial conversion to paid stays weak. Click-through rate from search is typically 20-35% lower with generic titles (Moz SEO research data).",
-      "severity_hint": "critical",
-      "suitable_channels": [
-        "slack"
-      ],
-      "suitable_steps": [
-        1
-      ],
-      "asset_pairings": [
-        "analyser"
-      ],
-      "confidence_notes": "Applies to feature-rich SaaS platforms where product complexity can obscure the core outcome.",
-      "cta_pairings": [
-        "How clearly does your offer separate tool from outcome?",
-        "Worth a quick clarity audit?"
-      ]
+      "expanded_explanation": "B2B SaaS often conflates the tool with the outcome. 'Marketing automation' is not an outcome. The outcome is 'Leads don't fall through the cracks' or 'Your team spends 15 hours less per week on manual follow-up.'",
+      "business_consequence": "Trial signups are high but activation is low because users don't know what problem they're solving with the tool. Free trial conversion to paid stays weak.",
+      "cta_pairings": ["How clearly does your offer separate tool from outcome?", "Worth a quick clarity audit?"],
+      "source_data_field": "offer_statement",
+      "benchmark_source": "CRO benchmarks: Unbounce, ConversionXL, VWO (2023-2024)",
+      "applicable_icp_types": ["marketing_manager"],
+      "tone_notes": "Data-led and professional. Reference conversion benchmarks and campaign attribution."
     },
     {
-      "id": "IB011",
+      "block_id": "IB011",
       "issue_code": "WEAK_ABOVE_FOLD_STRUCTURE",
-      "icp": "founder",
-      "industries": [
-        "saas",
-        "ecommerce"
-      ],
+      "insight_type": "clarity_gap",
       "short_insight_line": "Your above-the-fold section is visually beautiful but gives me zero reason to scroll. Beautiful doesn't convert if it's not clear.",
-      "longer_explainer": "Great design above the fold is table stakes. But above-the-fold must also answer: 'What's the problem?' 'Why does it matter?' 'What do I get if I engage?' Without those elements, beauty is just decoration.",
+      "expanded_explanation": "Great design above the fold is table stakes. But above-the-fold must also answer: 'What's the problem?' 'Why does it matter?' 'What do I get if I engage?' Without those elements, beauty is just decoration.",
       "business_consequence": "Scroll depth is low. Visitors don't see proof, testimonials, or strong CTAs below fold. Conversion suffers despite strong design. High bounce rate on paid traffic.",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "email",
-        "linkedin"
-      ],
-      "suitable_steps": [
-        1,
-        2
-      ],
-      "asset_pairings": [
-        "analyser"
-      ],
-      "confidence_notes": "Common in design-forward companies that prioritize aesthetics over message clarity.",
-      "cta_pairings": [
-        "How much of your conversion happens below fold?",
-        "Open to auditing above-the-fold clarity?"
-      ]
+      "cta_pairings": ["How much of your conversion happens below fold?", "Open to auditing above-the-fold clarity?"],
+      "source_data_field": "above_fold_composition",
+      "benchmark_source": "Design Bees homepage analysis dataset, 500+ audits",
+      "applicable_icp_types": ["founder"],
+      "tone_notes": "Direct and peer-level. Lead with specific revenue or time impact. Avoid design jargon."
     },
     {
-      "id": "IB012",
+      "block_id": "IB012",
       "issue_code": "WEAK_ABOVE_FOLD_STRUCTURE",
-      "icp": "marketing_manager",
-      "industries": [
-        "b2b_tech"
-      ],
+      "insight_type": "clarity_gap",
       "short_insight_line": "Your campaign landing page's above-the-fold section is filled with subheadings instead of clear value. I know your product exists but not why I need it.",
-      "longer_explainer": "Marketing leaders often load above-the-fold with multiple headlines, subheadings, and feature highlights. A single clear message and strong visual anchor performs better.",
+      "expanded_explanation": "Marketing leaders often load above-the-fold with multiple headlines, subheadings, and feature highlights. A single clear message and strong visual anchor performs better.",
       "business_consequence": "Conversion rate is flat relative to traffic quality. A/B tests on above-fold messaging often show 20-40% conversion improvements.",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "email"
-      ],
-      "suitable_steps": [
-        1,
-        2
-      ],
-      "cta_pairings": [
-        "What's your primary message above the fold?",
-        "Worth testing message clarity?"
-      ],
-      "asset_pairings": [
-        "analyser"
-      ],
-      "confidence_notes": "True for mid-market and enterprise B2B companies where sales/product both influence above-fold messaging."
+      "cta_pairings": ["What's your primary message above the fold?", "Worth testing message clarity?"],
+      "source_data_field": "above_fold_composition",
+      "benchmark_source": "CRO benchmarks: Unbounce, ConversionXL, VWO (2023-2024)",
+      "applicable_icp_types": ["marketing_manager"],
+      "tone_notes": "Data-led and professional. Reference conversion benchmarks and campaign attribution."
     },
     {
-      "id": "IB013",
+      "block_id": "IB013",
       "issue_code": "TOO_MANY_COMPETING_ELEMENTS",
-      "icp": "founder",
-      "industries": [
-        "saas",
-        "professional_services"
-      ],
+      "insight_type": "visual_complexity",
       "short_insight_line": "Your homepage lacks a clear primary CTA tied to an outcome. Visitors don't know what they'll get by clicking. They leave instead.",
-      "longer_explainer": "Every page should have one clear call to action tied to a specific outcome (time saved, money recovered, or result achieved). Secondary CTAs can exist but shouldn't compete for attention.",
+      "expanded_explanation": "Every page should have one clear call to action tied to a specific outcome (time saved, money recovered, or result achieved). Secondary CTAs can exist but shouldn't compete for attention.",
       "business_consequence": "Visitor attention fragments. No clear focal point. Bounce rate is high for cold traffic. Conversion rate stays flat despite adding more 'value' to the page.",
-      "severity_hint": "medium",
-      "suitable_channels": [
-        "email",
-        "linkedin"
-      ],
-      "suitable_steps": [
-        2,
-        3
-      ],
-      "asset_pairings": [
-        "checklist"
-      ],
-      "confidence_notes": "Especially common in bootstrapped founders who add elements over time without strategic removal.",
-      "cta_pairings": [
-        "How many conversions happen from each section?",
-        "Open to prioritizing?"
-      ]
+      "cta_pairings": ["How many conversions happen from each section?", "Open to prioritizing?"],
+      "source_data_field": "layout_composition",
+      "benchmark_source": "Design Bees UX audit dataset; Baymard Institute",
+      "applicable_icp_types": ["founder"],
+      "tone_notes": "Direct and peer-level. Lead with specific revenue or time impact. Avoid design jargon."
     },
     {
-      "id": "IB014",
+      "block_id": "IB014",
       "issue_code": "TOO_MANY_COMPETING_ELEMENTS",
-      "icp": "agency",
-      "industries": [
-        "agencies"
-      ],
+      "insight_type": "visual_complexity",
       "short_insight_line": "Your portfolio page shows 20 case studies because they're all great work. But prospects don't know which one is most relevant to them, so they don't engage with any.",
-      "longer_explainer": "Trust is built through specific, repeated messaging about who you serve and the exact outcome they get (e.g., 'Help marketing teams ship campaigns 40% faster'). Generic messaging ('Help all teams succeed') creates skepticism.",
-      "business_consequence": "Portfolio site generates low-quality inbound leads because prospects don't self-select to relevant work. Sales wastes time on misaligned conversations. Specific positioning lifts both by 25-40% (benchmarked across SaaS companies by CXL Institute).",
-      "severity_hint": "medium",
-      "suitable_channels": [
-        "linkedin"
-      ],
-      "suitable_steps": [
-        2
-      ],
-      "asset_pairings": [
-        "checklist"
-      ],
-      "confidence_notes": "Applies to agencies with diverse service offerings or multi-vertical client bases.",
-      "cta_pairings": [
-        "How do prospects filter to relevant work?",
-        "Worth segmenting your portfolio?"
-      ]
+      "expanded_explanation": "Trust is built through specific, repeated messaging about who you serve and the exact outcome they get. Generic messaging creates skepticism. Curating your strongest 3-5 case studies and making them segment-specific outperforms volume.",
+      "business_consequence": "Portfolio site generates low-quality inbound leads because prospects don't self-select to relevant work. Sales wastes time on misaligned conversations. Specific positioning lifts both by 25-40%.",
+      "cta_pairings": ["How do prospects filter to relevant work?", "Worth segmenting your portfolio?"],
+      "source_data_field": "layout_composition",
+      "benchmark_source": "Design Bees homepage analysis dataset, 500+ audits",
+      "applicable_icp_types": ["agency"],
+      "tone_notes": "Commercial and peer-to-peer. Focus on client retention, new business win rate, and margin."
     },
     {
-      "id": "IB015",
+      "block_id": "IB015",
       "issue_code": "CLUTTERED_LAYOUT",
-      "icp": "marketing_manager",
-      "industries": [
-        "saas",
-        "b2b_tech"
-      ],
+      "insight_type": "visual_complexity",
       "short_insight_line": "Your landing page has good elements but they're not arranged in a way that guides my eye. Everything feels equally important, so nothing stands out.",
-      "longer_explainer": "Whitespace, contrast, proximity, and size should direct visitor attention through a narrative. When these tools are weak, the page feels chaotic even if technically organized.",
+      "expanded_explanation": "Whitespace, contrast, proximity, and size should direct visitor attention through a narrative. When these tools are weak, the page feels chaotic even if technically organized.",
       "business_consequence": "Cognitive load is high. Visitors don't know where to focus. Conversion rate is lower than it should be for the quality of traffic.",
-      "severity_hint": "medium",
-      "suitable_channels": [
-        "email",
-        "slack"
-      ],
-      "suitable_steps": [
-        2,
-        3
-      ],
-      "asset_pairings": [
-        "checklist"
-      ],
-      "confidence_notes": "Common in pages with multiple stakeholders where design governance is loose.",
-      "cta_pairings": [
-        "How's your page hierarchy?",
-        "Open to testing visual flow?"
-      ]
+      "cta_pairings": ["How's your page hierarchy?", "Open to testing visual flow?"],
+      "source_data_field": "layout_composition",
+      "benchmark_source": "Design Bees UX audit dataset; Baymard Institute",
+      "applicable_icp_types": ["marketing_manager"],
+      "tone_notes": "Data-led and professional. Reference conversion benchmarks and campaign attribution."
     },
     {
-      "id": "IB016",
+      "block_id": "IB016",
       "issue_code": "LOW_TRUST_SIGNAL_VISIBILITY",
-      "icp": "founder",
-      "industries": [
-        "saas",
-        "professional_services"
-      ],
+      "insight_type": "trust_deficit",
       "short_insight_line": "You have amazing client logos and testimonials but they're in the footer. Prospects are gone before they see proof you're credible.",
-      "longer_explainer": "Trust signals (logos, testimonials, case studies, certifications, press mentions) should be visible early, not buried. Cold traffic needs credibility signaling early to move down funnel.",
+      "expanded_explanation": "Trust signals (logos, testimonials, case studies, certifications, press mentions) should be visible early, not buried. Cold traffic needs credibility signaling early to move down funnel.",
       "business_consequence": "Conversion is low for cold/paid traffic because visitors don't see proof of your track record early. Trust builds slowly if at all.",
-      "severity_hint": "medium",
-      "suitable_channels": [
-        "email",
-        "linkedin"
-      ],
-      "suitable_steps": [
-        2,
-        3
-      ],
-      "asset_pairings": [
-        "analyser",
-        "checklist"
-      ],
-      "confidence_notes": "Pattern across bootstrapped and Series A SaaS companies that built proof but don't position it early.",
-      "cta_pairings": [
-        "Where are your trust signals placed?",
-        "Worth moving social proof higher?"
-      ]
+      "cta_pairings": ["Where are your trust signals placed?", "Worth moving social proof higher?"],
+      "source_data_field": "trust_element_placement",
+      "benchmark_source": "Nielsen Norman Group; Edelman Trust Barometer",
+      "applicable_icp_types": ["founder"],
+      "tone_notes": "Direct and peer-level. Lead with specific revenue or time impact. Avoid design jargon."
     },
     {
-      "id": "IB017",
+      "block_id": "IB017",
       "issue_code": "LOW_TRUST_SIGNAL_VISIBILITY",
-      "icp": "agency",
-      "industries": [
-        "agencies"
-      ],
+      "insight_type": "trust_deficit",
       "short_insight_line": "Your case studies are on a separate page. A prospect landing on your homepage doesn't see evidence you've delivered results for someone like them.",
-      "longer_explainer": "High-intent prospects want proof immediately. Case studies, results, testimonials on a separate page means they have to seek it out. Embed proof early in the decision journey.",
+      "expanded_explanation": "High-intent prospects want proof immediately. Case studies, results, testimonials on a separate page means they have to seek it out. Embed proof early in the decision journey.",
       "business_consequence": "Inbound lead quality is lower because prospects don't self-qualify to your relevant work. Sales team qualifies conversations instead of prospects pre-qualifying themselves.",
-      "severity_hint": "medium",
-      "suitable_channels": [
-        "linkedin",
-        "email"
-      ],
-      "suitable_steps": [
-        2,
-        3
-      ],
-      "asset_pairings": [
-        "checklist"
-      ],
-      "confidence_notes": "Applies to agencies competing in crowded markets where proof matters for differentiation.",
-      "cta_pairings": [
-        "How prominent are your case studies?",
-        "Worth embedding proof on the main page?"
-      ]
+      "cta_pairings": ["How prominent are your case studies?", "Worth embedding proof on the main page?"],
+      "source_data_field": "trust_element_placement",
+      "benchmark_source": "Nielsen Norman Group; Edelman Trust Barometer",
+      "applicable_icp_types": ["agency"],
+      "tone_notes": "Commercial and peer-to-peer. Focus on client retention, new business win rate, and margin."
     },
     {
-      "id": "IB018",
+      "block_id": "IB018",
       "issue_code": "WEAK_VISUAL_HIERARCHY",
-      "icp": "founder",
-      "industries": [
-        "ecommerce",
-        "saas"
-      ],
-      "short_insight_line": "I noticed your forms don't define consistent validation patterns. Would it be worth exploring whether that impacts form completion rates?",
-      "longer_explainer": "Visual hierarchy uses size, weight, color, and position to guide the eye through a narrative. When headlines aren't significantly larger or different from supporting text, the page feels uniform and hard to scan.",
+      "insight_type": "visual_complexity",
+      "short_insight_line": "Your page has no clear reading priority. Headlines, subheadings, and body text are all competing at the same visual weight — visitors scan and leave.",
+      "expanded_explanation": "Visual hierarchy uses size, weight, color, and position to guide the eye through a narrative. When headlines aren't significantly larger or different from supporting text, the page feels uniform and hard to scan.",
       "business_consequence": "Scan rate is low. Visitors don't quickly grasp the core message. Time-to-understanding increases and bounce rate follows.",
-      "severity_hint": "medium",
-      "suitable_channels": [
-        "email"
-      ],
-      "suitable_steps": [
-        3
-      ],
-      "asset_pairings": [
-        "checklist"
-      ],
-      "confidence_notes": "Common in DIY or template-based sites where design tools are used without hierarchy training.",
-      "cta_pairings": [
-        "Are form validation patterns something you're thinking about?",
-        "Would it make sense to review your form validation approach?"
-      ]
+      "cta_pairings": ["Are heading sizes clearly differentiated?", "Would it make sense to review your visual hierarchy?"],
+      "source_data_field": "visual_hierarchy_score",
+      "benchmark_source": "Design Bees UX audit dataset; Baymard Institute",
+      "applicable_icp_types": ["founder"],
+      "tone_notes": "Direct and peer-level. Lead with specific revenue or time impact. Avoid design jargon."
     },
     {
-      "id": "IB019",
+      "block_id": "IB019",
       "issue_code": "POOR_MOBILE_READABILITY",
-      "icp": "founder",
-      "industries": [
-        "saas",
-        "ecommerce",
-        "local_services"
-      ],
+      "insight_type": "mobile_gap",
       "short_insight_line": "On mobile, your page is hard to read and navigation requires scrolling sideways. You're losing 50%+ of your traffic to bad mobile UX.",
-      "longer_explainer": "Mobile traffic is often 40-60% of total. If mobile experience is painful (text too small, buttons hard to tap, horizontal scrolling, images that don't scale), you're turning away half your audience.",
-      "business_consequence": "Mobile conversion rate is significantly lower than desktop. A/B testing often shows 30-50% improvement by fixing mobile readability. (Nielsen Norman Group, mobile usability research 2022)",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "email",
-        "linkedin"
-      ],
-      "suitable_steps": [
-        2,
-        3
-      ],
-      "asset_pairings": [
-        "analyser"
-      ],
-      "confidence_notes": "Especially critical for B2C and local service companies where mobile traffic is 60%+.",
-      "cta_pairings": [
-        "How's your mobile experience?",
-        "Worth auditing mobile readability?"
-      ]
+      "expanded_explanation": "Mobile traffic is often 40-60% of total. If mobile experience is painful (text too small, buttons hard to tap, horizontal scrolling, images that don't scale), you're turning away half your audience.",
+      "business_consequence": "Mobile conversion rate is significantly lower than desktop. Fixing mobile readability shows 30-50% improvement in A/B tests.",
+      "cta_pairings": ["What's your mobile vs. desktop conversion split?", "Worth a mobile audit?"],
+      "source_data_field": "mobile_usability_score",
+      "benchmark_source": "Google Mobile UX research; Baymard Institute mobile benchmarks",
+      "applicable_icp_types": ["founder"],
+      "tone_notes": "Direct and peer-level. Lead with specific revenue or time impact. Avoid design jargon."
     },
     {
-      "id": "IB020",
+      "block_id": "IB020",
       "issue_code": "POOR_MOBILE_READABILITY",
-      "icp": "marketing_manager",
-      "industries": [
-        "saas",
-        "b2b_tech"
-      ],
-      "short_insight_line": "Your mobile landing page looks different from desktop. Navigation is broken. Forms don't auto-fill. You're losing conversions just to mobile friction.",
-      "longer_explainer": "Mobile optimization goes beyond responsive design. Button sizes, form fields, navigation menus, and CTA placement should be mobile-first, not responsive afterthought.",
-      "business_consequence": "Bounce rate is 35-50% higher on mobile. Conversion for mobile visitors is 30-45% lower due to poor responsive design (Littledata mobile benchmark 2023).",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "slack"
-      ],
-      "suitable_steps": [
-        2
-      ],
-      "cta_pairings": [
-        "What's your mobile conversion rate vs. desktop?",
-        "Worth a mobile UX audit?"
-      ],
-      "asset_pairings": [
-        "analyser"
-      ],
-      "confidence_notes": "Common in enterprise SaaS where procurement team browses on mobile but decision-maker is on desktop."
+      "insight_type": "mobile_gap",
+      "short_insight_line": "Your mobile landing page looks different from desktop. Navigation is broken. Forms are hard to fill. You're killing campaign ROI from mobile traffic.",
+      "expanded_explanation": "Campaign landing pages are often designed desktop-first and checked on mobile as an afterthought. Broken mobile layouts directly reduce campaign ROI when 50-60% of ad click traffic is mobile.",
+      "business_consequence": "Campaign ROI is suppressed because half the traffic has a broken experience. CPL on mobile channels is artificially high as a result.",
+      "cta_pairings": ["How does your mobile campaign page perform?", "Worth auditing mobile specifically?"],
+      "source_data_field": "mobile_usability_score",
+      "benchmark_source": "Google Mobile UX research; Baymard Institute mobile benchmarks",
+      "applicable_icp_types": ["marketing_manager"],
+      "tone_notes": "Data-led and professional. Reference conversion benchmarks and campaign attribution."
     },
     {
-      "id": "IB021",
+      "block_id": "IB021",
       "issue_code": "HIGH_COGNITIVE_LOAD",
-      "icp": "founder",
-      "industries": [
-        "saas",
-        "professional_services"
-      ],
-      "short_insight_line": "Your value prop requires visitors to read 3 paragraphs and connect dots. Most don't. They leave instead.",
-      "longer_explainer": "Cognitive load is the mental effort required to understand your offer. Long paragraphs, jargon, multiple concepts, or lack of white space increase load. Shorter sentences, active voice, and clear structure reduce it.",
-      "business_consequence": "Cold traffic bounce rate increases 5-8% per additional paragraph above 3. Conversion for cold/paid traffic typically improves 20-30% when cognitive load is reduced through clarity and structure (Nielsen Norman Group eye-tracking data).",
-      "severity_hint": "medium",
-      "suitable_channels": [
-        "email",
-        "linkedin"
-      ],
-      "suitable_steps": [
-        1,
-        2
-      ],
-      "asset_pairings": [
-        "checklist"
-      ],
-      "confidence_notes": "True for technical and complex service offerings where simplicity is rare.",
-      "cta_pairings": [
-        "How easy is it to understand your offer?",
-        "Worth simplifying?"
-      ]
+      "insight_type": "clarity_gap",
+      "short_insight_line": "Your value prop requires visitors to read 3 paragraphs and connect dots. Most don't. They leave.",
+      "expanded_explanation": "When the value proposition requires effort to understand, most visitors won't do the work. The brain is wired to take shortcuts. If your message isn't immediately graspable, visitors move on.",
+      "business_consequence": "High bounce rate. Low time-on-site for cold traffic. Visitors who do convert are often already warm leads, not cold traffic you could be converting.",
+      "cta_pairings": ["How quickly can a stranger grasp your offer?", "Open to a clarity test?"],
+      "source_data_field": "content_complexity_score",
+      "benchmark_source": "Nielsen Norman Group; CRO benchmarks: Unbounce, ConversionXL",
+      "applicable_icp_types": ["founder"],
+      "tone_notes": "Direct and peer-level. Lead with specific revenue or time impact. Avoid design jargon."
     },
     {
-      "id": "IB022",
+      "block_id": "IB022",
       "issue_code": "HIGH_COGNITIVE_LOAD",
-      "icp": "marketing_manager",
-      "industries": [
-        "b2b_tech"
-      ],
-      "short_insight_line": "Your landing page copy uses passive voice, long sentences, and domain jargon. I get tired reading it. Conversion suffers.",
-      "longer_explainer": "Marketing teams often inherit copy written by product teams. Active voice, short sentences, and simple language reduce cognitive load by 20-30%.",
-      "business_consequence": "Form completion rates are 20-30% below benchmark for pages with passive copy. Copy optimization yields 15-25% form fill rate improvement (CXL Institute testing).",
-      "severity_hint": "medium",
-      "suitable_channels": [
-        "slack"
-      ],
-      "suitable_steps": [
-        3
-      ],
-      "cta_pairings": [
-        "How readable is your copy?",
-        "Open to a copy audit?"
-      ],
-      "asset_pairings": [
-        "checklist"
-      ],
-      "confidence_notes": "Prevalent in product-marketing handoff situations where technical accuracy outweighs clarity."
+      "insight_type": "clarity_gap",
+      "short_insight_line": "Your landing page copy uses passive voice, long sentences, and domain jargon. I need to work to understand it — and most visitors won't.",
+      "expanded_explanation": "B2B copy often sounds like internal documentation. Passive voice, long paragraphs, and technical language increase cognitive load and reduce conversion. Direct, plain language always outperforms complex copy in A/B tests.",
+      "business_consequence": "Time-on-page is low. Exit rate from above-fold is high. Conversion from paid and organic traffic underperforms relative to traffic quality.",
+      "cta_pairings": ["How's your copy reading on a cold audience?", "Worth simplifying the messaging?"],
+      "source_data_field": "content_complexity_score",
+      "benchmark_source": "Nielsen Norman Group; CRO benchmarks: Unbounce, ConversionXL",
+      "applicable_icp_types": ["marketing_manager"],
+      "tone_notes": "Data-led and professional. Reference conversion benchmarks and campaign attribution."
     },
     {
-      "id": "IB023",
+      "block_id": "IB023",
       "issue_code": "MISSING_SOCIAL_PROOF",
-      "icp": "founder",
-      "industries": [
-        "saas",
-        "professional_services"
-      ],
-      "short_insight_line": "You have no testimonials, case studies, logos, or results shown. I'm trusting you on hype alone, and that's a hard sell for a cold visitor.",
-      "longer_explainer": "Social proof is the evidence that others like the visitor have benefited from you. Without it, cold/paid traffic has no third-party validation and hesitates before engaging.",
-      "business_consequence": "Cold traffic conversion is typically 35-50% below benchmark for companies without social proof. Adding 2-3 customer testimonials and 1 case study lifts conversion 20-40% (A/B test data, 150+ SaaS companies tested).",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "email",
-        "linkedin"
-      ],
-      "suitable_steps": [
-        2,
-        3
-      ],
-      "asset_pairings": [
-        "checklist"
-      ],
-      "confidence_notes": "Especially limiting for early-stage SaaS and service companies still building case studies.",
-      "cta_pairings": [
-        "Do you have customer testimonials?",
-        "Worth adding social proof?"
-      ]
+      "insight_type": "trust_deficit",
+      "short_insight_line": "You have no testimonials, case studies, logos, or results shown. I'm trusting you based on your own words alone — that's a hard sell.",
+      "expanded_explanation": "Without third-party validation, cold prospects have to trust a stranger completely. Adding even one specific, named testimonial with a result (not 'Great work!' but 'Saved us 10 hours/week') fundamentally changes the trust equation.",
+      "business_consequence": "Conversion rate from cold traffic is suppressed. Lead quality is low because motivated, skeptical prospects need proof and don't get it.",
+      "cta_pairings": ["Do you have results you haven't published?", "Worth adding some proof?"],
+      "source_data_field": "social_proof_elements",
+      "benchmark_source": "Nielsen Norman Group; Edelman Trust Barometer",
+      "applicable_icp_types": ["founder"],
+      "tone_notes": "Direct and peer-level. Lead with specific revenue or time impact. Avoid design jargon."
     },
     {
-      "id": "IB024",
+      "block_id": "IB024",
       "issue_code": "MISSING_SOCIAL_PROOF",
-      "icp": "marketing_manager",
-      "industries": [
-        "b2b_tech"
-      ],
-      "short_insight_line": "Your landing page has no third-party proof that competitors or peers use you. Numbers and quotes from customers outweigh your own marketing claims.",
-      "longer_explainer": "B2B buyers are skeptical of marketing claims. They trust peer validation. Customer logos, results (% improvement, time saved), and quotes significantly lift conversion for cold traffic.",
-      "business_consequence": "Conversion rate is typically 20-40% below industry benchmark for B2B pages without social proof. Adding customer logos and 1-2 outcome-focused quotes closes that gap by 15-30%.",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "email"
-      ],
-      "suitable_steps": [
-        2,
-        3
-      ],
-      "cta_pairings": [
-        "How much social proof is on your page?",
-        "Worth adding customer validation?"
-      ],
-      "asset_pairings": [
-        "checklist"
-      ],
-      "confidence_notes": "Critical for SaaS companies competing in crowded markets where peer validation is decision-making factor."
+      "insight_type": "trust_deficit",
+      "short_insight_line": "Your landing page has no third-party proof that competitors or peers use you. Numbers and names build trust fast — silence doesn't.",
+      "expanded_explanation": "Marketing managers are under pressure to justify vendor choices. Third-party proof (logos of recognizable companies, named case studies with metrics, press coverage) accelerates the internal approval process.",
+      "business_consequence": "Sales cycle is longer because the champion inside the account has to do more justification work. Win rate is lower in competitive evaluations.",
+      "cta_pairings": ["What proof do you have from similar companies?", "Worth surfacing customer names?"],
+      "source_data_field": "social_proof_elements",
+      "benchmark_source": "Nielsen Norman Group; Edelman Trust Barometer",
+      "applicable_icp_types": ["marketing_manager"],
+      "tone_notes": "Data-led and professional. Reference conversion benchmarks and campaign attribution."
     },
     {
-      "id": "IB025",
+      "block_id": "IB025",
       "issue_code": "MISSING_SEGMENT_CLARITY",
-      "icp": "founder",
-      "industries": [
-        "saas",
-        "professional_services"
-      ],
-      "short_insight_line": "Your homepage tries to speak to freelancers, agencies, and enterprises at the same time. None of them feel like you get their specific problem.",
-      "longer_explainer": "When messaging is too broad, no specific segment feels seen. Prospects think 'This is probably for someone else' even if it's actually relevant. Segment-specific messaging feels more credible.",
-      "business_consequence": "Conversion is lower because visitors don't self-identify with the solution. Inbound lead quality suffers because multiple segments come in at different buying stages.",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "email",
-        "linkedin"
-      ],
-      "suitable_steps": [
-        1,
-        2
-      ],
-      "asset_pairings": [
-        "analyser",
-        "checklist"
-      ],
-      "confidence_notes": "Common in SaaS with multiple valid use cases where positioning tries to capture all.",
-      "cta_pairings": [
-        "Who's your primary customer?",
-        "Worth testing segment-specific messaging?"
-      ]
+      "insight_type": "specificity_gap",
+      "short_insight_line": "Your homepage tries to speak to freelancers, agencies, and enterprises at the same time. None of them feel like you really get their situation.",
+      "expanded_explanation": "Broad messaging that tries to include everyone ends up resonating with no one. When you speak to a specific segment's specific problem, conversion rate goes up even though the theoretical audience is smaller.",
+      "business_consequence": "Conversion rate is lower than it should be. Inbound leads are mixed quality. Sales team wastes time with misaligned prospects.",
+      "cta_pairings": ["Who's your ideal customer right now?", "Worth tightening the focus?"],
+      "source_data_field": "audience_specificity_score",
+      "benchmark_source": "CRO benchmarks: Unbounce, ConversionXL, VWO (2023-2024)",
+      "applicable_icp_types": ["founder"],
+      "tone_notes": "Direct and peer-level. Lead with specific revenue or time impact. Avoid design jargon."
     },
     {
-      "id": "IB026",
+      "block_id": "IB026",
       "issue_code": "MISSING_SEGMENT_CLARITY",
-      "icp": "marketing_manager",
-      "industries": [
-        "b2b_tech"
-      ],
-      "short_insight_line": "Your campaign landing page says 'For all growing teams' but your best customers are specifically marketing ops leaders. That genericity doesn't resonate.",
-      "longer_explainer": "Segment-specific landing pages (by role, by use case, by company size) consistently outperform generic pages by 30-50%. Prospects feel seen when messaging addresses their specific situation.",
-      "business_consequence": "Conversion is lower than it could be. Creating even 2-3 segment-specific landing pages from one generic page typically lifts overall conversion 25%+ (tested across 50+ B2B SaaS companies, average 23-28% lift).",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "email"
-      ],
-      "suitable_steps": [
-        2,
-        3
-      ],
-      "cta_pairings": [
-        "Who's your highest-value customer segment?",
-        "Worth testing segment-specific landing pages?"
-      ],
-      "asset_pairings": [
-        "analyser"
-      ],
-      "confidence_notes": "True for B2B SaaS with multiple personas where one message can't speak to all."
+      "insight_type": "specificity_gap",
+      "short_insight_line": "Your campaign landing page says 'For all growing teams' but your best customers are probably a specific size, vertical, or role.",
+      "expanded_explanation": "Campaign ROI improves when landing pages speak to a specific audience. 'For SaaS marketing teams spending $50k+/month on paid' converts higher than 'For all growing teams' even though the audience is smaller.",
+      "business_consequence": "CPL is higher than it needs to be. MQL-to-SQL rate is lower because the inbound pipeline includes misaligned prospects.",
+      "cta_pairings": ["How specific is your campaign targeting vs. your landing page message?", "Worth aligning segment and message?"],
+      "source_data_field": "audience_specificity_score",
+      "benchmark_source": "CRO benchmarks: Unbounce, ConversionXL, VWO (2023-2024)",
+      "applicable_icp_types": ["marketing_manager"],
+      "tone_notes": "Data-led and professional. Reference conversion benchmarks and campaign attribution."
     },
     {
-      "id": "IB027",
+      "block_id": "IB027",
       "issue_code": "FRICTION_HEAVY_NAVIGATION",
-      "icp": "founder",
-      "industries": [
-        "saas",
-        "ecommerce"
-      ],
-      "short_insight_line": "Your navigation menu has 12 options. Visitors don't know where to go, so they leave instead of exploring.",
-      "longer_explainer": "More navigation options create decision paralysis. The key page (pricing, product, case studies) should be obvious. Everything else should be secondary.",
-      "business_consequence": "Bounce rate is high because visitors don't find what they're looking for quickly. Conversion drops when the path to action isn't obvious.",
-      "severity_hint": "medium",
-      "suitable_channels": [
-        "email"
-      ],
-      "suitable_steps": [
-        3
-      ],
-      "asset_pairings": [
-        "checklist"
-      ],
-      "confidence_notes": "Especially problematic for sites that add pages over time without removing old ones.",
-      "cta_pairings": [
-        "How many nav items do you have?",
-        "Open to simplifying navigation?"
-      ]
+      "insight_type": "navigation_friction",
+      "short_insight_line": "Your navigation menu has 12 options. Visitors don't know where to go, so they leave.",
+      "expanded_explanation": "Navigation should guide, not overwhelm. More than 5-7 top-level options creates choice paralysis. Visitors default to bouncing when they can't quickly identify the next right step.",
+      "business_consequence": "Time-on-site is low. Visitors don't reach key conversion pages because they get lost or overwhelmed. Reducing navigation options often increases conversion by 20-30%.",
+      "cta_pairings": ["How many navigation items do you have?", "Worth simplifying?"],
+      "source_data_field": "navigation_structure",
+      "benchmark_source": "Nielsen Norman Group navigation usability studies (2022-2024)",
+      "applicable_icp_types": ["founder"],
+      "tone_notes": "Direct and peer-level. Lead with specific revenue or time impact. Avoid design jargon."
     },
     {
-      "id": "IB028",
+      "block_id": "IB028",
       "issue_code": "FRICTION_HEAVY_NAVIGATION",
-      "icp": "marketing_manager",
-      "industries": [
-        "b2b_tech"
-      ],
-      "short_insight_line": "Your website has separate paths for product, pricing, and use cases. Visitors don't know which path applies to them, so many give up.",
-      "longer_explainer": "Navigation clarity should mirror the buyer journey. If most visitors come for 'Solutions by Use Case,' that should be prominent. If they come for pricing comparisons, that path should be obvious.",
-      "business_consequence": "Navigation friction increases time-to-value and bounce rate. Visitors leave when they can't find what they came for quickly.",
-      "severity_hint": "medium",
-      "suitable_channels": [
-        "slack"
-      ],
-      "suitable_steps": [
-        2
-      ],
-      "asset_pairings": [
-        "checklist"
-      ],
-      "confidence_notes": "Common in B2B websites with multiple buyer paths that aren't clearly delineated.",
-      "cta_pairings": [
-        "How do most visitors enter and navigate?",
-        "Worth testing navigation clarity?"
-      ]
+      "insight_type": "navigation_friction",
+      "short_insight_line": "Your website has separate paths for product, pricing, and use cases. Visitors don't know which path to take for their situation.",
+      "expanded_explanation": "B2B websites with complex navigation structures force visitors to self-identify their path. Most visitors don't know which bucket they belong in. A linear path to the primary CTA outperforms complex navigation.",
+      "business_consequence": "Visitors drop off at the navigation level before reaching conversion pages. Campaign traffic that lands on the wrong page has high exit rate.",
+      "cta_pairings": ["What's the primary path you want visitors to take?", "Worth simplifying the journey?"],
+      "source_data_field": "navigation_structure",
+      "benchmark_source": "Nielsen Norman Group navigation usability studies (2022-2024)",
+      "applicable_icp_types": ["marketing_manager"],
+      "tone_notes": "Data-led and professional. Reference conversion benchmarks and campaign attribution."
     },
     {
-      "id": "IB029",
+      "block_id": "IB029",
       "issue_code": "SLOW_DECISION_PATH",
-      "icp": "founder",
-      "industries": [
-        "saas",
-        "professional_services"
-      ],
-      "short_insight_line": "Your homepage has 8 sections before a single CTA button. By the time I reach it, I've already bounced or forgotten why I came.",
-      "longer_explainer": "Visitors have limited attention. An early, low-friction CTA (email, chat, 'See how it works') captures interest before scrolling fatigue sets in. Late CTAs miss engaged visitors.",
-      "business_consequence": "Conversion is much lower than it could be. Adding an early, lightweight CTA typically captures 15-30% of visitors who would otherwise bounce before reaching the main CTA.",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "email",
-        "linkedin"
-      ],
-      "suitable_steps": [
-        2,
-        3
-      ],
-      "asset_pairings": [
-        "checklist"
-      ],
-      "confidence_notes": "Especially true for B2B where decision paths are longer and early engagement matters.",
-      "cta_pairings": [
-        "How far down is your first CTA?",
-        "Open to testing early CTAs?"
-      ]
+      "insight_type": "decision_friction",
+      "short_insight_line": "Your homepage has 8 sections before a single CTA button. By the time I reach it, I've already decided whether to trust you.",
+      "expanded_explanation": "Visitors make trust decisions quickly. A long page that delays the primary CTA means visitors who have already formed a positive impression can't act on it. Low-friction entry points should appear early.",
+      "business_consequence": "Conversion rate from cold traffic is lower than it could be. Visitors who scroll deeply are already warm — you're missing the earlier conversion opportunity.",
+      "cta_pairings": ["Where does your first CTA appear?", "Worth adding an early entry point?"],
+      "source_data_field": "conversion_path_length",
+      "benchmark_source": "CRO benchmarks: Unbounce, ConversionXL, VWO (2023-2024)",
+      "applicable_icp_types": ["founder"],
+      "tone_notes": "Direct and peer-level. Lead with specific revenue or time impact. Avoid design jargon."
     },
     {
-      "id": "IB030",
+      "block_id": "IB030",
       "issue_code": "SLOW_DECISION_PATH",
-      "icp": "marketing_manager",
-      "industries": [
-        "saas",
-        "b2b_tech"
-      ],
-      "short_insight_line": "Your form appears after 4 sections of product features. You're losing visitors who wanted to engage but got tired of reading first.",
-      "longer_explainer": "Long-form sales pages work when narrative is tight and momentum builds. But when momentum stalls, visitors leave. An early form option ('Get pricing now,' 'Schedule a demo') captures intent before patience runs out.",
-      "business_consequence": "Form completion rate is typically 35-50% lower when form appears below 3 sections of content. Moving form options earlier lifts completion 20-40% (tested across 75+ B2B SaaS companies).",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "slack"
-      ],
-      "suitable_steps": [
-        3
-      ],
-      "asset_pairings": [
-        "analyser"
-      ],
-      "confidence_notes": "True for campaigns with longer landing pages where visitor patience is finite.",
-      "cta_pairings": [
-        "How far down is your form?",
-        "Worth testing earlier form offers?"
-      ]
+      "insight_type": "decision_friction",
+      "short_insight_line": "Your form appears after 4 sections of product features. You're losing visitors who wanted to convert but ran out of patience.",
+      "expanded_explanation": "Landing page research shows the highest-intent visitors convert in the first 30 seconds or after strong social proof. Burying the form after extensive content means you lose both groups.",
+      "business_consequence": "Form conversion rate is lower than it should be for traffic quality. Adding an above-fold form or CTA early often lifts conversion 20-40%.",
+      "cta_pairings": ["How far down the page does your form appear?", "Worth testing an earlier CTA?"],
+      "source_data_field": "conversion_path_length",
+      "benchmark_source": "CRO benchmarks: Unbounce, ConversionXL, VWO (2023-2024)",
+      "applicable_icp_types": ["marketing_manager"],
+      "tone_notes": "Data-led and professional. Reference conversion benchmarks and campaign attribution."
     },
     {
-      "id": "IB031",
+      "block_id": "IB031",
       "issue_code": "HERO_TOO_GENERIC",
-      "icp": "marketing_manager",
-      "industries": [
-        "ecommerce"
-      ],
-      "short_insight_line": "Your campaign hero says 'Premium quality at better prices' but every competitor says the same thing. I don't know why I should buy from you.",
-      "longer_explainer": "Generic value propositions (quality, price, service) are table stakes in ecommerce. Unique hooks (faster shipping, better return policy, exclusive sourcing) differentiate.",
-      "business_consequence": "ROAS drops 30-40% when campaign messaging isn't differentiated from competitors. Paid traffic cost per acquisition climbs 25-45% as conversion rate declines (undifferentiated messaging benchmark data).",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "email"
-      ],
-      "suitable_steps": [
-        1,
-        2
-      ],
-      "asset_pairings": [
-        "analyser"
-      ],
-      "confidence_notes": "Critical for ecommerce brands competing in price-sensitive categories.",
-      "cta_pairings": [
-        "What makes you different vs. competitors?",
-        "Worth testing unique positioning?"
-      ]
+      "insight_type": "specificity_gap",
+      "short_insight_line": "Your campaign hero says 'Premium quality at better prices' but every competitor says the same. That sameness is invisible to a busy buyer.",
+      "expanded_explanation": "Generic value propositions fail because buyers encounter dozens of similar claims. Specificity cuts through: '22% lower CPL on paid social' outperforms 'better results at lower cost' every time.",
+      "business_consequence": "Ad spend ROI is lower because landing page conversion rate doesn't match traffic quality. CPL increases as conversion rate stays flat.",
+      "cta_pairings": ["What makes your offer specific?", "Worth sharpening the value prop?"],
+      "source_data_field": "hero_headline",
+      "benchmark_source": "CRO benchmarks: Unbounce, ConversionXL, VWO (2023-2024)",
+      "applicable_icp_types": ["marketing_manager"],
+      "tone_notes": "Data-led and professional. Reference conversion benchmarks and campaign attribution."
     },
     {
-      "id": "IB032",
+      "block_id": "IB032",
       "issue_code": "CTA_NOT_OUTCOME_TIED",
-      "icp": "founder",
-      "industries": [
-        "saas"
-      ],
-      "short_insight_line": "Your signup button says 'Try Free' but you haven't explained what problem the free trial solves. That's too vague to motivate action.",
-      "longer_explainer": "Better framing: 'Start free and see if it cuts design time in half' or 'Try free and build your first prototype' ties the action to an outcome.",
-      "business_consequence": "Signup rate is typically 25-35% lower with vague CTAs. Outcome-tied CTAs like 'Try Free \u2014 Build Your First Design' lift signup rate 15-25% (tested across 120+ SaaS trials).",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "linkedin"
-      ],
-      "suitable_steps": [
-        2
-      ],
-      "asset_pairings": [
-        "brief_builder"
-      ],
-      "confidence_notes": "True for SaaS with longer trials where the benefit during trial matters for completion.",
-      "cta_pairings": [
-        "What happens after signup?",
-        "Worth testing outcome-tied copy?"
-      ]
+      "insight_type": "cta_weakness",
+      "short_insight_line": "Your signup button says 'Try Free' but you haven't explained what problem the free trial solves or what I'll have after 14 days.",
+      "expanded_explanation": "Free trial CTAs fail when the value isn't defined. 'Try Free' vs. 'Get your first homepage audit free' are dramatically different in conversion. The second tells the visitor exactly what they'll walk away with.",
+      "business_consequence": "Trial signup rate is lower than benchmarks for your traffic quality. Trial-to-paid conversion is also lower because users don't activate around a specific outcome.",
+      "cta_pairings": ["What does your free trial actually deliver?", "Worth reframing the CTA?"],
+      "source_data_field": "cta_copy",
+      "benchmark_source": "CRO benchmarks: Unbounce, ConversionXL, VWO (2023-2024)",
+      "applicable_icp_types": ["founder"],
+      "tone_notes": "Direct and peer-level. Lead with specific revenue or time impact. Avoid design jargon."
     },
     {
-      "id": "IB033",
+      "block_id": "IB033",
       "issue_code": "WEAK_VISUAL_HIERARCHY",
-      "icp": "marketing_manager",
-      "industries": [
-        "saas"
-      ],
-      "short_insight_line": "Your landing page has 3 headlines and 5 subheadings all in similar font sizes. Which one is most important? I can't tell.",
-      "longer_explainer": "Clear hierarchy means the primary message is 2-3x larger than secondary messages. Secondary messages are 1.5x larger than supporting copy. Visitors should know where to look first. This structure improves scan time by 30-40% and visitors identify your primary message within 3 seconds.",
-      "business_consequence": "Scan rate is low. Visitors don't quickly grasp the primary message. Time-to-understanding increases and bounce follows.",
-      "severity_hint": "medium",
-      "suitable_channels": [
-        "slack"
-      ],
-      "suitable_steps": [
-        3
-      ],
-      "asset_pairings": [
-        "checklist"
-      ],
-      "confidence_notes": "Common in pages with multiple stakeholders where design governance is inconsistent.",
-      "cta_pairings": [
-        "What's your primary message?",
-        "Worth auditing type hierarchy?"
-      ]
+      "insight_type": "visual_complexity",
+      "short_insight_line": "Your landing page has 3 headlines and 5 subheadings all in similar font sizes. Visitors don't know what to read first.",
+      "expanded_explanation": "Typography hierarchy is one of the most powerful tools for guiding attention. When all type elements are similar size and weight, the visitor's eye has no natural starting point — reading fatigue sets in quickly.",
+      "business_consequence": "Time-on-page is low. Scroll depth is shallow. Visitors don't absorb your key messages because the visual flow doesn't lead them through the narrative.",
+      "cta_pairings": ["How clear is your type hierarchy?", "Worth auditing reading flow?"],
+      "source_data_field": "visual_hierarchy_score",
+      "benchmark_source": "Design Bees UX audit dataset; Baymard Institute",
+      "applicable_icp_types": ["marketing_manager"],
+      "tone_notes": "Data-led and professional. Reference conversion benchmarks and campaign attribution."
     },
     {
-      "id": "IB034",
+      "block_id": "IB034",
       "issue_code": "UNCLEAR_OFFER",
-      "icp": "agency",
-      "industries": [
-        "agencies"
-      ],
-      "short_insight_line": "Your services page has 12 different service offerings. A prospect doesn't know which one they need or if you do what they're looking for.",
-      "longer_explainer": "Agencies often list every capability (design, strategy, development, branding, motion) to show breadth. But prospects looking for one specific service get overwhelmed and leave.",
-      "business_consequence": "Inbound inquiry quality is low because prospects aren't sure you offer what they need. Sales team qualifies conversations about services instead of prospects self-qualifying.",
-      "severity_hint": "critical",
-      "suitable_channels": [
-        "linkedin"
-      ],
-      "suitable_steps": [
-        1
-      ],
-      "asset_pairings": [
-        "analyser"
-      ],
-      "confidence_notes": "Applies to full-service agencies trying to appeal to multiple verticals or service lines.",
-      "cta_pairings": [
-        "How many services do you actually sell?",
-        "Worth segmenting your offer?"
-      ]
+      "insight_type": "clarity_gap",
+      "short_insight_line": "Your services page has 12 different service offerings. A prospect doesn't know which one is for them, so they don't pick any.",
+      "expanded_explanation": "Agencies with broad service offerings often list everything to maximize surface area. But this creates choice paralysis. A lead page with one primary offer converts better than a menu of twelve.",
+      "business_consequence": "RFQ volume is lower than expected for traffic levels. Inquiries that do come in are often misaligned. Sales team spends time re-educating prospects about what you actually do best.",
+      "cta_pairings": ["What's your primary service offering right now?", "Worth simplifying the services page?"],
+      "source_data_field": "offer_statement",
+      "benchmark_source": "Design Bees homepage analysis dataset, 500+ audits",
+      "applicable_icp_types": ["agency"],
+      "tone_notes": "Commercial and peer-to-peer. Focus on client retention, new business win rate, and margin."
     },
     {
-      "id": "IB035",
+      "block_id": "IB035",
       "issue_code": "MISSING_SOCIAL_PROOF",
-      "icp": "agency",
-      "industries": [
-        "agencies"
-      ],
-      "short_insight_line": "You have case studies but no customer logos, quotes, or results percentages visible on your main pages. Prospects don't see proof of your impact.",
-      "longer_explainer": "Case studies are great but often live on separate pages. Logos and 1-2 outcome-focused quotes on main pages immediately signal credibility and capability.",
-      "business_consequence": "Inbound inquiry quality is lower because prospects don't see validation. High-intent prospects look at competitors with more visible proof.",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "email"
-      ],
-      "suitable_steps": [
-        2
-      ],
-      "asset_pairings": [
-        "checklist"
-      ],
-      "confidence_notes": "Especially relevant for agencies competing in crowded markets where proof is differentiator.",
-      "cta_pairings": [
-        "How visible are your results and client testimonials?",
-        "Worth featuring proof more prominently?"
-      ]
+      "insight_type": "trust_deficit",
+      "short_insight_line": "You have case studies but no customer logos, quotes, or results percentages visible on your main page. Proof needs to be unavoidable.",
+      "expanded_explanation": "Agencies often have strong case study content on interior pages but don't surface the most compelling proof on the homepage. Logos + one-line results ('Increased client conversion 34%') are powerful and fast to read.",
+      "business_consequence": "Inbound quality is mixed because high-value prospects don't see credibility signals quickly. Lower-value inbound dominates if there's no filtering proof early.",
+      "cta_pairings": ["What's your most impressive client result?", "Worth putting that front and centre?"],
+      "source_data_field": "social_proof_elements",
+      "benchmark_source": "Nielsen Norman Group; Edelman Trust Barometer",
+      "applicable_icp_types": ["agency"],
+      "tone_notes": "Commercial and peer-to-peer. Focus on client retention, new business win rate, and margin."
     },
     {
-      "id": "IB036",
+      "block_id": "IB036",
       "issue_code": "CLUTTERED_LAYOUT",
-      "icp": "founder",
-      "industries": [
-        "professional_services"
-      ],
-      "short_insight_line": "Your services page has great information but it's all compressed together. There's no breathing room. It feels heavy and hard to scan.",
-      "longer_explainer": "Layout clarity comes from whitespace, alignment, and grouping. When information is tightly packed, the page feels overwhelming even if each element is well-designed.",
-      "business_consequence": "Bounce rate is higher than it should be. Prospects feel cognitive fatigue. Adding whitespace and better grouping typically lifts conversion 15-25%.",
-      "severity_hint": "medium",
-      "suitable_channels": [
-        "linkedin"
-      ],
-      "suitable_steps": [
-        3
-      ],
-      "asset_pairings": [
-        "checklist"
-      ],
-      "confidence_notes": "Common in content-heavy sites (consultancies, agencies) where depth is prioritized over clarity.",
-      "cta_pairings": [
-        "How's your layout breathing room?",
-        "Open to adding more whitespace?"
-      ]
+      "insight_type": "visual_complexity",
+      "short_insight_line": "Your services page has great information but it's all compressed together. There's no whitespace giving it room to breathe.",
+      "expanded_explanation": "Whitespace is not wasted space — it's a design tool that signals confidence and quality. Dense layouts feel low-budget and overwhelming. Generous spacing makes the same content feel premium and easy to digest.",
+      "business_consequence": "Page quality perception is lower than your actual service quality. First impressions don't match what clients experience when they work with you. That gap costs conversions.",
+      "cta_pairings": ["How does your page feel to a first-time visitor?", "Worth reviewing the layout rhythm?"],
+      "source_data_field": "layout_composition",
+      "benchmark_source": "Design Bees UX audit dataset; Baymard Institute",
+      "applicable_icp_types": ["founder"],
+      "tone_notes": "Direct and peer-level. Lead with specific revenue or time impact. Avoid design jargon."
     },
     {
-      "id": "IB037",
+      "block_id": "IB037",
       "issue_code": "TOO_MANY_COMPETING_ELEMENTS",
-      "icp": "marketing_manager",
-      "industries": [
-        "b2b_tech"
-      ],
-      "short_insight_line": "Your landing page has a testimonial carousel, 5 feature blocks, a pricing table, and a live chat widget all visible at once. Everything competes for attention.",
-      "longer_explainer": "Removing competing elements is more powerful than adding more. A single strong narrative with one primary CTA outperforms multi-directional pages.",
-      "business_consequence": "Conversion is lower because attention fragments. Removing 1-2 competing elements can lift conversion 15-30%.",
-      "severity_hint": "medium",
-      "suitable_channels": [
-        "slack"
-      ],
-      "suitable_steps": [
-        3
-      ],
-      "cta_pairings": [
-        "What are your 3 most important conversion elements?",
-        "Worth removing competing sections?"
-      ],
-      "asset_pairings": [
-        "checklist"
-      ],
-      "confidence_notes": "True for pages with multiple stakeholders where 'everything matters' mindset prevents prioritization."
+      "insight_type": "visual_complexity",
+      "short_insight_line": "Your landing page has a testimonial carousel, 5 feature blocks, a pricing table, and 3 CTAs all competing for attention. Nothing wins.",
+      "expanded_explanation": "Every additional element on a page reduces the effectiveness of every other element. Ruthless curation — removing good content to make great content more powerful — consistently improves conversion.",
+      "business_consequence": "A/B tests that remove elements consistently outperform tests that add them. Conversion rate from complex pages is typically 20-40% lower than simplified versions.",
+      "cta_pairings": ["If you could only keep 3 sections, what stays?", "Worth testing a stripped-back version?"],
+      "source_data_field": "layout_composition",
+      "benchmark_source": "Design Bees UX audit dataset; Baymard Institute",
+      "applicable_icp_types": ["marketing_manager"],
+      "tone_notes": "Data-led and professional. Reference conversion benchmarks and campaign attribution."
     },
     {
-      "id": "IB038",
+      "block_id": "IB038",
       "issue_code": "MISSING_SEGMENT_CLARITY",
-      "icp": "agency",
-      "industries": [
-        "agencies"
-      ],
-      "short_insight_line": "Your homepage doesn't specify if you work with startups, SMBs, or enterprises. Prospects don't know if this is for them.",
-      "longer_explainer": "Agencies with segment-specific messaging (by company size, by industry, by growth stage) convert better than generic 'all companies' messaging.",
-      "business_consequence": "Inbound leads are misaligned because prospects aren't sure they're the right fit. Sales team spends time on qualification instead of closing.",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "email"
-      ],
-      "suitable_steps": [
-        1,
-        2
-      ],
-      "asset_pairings": [
-        "analyser"
-      ],
-      "confidence_notes": "Applies to agencies with distinct offerings for different customer types.",
-      "cta_pairings": [
-        "Who's your best-fit customer?",
-        "Worth testing segment-specific pages?"
-      ]
+      "insight_type": "specificity_gap",
+      "short_insight_line": "Your homepage doesn't specify if you work with startups, SMBs, or enterprises. Prospects filter themselves out because they don't know if you're for them.",
+      "expanded_explanation": "Agencies that speak to everyone lose high-value prospects who assume they're either too big or too small. Clear segment signals ('We work with marketing teams at $5m-$50m ARR companies') pre-qualify inbound at the top of the funnel.",
+      "business_consequence": "Inquiry mix is skewed toward the wrong segment. Time wasted on misaligned conversations. Better positioning would attract higher-value inbound while filtering out low-fit prospects.",
+      "cta_pairings": ["Who's your best client type right now?", "Worth naming them on the homepage?"],
+      "source_data_field": "audience_specificity_score",
+      "benchmark_source": "Design Bees homepage analysis dataset, 500+ audits",
+      "applicable_icp_types": ["agency"],
+      "tone_notes": "Commercial and peer-to-peer. Focus on client retention, new business win rate, and margin."
     },
     {
-      "id": "IB039",
+      "block_id": "IB039",
       "issue_code": "WEAK_ABOVE_FOLD_STRUCTURE",
-      "icp": "agency",
-      "industries": [
-        "agencies"
-      ],
-      "short_insight_line": "Your agency homepage above the fold shows beautiful design but doesn't communicate what value you deliver. It's aesthetic without strategy.",
-      "longer_explainer": "Above-the-fold must answer: 'Who is this for?', 'What's the problem?', 'What do they get?' Design beauty is table stakes but doesn't replace clarity.",
-      "business_consequence": "Scroll depth is low. Prospects don't see case studies, testimonials, or strong CTAs. Conversion depends on what's below fold, which few see.",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "linkedin"
-      ],
-      "suitable_steps": [
-        1,
-        2
-      ],
-      "asset_pairings": [
-        "analyser"
-      ],
-      "confidence_notes": "Common in design-forward agencies that prioritize aesthetics over message clarity.",
-      "cta_pairings": [
-        "What's your above-the-fold message?",
-        "Open to adding clarity to design?"
-      ]
+      "insight_type": "clarity_gap",
+      "short_insight_line": "Your agency homepage above the fold shows beautiful design but doesn't communicate a single clear reason why I should work with you over the next agency.",
+      "expanded_explanation": "Portfolio-style homepages often lead with visual work rather than value proposition. This works when referrals land directly. It fails for cold traffic or outreach-generated visits.",
+      "business_consequence": "Outreach-generated visits convert poorly because the homepage doesn't reinforce the specific value that triggered the initial interest.",
+      "cta_pairings": ["What do you want a cold visitor to feel in the first 5 seconds?", "Worth adding a clearer above-fold message?"],
+      "source_data_field": "above_fold_composition",
+      "benchmark_source": "Design Bees homepage analysis dataset, 500+ audits",
+      "applicable_icp_types": ["agency"],
+      "tone_notes": "Commercial and peer-to-peer. Focus on client retention, new business win rate, and margin."
     },
     {
-      "id": "IB040",
+      "block_id": "IB040",
       "issue_code": "FEATURE_FIRST_MESSAGING",
-      "icp": "marketing_manager",
-      "industries": [
-        "saas"
-      ],
-      "short_insight_line": "Your product page leads with 'Built for speed and scalability' but doesn't explain what business problem that solves. You're feature-first, outcome-second.",
-      "longer_explainer": "Speed and scalability are features. But the outcome is 'your team ships 40% faster' or 'you can handle 10x traffic without paying for infrastructure.' Outcomes drive buying decisions.",
-      "business_consequence": "Conversion is lower because prospects translate features to outcomes themselves. Outcome-first messaging lifts conversion 20-35% (tested across 50+ B2B SaaS companies).",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "email"
-      ],
-      "suitable_steps": [
-        1,
-        2
-      ],
-      "asset_pairings": [
-        "analyser"
-      ],
-      "confidence_notes": "Especially true for B2B SaaS where product and marketing teams don't align on outcome focus.",
-      "cta_pairings": [
-        "What outcomes do your features enable?",
-        "Worth testing outcome-first copy?"
-      ]
+      "insight_type": "specificity_gap",
+      "short_insight_line": "Your product page leads with 'Built for speed and scalability' but doesn't explain what that means for someone with my problem right now.",
+      "expanded_explanation": "Technical specifications and capabilities only matter after you've established why the visitor should care. Speed and scalability are means, not ends. The end is: 'Ship campaigns in 3 days, not 3 weeks.'",
+      "business_consequence": "Prospects who read the features don't convert to trial or demo because the bridge from feature to personal outcome wasn't built.",
+      "cta_pairings": ["What does 'speed' mean in dollars or hours for your customer?", "Worth reframing as outcomes?"],
+      "source_data_field": "page_structure",
+      "benchmark_source": "CRO benchmarks: Unbounce, ConversionXL, VWO (2023-2024)",
+      "applicable_icp_types": ["marketing_manager"],
+      "tone_notes": "Data-led and professional. Reference conversion benchmarks and campaign attribution."
     },
     {
-      "id": "IB041",
+      "block_id": "IB041",
       "issue_code": "SLOW_DECISION_PATH",
-      "icp": "agency",
-      "industries": [
-        "agencies"
-      ],
+      "insight_type": "decision_friction",
       "short_insight_line": "Your proposal process requires 5 questions before a prospect can even book a call. That friction kills high-intent prospects.",
-      "longer_explainer": "Low-friction entry points (calendar link, simple form with 2 questions, chat) capture intent faster. Detailed qualification can happen in the call.",
+      "expanded_explanation": "Low-friction entry points (calendar link, simple form with 2 questions, chat) capture intent faster. Detailed qualification can happen in the call.",
       "business_consequence": "Lead volume is lower because friction stops prospects. Removing 1-2 form questions can lift inquiry rate 30-50%.",
-      "severity_hint": "high",
-      "suitable_channels": [
-        "linkedin"
-      ],
-      "suitable_steps": [
-        2
-      ],
-      "asset_pairings": [
-        "checklist"
-      ],
-      "confidence_notes": "Applies to agencies with complex qualification requirements that can be moved to the call.",
-      "cta_pairings": [
-        "How many friction points in your inquiry process?",
-        "Worth simplifying your booking flow?"
-      ]
+      "cta_pairings": ["How many friction points in your inquiry process?", "Worth simplifying your booking flow?"],
+      "source_data_field": "conversion_path_length",
+      "benchmark_source": "CRO benchmarks: Unbounce, ConversionXL, VWO (2023-2024)",
+      "applicable_icp_types": ["agency"],
+      "tone_notes": "Commercial and peer-to-peer. Focus on client retention, new business win rate, and margin."
     },
     {
-      "id": "IB042",
+      "block_id": "IB042",
       "issue_code": "LOW_TRUST_SIGNAL_VISIBILITY",
-      "icp": "marketing_manager",
-      "industries": [
-        "b2b_tech"
-      ],
+      "insight_type": "trust_deficit",
       "short_insight_line": "You have 50 customer logos but they're small and buried in a footnote. Make them visible and large. Logos are your most powerful trust signal.",
-      "longer_explainer": "Customer logos are 3x more powerful than testimonials for building immediate credibility. Large, visible logos early in the page signal social proof before the visitor reads a word.",
-      "business_consequence": "Conversion is 15-30% lower without prominent trust signals. Making logos larger and more prominent lifts conversion 10-25% (average across 40+ SaaS A/B tests).",
-      "severity_hint": "medium",
-      "suitable_channels": [
-        "slack"
-      ],
-      "suitable_steps": [
-        2
-      ],
-      "cta_pairings": [
-        "Where are your customer logos displayed?",
-        "Worth making them more prominent?"
-      ],
-      "asset_pairings": [
-        "checklist"
-      ],
-      "confidence_notes": "True for B2B SaaS where logo credibility accelerates buying decisions."
+      "expanded_explanation": "Customer logos are 3x more powerful than testimonials for building immediate credibility. Large, visible logos early in the page signal social proof before the visitor reads a word.",
+      "business_consequence": "Conversion is 15-30% lower without prominent trust signals. Making logos larger and more prominent lifts conversion 10-25% on average across SaaS A/B tests.",
+      "cta_pairings": ["Where are your customer logos displayed?", "Worth making them more prominent?"],
+      "source_data_field": "trust_element_placement",
+      "benchmark_source": "Nielsen Norman Group; Edelman Trust Barometer",
+      "applicable_icp_types": ["marketing_manager"],
+      "tone_notes": "Data-led and professional. Reference conversion benchmarks and campaign attribution."
     }
   ]
 }
