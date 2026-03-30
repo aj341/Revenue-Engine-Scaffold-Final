@@ -2,115 +2,275 @@
   "issues": [
     {
       "issue_code": "HERO_TOO_GENERIC",
-      "issue_name": "Hero Section Uses Vague Language",
+      "label": "Generic Hero Language",
+      "category": "messaging",
+      "subcategory": "value_proposition",
       "description": "Hero section communicates value but lacks specificity about what outcome the visitor will actually get. Common patterns: 'We deliver beautiful design', 'Expert design solutions', 'Design that works' — these don't answer 'Why should I care right now?'",
-      "severity_default": "high",
-      "category": "messaging"
+      "severity": "high",
+      "common_triggers": [
+        "Headline written for internal team, not the customer",
+        "Copying competitor language without differentiation",
+        "Focusing on what you do rather than what the customer gains",
+        "Using industry jargon that feels impressive internally but confuses visitors"
+      ],
+      "related_issues": ["UNCLEAR_OFFER", "FEATURE_FIRST_MESSAGING", "MISSING_SEGMENT_CLARITY", "WEAK_ABOVE_FOLD_STRUCTURE"],
+      "suggested_insight_blocks": ["IB001", "IB002", "IB003"],
+      "suggested_sequence_family": "homepage_clarity"
     },
     {
       "issue_code": "CTA_TOO_SOFT",
-      "issue_name": "CTA Exists But Isn't Outcome-Tied",
+      "label": "Soft CTA Copy",
+      "category": "conversion",
+      "subcategory": "cta_design",
       "description": "CTA button present but divorced from a clear next step or outcome. Common: 'Get Started', 'Learn More', 'Contact Us' without context of what happens next or what problem gets solved by clicking.",
-      "severity_default": "high",
-      "category": "conversion"
+      "severity": "high",
+      "common_triggers": [
+        "CTA copied from template without customisation",
+        "Fear of being too direct or salesy",
+        "No clear next step defined in the sales process",
+        "Multiple competing CTAs with no primary action"
+      ],
+      "related_issues": ["CTA_NOT_OUTCOME_TIED", "SLOW_DECISION_PATH", "WEAK_ABOVE_FOLD_STRUCTURE"],
+      "suggested_insight_blocks": ["IB004", "IB005"],
+      "suggested_sequence_family": "conversion_lift"
     },
     {
       "issue_code": "CTA_NOT_OUTCOME_TIED",
-      "issue_name": "CTA Asks for Action Without Explaining Benefit",
+      "label": "CTA Lacks Outcome Bridge",
+      "category": "conversion",
+      "subcategory": "cta_design",
       "description": "Asks visitor to take an action (sign up, book call, submit info) without explaining what they'll get from it. No bridge between problem → action → result. Feels transactional rather than beneficial.",
-      "severity_default": "high",
-      "category": "conversion"
+      "severity": "high",
+      "common_triggers": [
+        "CTA designed around the seller's goal (lead capture) not the buyer's desire",
+        "No micro-copy explaining what happens after the click",
+        "Mismatch between preceding content and the CTA ask",
+        "Generic button labels used across multiple page sections"
+      ],
+      "related_issues": ["CTA_TOO_SOFT", "SLOW_DECISION_PATH", "FEATURE_FIRST_MESSAGING"],
+      "suggested_insight_blocks": ["IB006", "IB007"],
+      "suggested_sequence_family": "conversion_lift"
     },
     {
       "issue_code": "FEATURE_FIRST_MESSAGING",
-      "issue_name": "Page Leads With Features/Process Before Outcome",
+      "label": "Features Before Outcomes",
+      "category": "messaging",
+      "subcategory": "positioning",
       "description": "Page structure prioritizes how you work (our process, our team, our methodology) before establishing why the visitor should care. Delays addressing visitor's actual problem or desired outcome.",
-      "severity_default": "high",
-      "category": "messaging"
+      "severity": "high",
+      "common_triggers": [
+        "Content written by the product or ops team, not a marketer",
+        "Pride in process overriding customer empathy",
+        "No customer journey mapping done before writing copy",
+        "Following a template that leads with 'about us'"
+      ],
+      "related_issues": ["HERO_TOO_GENERIC", "UNCLEAR_OFFER", "HIGH_COGNITIVE_LOAD", "MISSING_SEGMENT_CLARITY"],
+      "suggested_insight_blocks": ["IB008", "IB009", "IB010"],
+      "suggested_sequence_family": "homepage_clarity"
     },
     {
       "issue_code": "UNCLEAR_OFFER",
-      "issue_name": "Visitor Can't Quickly Understand What You Deliver",
+      "label": "Offer Unclear at First Glance",
+      "category": "messaging",
+      "subcategory": "positioning",
       "description": "Within 10 seconds, the visitor cannot clearly articulate what the company does or what they'll get by working together. Confusion between service type, outcomes, and offering model.",
-      "severity_default": "critical",
-      "category": "messaging"
+      "severity": "critical",
+      "common_triggers": [
+        "Multiple service lines presented without a primary offer",
+        "Positioning written for existing clients who already know the business",
+        "Overly clever or abstract brand language",
+        "No clarity on delivery model (subscription, project, retainer)"
+      ],
+      "related_issues": ["HERO_TOO_GENERIC", "FEATURE_FIRST_MESSAGING", "MISSING_SEGMENT_CLARITY", "HIGH_COGNITIVE_LOAD"],
+      "suggested_insight_blocks": ["IB011", "IB012"],
+      "suggested_sequence_family": "homepage_clarity"
     },
     {
       "issue_code": "WEAK_ABOVE_FOLD_STRUCTURE",
-      "issue_name": "Above-the-Fold Fails to Communicate Value Proposition",
+      "label": "Weak Above-the-Fold",
+      "category": "messaging",
+      "subcategory": "above_fold",
       "description": "The section that appears without scrolling doesn't establish a compelling reason to scroll further. Missing or weak: headline clarity, urgent signal, differentiation, reason to engage.",
-      "severity_default": "high",
-      "category": "messaging"
+      "severity": "high",
+      "common_triggers": [
+        "Hero image chosen for aesthetics over communication",
+        "Headline and subheadline don't work together to build the argument",
+        "No visual or copy hook creating curiosity or urgency",
+        "Navigation taking up too much above-fold real estate"
+      ],
+      "related_issues": ["HERO_TOO_GENERIC", "CTA_TOO_SOFT", "UNCLEAR_OFFER", "WEAK_VISUAL_HIERARCHY"],
+      "suggested_insight_blocks": ["IB013", "IB014"],
+      "suggested_sequence_family": "homepage_clarity"
     },
     {
       "issue_code": "TOO_MANY_COMPETING_ELEMENTS",
-      "issue_name": "Page Has Too Many Visual Elements Competing for Attention",
+      "label": "Visual Clutter & Competing Elements",
+      "category": "visual",
+      "subcategory": "layout_complexity",
       "description": "Homepage or key page shows too many features, sections, calls to action, or visual styles. Visitor attention fragments. No clear focal point. Everything feels equally important.",
-      "severity_default": "medium",
-      "category": "visual"
+      "severity": "medium",
+      "common_triggers": [
+        "Feature requests from multiple stakeholders added without curation",
+        "No design system or visual hierarchy rules in place",
+        "Every business goal given equal visual weight",
+        "Iterative additions over time without a holistic review"
+      ],
+      "related_issues": ["CLUTTERED_LAYOUT", "WEAK_VISUAL_HIERARCHY", "HIGH_COGNITIVE_LOAD", "SLOW_DECISION_PATH"],
+      "suggested_insight_blocks": ["IB015", "IB016"],
+      "suggested_sequence_family": "visual_clarity"
     },
     {
       "issue_code": "CLUTTERED_LAYOUT",
-      "issue_name": "Layout Lacks Clear Visual Flow and Feels Overwhelming",
+      "label": "Cluttered Page Layout",
+      "category": "visual",
+      "subcategory": "layout_complexity",
       "description": "Visual hierarchy is weak. Text, images, whitespace don't guide eye flow. Sections feel disconnected. Page feels crowded even if there's technically enough whitespace. Navigation of page is confusing.",
-      "severity_default": "medium",
-      "category": "visual"
+      "severity": "medium",
+      "common_triggers": [
+        "Content-first approach without layout planning",
+        "Too many font sizes, weights, or colours in use",
+        "Section padding and margins inconsistent across the page",
+        "Images and text competing at the same visual weight"
+      ],
+      "related_issues": ["TOO_MANY_COMPETING_ELEMENTS", "WEAK_VISUAL_HIERARCHY", "HIGH_COGNITIVE_LOAD"],
+      "suggested_insight_blocks": ["IB017", "IB018"],
+      "suggested_sequence_family": "visual_clarity"
     },
     {
       "issue_code": "LOW_TRUST_SIGNAL_VISIBILITY",
-      "issue_name": "Trust Signals Are Buried or Missing",
+      "label": "Trust Signals Hidden or Absent",
+      "category": "trust",
+      "subcategory": "social_proof_placement",
       "description": "Logos, testimonials, certifications, case studies, or social proof are absent or placed in low-visibility areas (footer, buried below fold). Visitor has no easy way to build confidence in credibility.",
-      "severity_default": "medium",
-      "category": "trust"
+      "severity": "medium",
+      "common_triggers": [
+        "Testimonials added as an afterthought in the footer",
+        "Client logos buried below the fold or on a separate page",
+        "Fear of asking clients for testimonials leading to zero social proof",
+        "Case study results not quantified or made specific"
+      ],
+      "related_issues": ["MISSING_SOCIAL_PROOF", "WEAK_ABOVE_FOLD_STRUCTURE", "MISSING_SEGMENT_CLARITY"],
+      "suggested_insight_blocks": ["IB019", "IB020"],
+      "suggested_sequence_family": "trust_building"
     },
     {
       "issue_code": "WEAK_VISUAL_HIERARCHY",
-      "issue_name": "No Clear Visual Priority Guiding the Eye",
+      "label": "No Clear Visual Reading Priority",
+      "category": "visual",
+      "subcategory": "hierarchy",
       "description": "Font sizes, colors, spacing, and contrast don't create a clear priority for what visitor should read first, second, third. Everything competes equally. Eye has nowhere natural to land.",
-      "severity_default": "medium",
-      "category": "visual"
+      "severity": "medium",
+      "common_triggers": [
+        "Design decisions made by feel rather than hierarchy rules",
+        "No defined H1/H2/H3/body type scale in the design system",
+        "Colour used decoratively rather than to signal importance",
+        "Multiple designers contributing without shared guidelines"
+      ],
+      "related_issues": ["CLUTTERED_LAYOUT", "TOO_MANY_COMPETING_ELEMENTS", "WEAK_ABOVE_FOLD_STRUCTURE"],
+      "suggested_insight_blocks": ["IB021", "IB022"],
+      "suggested_sequence_family": "visual_clarity"
     },
     {
       "issue_code": "POOR_MOBILE_READABILITY",
-      "issue_name": "Content Hard to Read or Navigate on Mobile",
+      "label": "Poor Mobile Experience",
+      "category": "mobile",
+      "subcategory": "mobile_usability",
       "description": "On mobile devices: text too small, buttons too hard to tap, layout breaks, images don't scale, CTAs buried. Navigation or critical content is difficult to access without zooming or horizontal scrolling.",
-      "severity_default": "high",
-      "category": "mobile"
+      "severity": "high",
+      "common_triggers": [
+        "Site designed on desktop and not properly tested on mobile",
+        "Fixed-width containers not using responsive units",
+        "Tap targets smaller than 44x44px minimum",
+        "Hero images cropped or hidden on mobile, removing key context"
+      ],
+      "related_issues": ["SLOW_DECISION_PATH", "FRICTION_HEAVY_NAVIGATION", "WEAK_ABOVE_FOLD_STRUCTURE"],
+      "suggested_insight_blocks": ["IB023", "IB024"],
+      "suggested_sequence_family": "mobile_conversion"
     },
     {
       "issue_code": "HIGH_COGNITIVE_LOAD",
-      "issue_name": "Page Requires Too Much Mental Effort to Process",
+      "label": "Too Much Mental Effort Required",
+      "category": "messaging",
+      "subcategory": "simplicity",
       "description": "Visitor needs to synthesize too many concepts, read long paragraphs, or connect dots to understand value. Jargon or complex explanations without simplification. Decision fatigue sets in quickly.",
-      "severity_default": "medium",
-      "category": "messaging"
+      "severity": "medium",
+      "common_triggers": [
+        "Subject matter experts writing copy without simplification",
+        "Multiple service tiers or options presented simultaneously",
+        "Long paragraphs where bullet points would work better",
+        "Industry jargon assumed to be universally understood"
+      ],
+      "related_issues": ["FEATURE_FIRST_MESSAGING", "UNCLEAR_OFFER", "TOO_MANY_COMPETING_ELEMENTS", "SLOW_DECISION_PATH"],
+      "suggested_insight_blocks": ["IB025", "IB026"],
+      "suggested_sequence_family": "homepage_clarity"
     },
     {
       "issue_code": "MISSING_SOCIAL_PROOF",
-      "issue_name": "No Testimonials, Case Studies, Logos, or Results Shown",
+      "label": "No Social Proof Present",
+      "category": "trust",
+      "subcategory": "social_proof",
       "description": "Zero third-party validation. No customer names, quotes, case study results, client logos, or outcome numbers. Visitor has no evidence that you deliver what you claim.",
-      "severity_default": "high",
-      "category": "trust"
+      "severity": "high",
+      "common_triggers": [
+        "Newly launched site without client history",
+        "NDA restrictions preventing named case studies",
+        "No systematic process for collecting testimonials",
+        "Relying on portfolio work without outcome data"
+      ],
+      "related_issues": ["LOW_TRUST_SIGNAL_VISIBILITY", "MISSING_SEGMENT_CLARITY", "UNCLEAR_OFFER"],
+      "suggested_insight_blocks": ["IB027", "IB028"],
+      "suggested_sequence_family": "trust_building"
     },
     {
       "issue_code": "MISSING_SEGMENT_CLARITY",
-      "issue_name": "Page Tries to Speak to Everyone Instead of a Specific Audience",
+      "label": "Speaks to No One Specifically",
+      "category": "messaging",
+      "subcategory": "audience_targeting",
       "description": "Messaging is so broad it could apply to any business. No indication that this company understands a specific customer type's problems. Visitor doesn't feel seen or understood.",
-      "severity_default": "high",
-      "category": "messaging"
+      "severity": "high",
+      "common_triggers": [
+        "Fear of niching down and excluding potential customers",
+        "Multiple ICPs being served without dedicated pages",
+        "Positioning written around capabilities rather than customer problems",
+        "No customer persona work done before writing copy"
+      ],
+      "related_issues": ["HERO_TOO_GENERIC", "UNCLEAR_OFFER", "FEATURE_FIRST_MESSAGING", "MISSING_SOCIAL_PROOF"],
+      "suggested_insight_blocks": ["IB029", "IB030"],
+      "suggested_sequence_family": "segment_specific"
     },
     {
       "issue_code": "FRICTION_HEAVY_NAVIGATION",
-      "issue_name": "Navigation Creates Friction or Confusion in User Journey",
+      "label": "Confusing Navigation Structure",
+      "category": "navigation",
+      "subcategory": "ux_flow",
       "description": "Visitor unclear on next step or path to take action. Menu structure confusing, next button placement unclear, or multiple competing paths create decision paralysis. Unclear how to progress.",
-      "severity_default": "medium",
-      "category": "navigation"
+      "severity": "medium",
+      "common_triggers": [
+        "Navigation menu organised around internal teams, not user needs",
+        "Mega-menus with too many options causing choice paralysis",
+        "No sticky nav or fixed CTA visible on scroll",
+        "Back button dependency with no clear forward flow through the site"
+      ],
+      "related_issues": ["SLOW_DECISION_PATH", "TOO_MANY_COMPETING_ELEMENTS", "HIGH_COGNITIVE_LOAD"],
+      "suggested_insight_blocks": ["IB031", "IB032"],
+      "suggested_sequence_family": "conversion_lift"
     },
     {
       "issue_code": "SLOW_DECISION_PATH",
-      "issue_name": "Too Many Steps or Too Much Content Before User Can Take Action",
+      "label": "Too Many Steps Before Action",
+      "category": "conversion",
+      "subcategory": "funnel_friction",
       "description": "Visitor must read extensively or scroll through many sections before they encounter an actionable CTA. By then, attention has dropped. No early low-friction entry point to engage.",
-      "severity_default": "high",
-      "category": "conversion"
+      "severity": "high",
+      "common_triggers": [
+        "Page structured as an essay rather than a decision flow",
+        "First CTA placed after four or more sections of content",
+        "No micro-commitments or intermediate engagement steps",
+        "Long form pages without anchor CTAs on each section"
+      ],
+      "related_issues": ["CTA_TOO_SOFT", "CTA_NOT_OUTCOME_TIED", "FRICTION_HEAVY_NAVIGATION", "HIGH_COGNITIVE_LOAD"],
+      "suggested_insight_blocks": ["IB033", "IB034"],
+      "suggested_sequence_family": "conversion_lift"
     }
   ]
 }
