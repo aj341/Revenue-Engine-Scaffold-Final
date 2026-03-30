@@ -15,9 +15,17 @@ export const assetsTable = pgTable(
     issueFit: jsonb("issue_fit"),
     deliveryModes: jsonb("delivery_modes"),
     existingUrl: text("existing_url"),
+    // New enriched fields
+    triggerConditions: jsonb("trigger_conditions"),
+    deliveryChannel: text("delivery_channel"),
+    progressionRules: jsonb("progression_rules"),
+    personalizationFields: jsonb("personalization_fields"),
     active: boolean("active").notNull().default(true),
   },
-  (t) => [index("assets_type_idx").on(t.assetType)]
+  (t) => [
+    index("assets_type_idx").on(t.assetType),
+    index("assets_channel_idx").on(t.deliveryChannel),
+  ]
 );
 
 export const insertAssetSchema = createInsertSchema(assetsTable).omit({ id: true });

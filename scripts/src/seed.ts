@@ -118,11 +118,16 @@ interface AssetMatchingFile {
     asset_name: string;
     asset_type: string;
     description: string;
-    funnel_stage_best: string;
-    icp_fit: string[];
-    issue_fit: string[];
-    delivery_modes: string[];
-    existing_url: string;
+    funnel_stage_best?: string;
+    icp_fit?: string[];
+    issue_fit?: string[];
+    delivery_modes?: string[];
+    existing_url?: string;
+    // New enriched fields
+    trigger_conditions?: string[];
+    delivery_channel?: string;
+    progression_rules?: Record<string, string>;
+    personalization_fields?: string[];
   }>;
 }
 
@@ -339,32 +344,31 @@ async function seedAssets() {
       .where(eq(assetsTable.assetName, asset.asset_name))
       .limit(1);
 
+    const assetValues = {
+      assetType: asset.asset_type,
+      description: asset.description ?? null,
+      funnelStageBest: asset.funnel_stage_best ?? null,
+      icpFit: asset.icp_fit ?? [],
+      issueFit: asset.issue_fit ?? [],
+      deliveryModes: asset.delivery_modes ?? [],
+      existingUrl: asset.existing_url ?? null,
+      triggerConditions: asset.trigger_conditions ?? null,
+      deliveryChannel: asset.delivery_channel ?? null,
+      progressionRules: asset.progression_rules ?? null,
+      personalizationFields: asset.personalization_fields ?? null,
+      active: true,
+    };
+
     if (existing.length > 0) {
       await db
         .update(assetsTable)
-        .set({
-          assetType: asset.asset_type,
-          description: asset.description ?? null,
-          funnelStageBest: asset.funnel_stage_best ?? null,
-          icpFit: asset.icp_fit ?? [],
-          issueFit: asset.issue_fit ?? [],
-          deliveryModes: asset.delivery_modes ?? [],
-          existingUrl: asset.existing_url ?? null,
-          active: true,
-        })
+        .set(assetValues)
         .where(eq(assetsTable.id, existing[0].id));
       updated++;
     } else {
       await db.insert(assetsTable).values({
         assetName: asset.asset_name,
-        assetType: asset.asset_type,
-        description: asset.description ?? null,
-        funnelStageBest: asset.funnel_stage_best ?? null,
-        icpFit: asset.icp_fit ?? [],
-        issueFit: asset.issue_fit ?? [],
-        deliveryModes: asset.delivery_modes ?? [],
-        existingUrl: asset.existing_url ?? null,
-        active: true,
+        ...assetValues,
       });
       inserted++;
     }

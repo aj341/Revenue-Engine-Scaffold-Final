@@ -17,13 +17,20 @@
       ],
       "delivery_modes": ["summary", "link", "screenshot"],
       "existing_url": "https://designbees.com.au/analyser",
-      "usage_rules": {
-        "when_to_use": "First touch with cold/paid traffic prospects. Best when you've observed a specific issue (generic hero, weak CTA, missing trust signals) and want proof of the problem.",
-        "when_not_to_use": "Not appropriate as very first outreach to agency decision-makers (too generic). Don't use after deal is closed or with warm/hot leads who want solution, not audit.",
-        "hold_until_reply": true,
-        "best_combined_with": ["checklist"],
-        "conversion_rate_context": "Analyser links in cold emails convert at ~8-12% to reply. Summary format performs better than full link for highest-friction ICPs."
-      }
+      "trigger_conditions": [
+        "Specific homepage issue identified from audit",
+        "First touch with cold prospect who has paid/organic traffic",
+        "Re-engagement after 90-day hold where homepage has changed",
+        "Prospect has asked 'how would you know what to fix?'"
+      ],
+      "delivery_channel": "email",
+      "progression_rules": {
+        "after_open_no_reply": "Follow up day 3 with LinkedIn referencing the specific finding from the analyser",
+        "after_reply": "Book 15-min call to walk through specific findings — don't send more content",
+        "after_asset_click": "Respond within 2 hours with a personalised note on the most critical issue found",
+        "after_no_open": "Retry on day 5 with subject line variation referencing the issue directly"
+      },
+      "personalization_fields": ["company_name", "primary_issue_code", "strength_detected", "issue_consequence", "industry"]
     },
     {
       "asset_name": "Brief Builder",
@@ -39,13 +46,20 @@
       ],
       "delivery_modes": ["link", "embedded"],
       "existing_url": "https://designbees.com.au/brief-builder",
-      "usage_rules": {
-        "when_to_use": "After positive reply or warm introduction. Use when prospect has agreed to explore solutions. Shows immediate value by improving their current process.",
-        "when_not_to_use": "Don't use in cold first touch. Not appropriate for agencies that don't see process improvement as leverage (rare but happens).",
-        "hold_until_reply": false,
-        "best_combined_with": ["calculator"],
-        "conversion_rate_context": "Brief Builder in follow-up emails converts at ~15-20% to time-investment. Strong engagement metric for warm leads."
-      }
+      "trigger_conditions": [
+        "Positive reply received and prospect has agreed to explore",
+        "Call booked — send day before as pre-call prep",
+        "Warm prospect who mentioned revision cycles or brief quality as a pain point",
+        "Agency prospect with high project volume who mentioned process friction"
+      ],
+      "delivery_channel": "email",
+      "progression_rules": {
+        "after_use": "Follow up with calculator to quantify time saved by better briefs",
+        "after_no_use": "Retry with a specific use case example matching their industry",
+        "after_completion": "Move opportunity to 'Proposal' stage and include brief output in conversation",
+        "after_call": "Reference brief structure discussed on call — don't send again"
+      },
+      "personalization_fields": ["company_name", "project_type", "industry", "team_size"]
     },
     {
       "asset_name": "ROI Calculator",
@@ -60,122 +74,113 @@
       ],
       "delivery_modes": ["link", "summary"],
       "existing_url": "https://designbees.com.au/calculator",
-      "usage_rules": {
-        "when_to_use": "Use when you want to quantify business impact. Strong for agencies (margin calculator focus) and marketing managers (revenue loss focus). After brief or in second/third touch.",
-        "when_not_to_use": "Don't use if prospect hasn't agreed to explore. Founders with early-stage SaaS sometimes skip financial tools—use checklist instead.",
-        "hold_until_reply": false,
-        "best_combined_with": ["analyser"],
-        "conversion_rate_context": "Calculator links in warm emails convert at ~20-25% to time-investment. Highest engagement among all assets. Average user spends 8-12 minutes on tool."
-      }
+      "trigger_conditions": [
+        "Revenue or cost angle explicitly acknowledged by prospect",
+        "Agency prospect asking about margin improvement or overhead reduction",
+        "Marketing manager who mentioned campaign production time or budget constraints",
+        "Founder who asked 'what's the ROI?' or mentioned burn rate concerns",
+        "Second or third touch with warm prospect who engaged with analyser"
+      ],
+      "delivery_channel": "email",
+      "progression_rules": {
+        "after_use": "Book call to discuss the calculation results — frame as 'worth exploring the gap'",
+        "after_no_use": "Follow up on day 3 with a pre-filled example calculation for their industry",
+        "after_call": "Include the calculation summary in the proposal or follow-up email",
+        "if_financial_objection": "Reference the calculator results directly in objection reframe"
+      },
+      "personalization_fields": ["company_name", "team_size", "monthly_campaigns", "estimated_hourly_cost", "industry"]
     },
     {
       "asset_name": "Conversion Checklist",
       "asset_type": "checklist",
-      "description": "6-16 item diagnostic checklist across messaging, trust, clarity, CTA, mobile, conversion path. Self-assessment format. Prospect checks off current state, sees gap vs. best practice.",
+      "description": "6-point homepage conversion checklist covering hero clarity, CTA strength, trust signal placement, above-fold structure, mobile readability, and decision path length. Lightweight and fast to use.",
       "funnel_stage_best": "cold",
       "icp_fit": ["founder", "marketing_manager", "agency"],
       "issue_fit": [
         "HERO_TOO_GENERIC",
         "CTA_TOO_SOFT",
-        "WEAK_VISUAL_HIERARCHY",
-        "MISSING_SOCIAL_PROOF",
-        "MISSING_SEGMENT_CLARITY",
-        "TOO_MANY_COMPETING_ELEMENTS",
-        "CLUTTERED_LAYOUT",
+        "WEAK_ABOVE_FOLD_STRUCTURE",
         "LOW_TRUST_SIGNAL_VISIBILITY",
-        "FRICTION_HEAVY_NAVIGATION"
+        "POOR_MOBILE_READABILITY",
+        "SLOW_DECISION_PATH"
       ],
       "delivery_modes": ["pdf", "link"],
       "existing_url": "https://designbees.com.au/checklist",
-      "usage_rules": {
-        "when_to_use": "Cold first touch or second touch after analyser. Self-assessment format doesn't require prospect to open a tool. Works well for time-constrained prospects (founders, agency owners).",
-        "when_not_to_use": "Don't use as final asset before booking call (too diagnostic, not solutionary). Marketing managers sometimes find checklists too basic—use calculator instead.",
-        "hold_until_reply": false,
-        "best_combined_with": ["analyser"],
-        "conversion_rate_context": "Checklist PDFs in cold emails get ~25-30% open rate. Low click-through but high completion rate (60%+ of opens). Good awareness-building asset."
-      }
+      "trigger_conditions": [
+        "Touch 3 with cold prospect who hasn't replied — lighter than analyser",
+        "Prospect who opened email but didn't reply — re-engage with tangible asset",
+        "Founder or marketing manager who mentioned they 'already have a site' — frame as self-audit tool",
+        "First touch where multiple small issues detected (not one dominant issue)"
+      ],
+      "delivery_channel": "email",
+      "progression_rules": {
+        "after_open_no_reply": "Follow up on day 3 referencing the specific checklist section most relevant to their issue",
+        "after_reply": "Escalate to analyser for a full automated audit — position as 'deeper version'",
+        "after_click": "Respond with a pre-filled analyser result that shows how they score on the checklist items",
+        "after_no_engage": "Move to calculator angle on next touch — checklist didn't land, try financial framing"
+      },
+      "personalization_fields": ["company_name", "primary_issue_code", "industry"]
     },
     {
       "asset_name": "Case Study (Benchmark Format)",
       "asset_type": "case_study",
-      "description": "Customer success story showing before/after metrics. Format: Company profile → Problem → Solution → Results (time saved, conversion improved, margin gained). 1-2 page PDF.",
+      "description": "Client result presented as a before/after benchmark. Format: problem identified, changes made, measurable result achieved. Specific to industry or ICP type for maximum relevance.",
       "funnel_stage_best": "warm",
       "icp_fit": ["founder", "marketing_manager", "agency"],
       "issue_fit": [
-        "MISSING_SOCIAL_PROOF",
         "LOW_TRUST_SIGNAL_VISIBILITY",
-        "UNCLEAR_OFFER",
-        "WEAK_ABOVE_FOLD_STRUCTURE"
+        "MISSING_SOCIAL_PROOF",
+        "HERO_TOO_GENERIC",
+        "UNCLEAR_OFFER"
       ],
-      "delivery_modes": ["pdf", "link"],
+      "delivery_modes": ["pdf", "link", "summary"],
       "existing_url": "https://designbees.com.au/case-studies",
-      "usage_rules": {
-        "when_to_use": "Use for warm leads or positive replies. Best when prospect matches customer profile (same ICP, similar business size, same pain). Always choose case study that mirrors prospect's situation.",
-        "when_not_to_use": "Don't use in cold first touch. Don't use if prospect's situation doesn't align with case study (wrong company size, wrong pain, wrong outcome).",
-        "hold_until_reply": false,
-        "best_combined_with": ["calculator"],
-        "conversion_rate_context": "Case studies in warm follow-ups convert at ~18-25% to next step (call, demo). Credibility multiplier when matched to prospect situation."
-      }
+      "trigger_conditions": [
+        "Trust or credibility objection raised explicitly",
+        "Prospect asks 'have you done this before for someone like us?'",
+        "Warm prospect in active evaluation comparing multiple vendors",
+        "Agency prospect asking for proof of client outcome (not just service description)",
+        "Post-call follow-up to reinforce the specific result discussed"
+      ],
+      "delivery_channel": "email",
+      "progression_rules": {
+        "after_share": "Follow up on day 2 asking which part of the result was most relevant to their situation",
+        "after_call": "Reference the specific case study result in the proposal — match client profile to prospect profile",
+        "after_objection": "Match the case study to the specific objection type — send a different case study for each objection",
+        "after_no_response": "Follow up with a shorter one-line result summary rather than full case study"
+      },
+      "personalization_fields": ["company_name", "industry", "icp_type", "primary_issue_code"]
     },
     {
       "asset_name": "Playbook Excerpt",
       "asset_type": "playbook",
-      "description": "Snapshot of Design Bees' operational playbook. Example: '5-Step Brief Structure for Faster Approvals' or 'How We Reduce Revision Cycles.' 2-3 pages, actionable, not salesy.",
+      "description": "Snapshot of Design Bees' operational methodology. Example sections: '5-Step Brief Structure for Faster Approvals' or 'How We Reduce Revision Cycles.' 2-3 pages, actionable, not salesy.",
       "funnel_stage_best": "warm",
       "icp_fit": ["agency", "marketing_manager", "founder"],
       "issue_fit": [
-        "FEATURE_FIRST_MESSAGING",
-        "HIGH_COGNITIVE_LOAD",
         "FRICTION_HEAVY_NAVIGATION",
-        "SLOW_DECISION_PATH"
+        "SLOW_DECISION_PATH",
+        "HIGH_COGNITIVE_LOAD",
+        "FEATURE_FIRST_MESSAGING"
       ],
       "delivery_modes": ["pdf", "link"],
       "existing_url": "https://designbees.com.au/playbook",
-      "usage_rules": {
-        "when_to_use": "Use for agencies and marketing managers with process bottleneck pain. Shows methodology without asking for commitment. Good for thought leadership positioning.",
-        "when_not_to_use": "Don't use for founders who don't care about detailed processes. Don't use as cold first touch (too much assumption of interest). Not appropriate for tire-kickers.",
-        "hold_until_reply": false,
-        "best_combined_with": ["brief_builder"],
-        "conversion_rate_context": "Playbook excerpts get high engagement (time spent) but moderate conversion to next step (10-15%). Strong for nurture and thought leadership."
-      }
+      "trigger_conditions": [
+        "Agency or marketing manager who asked about Design Bees' methodology or process",
+        "Post-call follow-up where process or system was the main discussion topic",
+        "Prospect who mentioned they've had poor experiences with vague design process in the past",
+        "Warm prospect in evaluation asking 'how do you actually work?'"
+      ],
+      "delivery_channel": "email",
+      "progression_rules": {
+        "after_share": "Follow up asking if the methodology aligns with how their team works — open a process conversation",
+        "after_interest": "Book a call to walk through the methodology in detail — position as a 'process audit'",
+        "after_no_response": "Move to calculator on next touch — if methodology didn't land, switch to financial framing",
+        "after_call": "Send playbook as post-call follow-up to reinforce what was discussed"
+      },
+      "personalization_fields": ["company_name", "icp_type", "primary_issue_code", "team_size"]
     }
   ],
-  "progression_rules": {
-    "cold": {
-      "default_asset": null,
-      "primary": "checklist",
-      "secondary": "analyser",
-      "logic": "Use lightweight assets (checklist or analyser summary) that don't require prospect buy-in. Avoid tools that require interaction for value."
-    },
-    "positive_reply": {
-      "default_asset": "brief_builder",
-      "alternative": "calculator",
-      "logic": "Prospect has shown interest. Use tool that provides immediate utility (brief builder reduces their revision cycles, calculator quantifies impact). Hold solution details."
-    },
-    "warm": {
-      "default_asset": "calculator",
-      "alternative": "case_study",
-      "logic": "Prospect is actively engaged. Use high-credibility assets (calculator for ROI, case study for social proof). Lead toward call/demo."
-    },
-    "post_call": {
-      "default_asset": "relevant_tool",
-      "logic": "Based on call outcomes: If they want operational improvement, follow with brief_builder. If they want financial justification, follow with calculator. If they want proof, follow with case_study.",
-      "overrides": {
-        "if_need_proof": "case_study",
-        "if_need_process": "playbook_excerpt",
-        "if_need_financial_justification": "calculator",
-        "if_need_examples": "case_study"
-      }
-    },
-    "stalled": {
-      "default_asset": "narrower_asset",
-      "logic": "Use a smaller, more specific asset tied to the exact objection or question. Avoid broad assets. Example: If stalled on time-to-implementation, use brief_builder to show how faster briefing works. If stalled on ROI, use calculator."
-    },
-    "opportunity_reframe": {
-      "default_asset": "analyser",
-      "logic": "If prospect is not responding or seems to have lost interest, an analyser can re-engage by identifying a new issue they weren't aware of. Use as re-engagement tactic."
-    }
-  },
   "recommendation_engine": {
     "inputs": ["icp", "issue_cluster", "funnel_stage", "engagement_level", "prior_assets_used", "objection_type"],
     "logic": "Match by icp_fit AND issue_fit first. Filter by funnel_stage_best to ensure readiness. Exclude already-used assets to maintain novelty. Prioritize assets with highest conversion rate for this segment. Break ties by engagement level (cold → checklist, warm → calculator).",
