@@ -1,0 +1,210 @@
+{
+  "assets": [
+    {
+      "asset_name": "Homepage Analyser",
+      "asset_type": "analyser",
+      "description": "Automated audit of homepage messaging, clarity, trust signals, and conversion elements. Returns specific findings with before/after recommendations. Requires website URL input.",
+      "funnel_stage_best": "cold",
+      "icp_fit": ["founder", "marketing_manager", "agency"],
+      "issue_fit": [
+        "HERO_TOO_GENERIC",
+        "CTA_TOO_SOFT",
+        "CTA_NOT_OUTCOME_TIED",
+        "UNCLEAR_OFFER",
+        "WEAK_ABOVE_FOLD_STRUCTURE",
+        "MISSING_SOCIAL_PROOF",
+        "MISSING_SEGMENT_CLARITY"
+      ],
+      "delivery_modes": ["summary", "link", "screenshot"],
+      "existing_url": "https://designbees.com.au/analyser",
+      "usage_rules": {
+        "when_to_use": "First touch with cold/paid traffic prospects. Best when you've observed a specific issue (generic hero, weak CTA, missing trust signals) and want proof of the problem.",
+        "when_not_to_use": "Not appropriate as very first outreach to agency decision-makers (too generic). Don't use after deal is closed or with warm/hot leads who want solution, not audit.",
+        "hold_until_reply": true,
+        "best_combined_with": ["checklist"],
+        "conversion_rate_context": "Analyser links in cold emails convert at ~8-12% to reply. Summary format performs better than full link for highest-friction ICPs."
+      }
+    },
+    {
+      "asset_name": "Brief Builder",
+      "asset_type": "brief_builder",
+      "description": "Interactive tool that guides users through creating a tighter, more specific creative brief. Outputs a structured 3-5 field brief that reduces revision cycles.",
+      "funnel_stage_best": "positive_reply",
+      "icp_fit": ["founder", "marketing_manager", "agency"],
+      "issue_fit": [
+        "CTA_NOT_OUTCOME_TIED",
+        "FEATURE_FIRST_MESSAGING",
+        "HIGH_COGNITIVE_LOAD",
+        "FRICTION_HEAVY_NAVIGATION"
+      ],
+      "delivery_modes": ["link", "embedded"],
+      "existing_url": "https://designbees.com.au/brief-builder",
+      "usage_rules": {
+        "when_to_use": "After positive reply or warm introduction. Use when prospect has agreed to explore solutions. Shows immediate value by improving their current process.",
+        "when_not_to_use": "Don't use in cold first touch. Not appropriate for agencies that don't see process improvement as leverage (rare but happens).",
+        "hold_until_reply": false,
+        "best_combined_with": ["calculator"],
+        "conversion_rate_context": "Brief Builder in follow-up emails converts at ~15-20% to time-investment. Strong engagement metric for warm leads."
+      }
+    },
+    {
+      "asset_name": "ROI Calculator",
+      "asset_type": "calculator",
+      "description": "Quantifies business impact of design bottlenecks. Inputs: current production time, number of projects/campaigns, hourly team cost. Outputs: annual cost of inefficiency, potential revenue unlock.",
+      "funnel_stage_best": "warm",
+      "icp_fit": ["founder", "marketing_manager", "agency"],
+      "issue_fit": [
+        "SLOW_DECISION_PATH",
+        "FEATURE_FIRST_MESSAGING",
+        "CTA_NOT_OUTCOME_TIED"
+      ],
+      "delivery_modes": ["link", "summary"],
+      "existing_url": "https://designbees.com.au/calculator",
+      "usage_rules": {
+        "when_to_use": "Use when you want to quantify business impact. Strong for agencies (margin calculator focus) and marketing managers (revenue loss focus). After brief or in second/third touch.",
+        "when_not_to_use": "Don't use if prospect hasn't agreed to explore. Founders with early-stage SaaS sometimes skip financial tools—use checklist instead.",
+        "hold_until_reply": false,
+        "best_combined_with": ["analyser"],
+        "conversion_rate_context": "Calculator links in warm emails convert at ~20-25% to time-investment. Highest engagement among all assets. Average user spends 8-12 minutes on tool."
+      }
+    },
+    {
+      "asset_name": "Conversion Checklist",
+      "asset_type": "checklist",
+      "description": "6-16 item diagnostic checklist across messaging, trust, clarity, CTA, mobile, conversion path. Self-assessment format. Prospect checks off current state, sees gap vs. best practice.",
+      "funnel_stage_best": "cold",
+      "icp_fit": ["founder", "marketing_manager", "agency"],
+      "issue_fit": [
+        "HERO_TOO_GENERIC",
+        "CTA_TOO_SOFT",
+        "WEAK_VISUAL_HIERARCHY",
+        "MISSING_SOCIAL_PROOF",
+        "MISSING_SEGMENT_CLARITY",
+        "TOO_MANY_COMPETING_ELEMENTS",
+        "CLUTTERED_LAYOUT",
+        "LOW_TRUST_SIGNAL_VISIBILITY",
+        "FRICTION_HEAVY_NAVIGATION"
+      ],
+      "delivery_modes": ["pdf", "link"],
+      "existing_url": "https://designbees.com.au/checklist",
+      "usage_rules": {
+        "when_to_use": "Cold first touch or second touch after analyser. Self-assessment format doesn't require prospect to open a tool. Works well for time-constrained prospects (founders, agency owners).",
+        "when_not_to_use": "Don't use as final asset before booking call (too diagnostic, not solutionary). Marketing managers sometimes find checklists too basic—use calculator instead.",
+        "hold_until_reply": false,
+        "best_combined_with": ["analyser"],
+        "conversion_rate_context": "Checklist PDFs in cold emails get ~25-30% open rate. Low click-through but high completion rate (60%+ of opens). Good awareness-building asset."
+      }
+    },
+    {
+      "asset_name": "Case Study (Benchmark Format)",
+      "asset_type": "case_study",
+      "description": "Customer success story showing before/after metrics. Format: Company profile → Problem → Solution → Results (time saved, conversion improved, margin gained). 1-2 page PDF.",
+      "funnel_stage_best": "warm",
+      "icp_fit": ["founder", "marketing_manager", "agency"],
+      "issue_fit": [
+        "MISSING_SOCIAL_PROOF",
+        "LOW_TRUST_SIGNAL_VISIBILITY",
+        "UNCLEAR_OFFER",
+        "WEAK_ABOVE_FOLD_STRUCTURE"
+      ],
+      "delivery_modes": ["pdf", "link"],
+      "existing_url": "https://designbees.com.au/case-studies",
+      "usage_rules": {
+        "when_to_use": "Use for warm leads or positive replies. Best when prospect matches customer profile (same ICP, similar business size, same pain). Always choose case study that mirrors prospect's situation.",
+        "when_not_to_use": "Don't use in cold first touch. Don't use if prospect's situation doesn't align with case study (wrong company size, wrong pain, wrong outcome).",
+        "hold_until_reply": false,
+        "best_combined_with": ["calculator"],
+        "conversion_rate_context": "Case studies in warm follow-ups convert at ~18-25% to next step (call, demo). Credibility multiplier when matched to prospect situation."
+      }
+    },
+    {
+      "asset_name": "Playbook Excerpt",
+      "asset_type": "playbook",
+      "description": "Snapshot of Design Bees' operational playbook. Example: '5-Step Brief Structure for Faster Approvals' or 'How We Reduce Revision Cycles.' 2-3 pages, actionable, not salesy.",
+      "funnel_stage_best": "warm",
+      "icp_fit": ["agency", "marketing_manager", "founder"],
+      "issue_fit": [
+        "FEATURE_FIRST_MESSAGING",
+        "HIGH_COGNITIVE_LOAD",
+        "FRICTION_HEAVY_NAVIGATION",
+        "SLOW_DECISION_PATH"
+      ],
+      "delivery_modes": ["pdf", "link"],
+      "existing_url": "https://designbees.com.au/playbook",
+      "usage_rules": {
+        "when_to_use": "Use for agencies and marketing managers with process bottleneck pain. Shows methodology without asking for commitment. Good for thought leadership positioning.",
+        "when_not_to_use": "Don't use for founders who don't care about detailed processes. Don't use as cold first touch (too much assumption of interest). Not appropriate for tire-kickers.",
+        "hold_until_reply": false,
+        "best_combined_with": ["brief_builder"],
+        "conversion_rate_context": "Playbook excerpts get high engagement (time spent) but moderate conversion to next step (10-15%). Strong for nurture and thought leadership."
+      }
+    }
+  ],
+  "progression_rules": {
+    "cold": {
+      "default_asset": null,
+      "primary": "checklist",
+      "secondary": "analyser",
+      "logic": "Use lightweight assets (checklist or analyser summary) that don't require prospect buy-in. Avoid tools that require interaction for value."
+    },
+    "positive_reply": {
+      "default_asset": "brief_builder",
+      "alternative": "calculator",
+      "logic": "Prospect has shown interest. Use tool that provides immediate utility (brief builder reduces their revision cycles, calculator quantifies impact). Hold solution details."
+    },
+    "warm": {
+      "default_asset": "calculator",
+      "alternative": "case_study",
+      "logic": "Prospect is actively engaged. Use high-credibility assets (calculator for ROI, case study for social proof). Lead toward call/demo."
+    },
+    "post_call": {
+      "default_asset": "relevant_tool",
+      "logic": "Based on call outcomes: If they want operational improvement, follow with brief_builder. If they want financial justification, follow with calculator. If they want proof, follow with case_study.",
+      "overrides": {
+        "if_need_proof": "case_study",
+        "if_need_process": "playbook_excerpt",
+        "if_need_financial_justification": "calculator",
+        "if_need_examples": "case_study"
+      }
+    },
+    "stalled": {
+      "default_asset": "narrower_asset",
+      "logic": "Use a smaller, more specific asset tied to the exact objection or question. Avoid broad assets. Example: If stalled on time-to-implementation, use brief_builder to show how faster briefing works. If stalled on ROI, use calculator."
+    },
+    "opportunity_reframe": {
+      "default_asset": "analyser",
+      "logic": "If prospect is not responding or seems to have lost interest, an analyser can re-engage by identifying a new issue they weren't aware of. Use as re-engagement tactic."
+    }
+  },
+  "recommendation_engine": {
+    "inputs": ["icp", "issue_cluster", "funnel_stage", "engagement_level", "prior_assets_used", "objection_type"],
+    "logic": "Match by icp_fit AND issue_fit first. Filter by funnel_stage_best to ensure readiness. Exclude already-used assets to maintain novelty. Prioritize assets with highest conversion rate for this segment. Break ties by engagement level (cold → checklist, warm → calculator).",
+    "priority_scoring": {
+      "icp_match": 40,
+      "issue_match": 30,
+      "funnel_stage_fit": 20,
+      "novelty_bonus": 10
+    },
+    "override_rules": {
+      "if_multiple_issues_detected": "Use analyser first to holistically identify all issues",
+      "if_strong_financial_focus": "Prioritize calculator regardless of funnel stage",
+      "if_process_focus": "Prioritize brief_builder if founder or marketing manager",
+      "if_credibility_question": "Prioritize case_study that matches prospect profile",
+      "if_objection_handling": "Use asset that directly addresses objection type (ROI objection → calculator, proof objection → case_study)"
+    }
+  },
+  "asset_sequencing_by_icp": {
+    "founder": {
+      "sequence": ["checklist", "analyser", "calculator", "case_study"],
+      "rationale": "Founders are time-constrained and skeptical of tools. Start lightweight (checklist), use analyser as proof of problems, calculator for impact, case study for validation."
+    },
+    "marketing_manager": {
+      "sequence": ["analyser", "calculator", "brief_builder", "case_study"],
+      "rationale": "Marketing managers want proof of problems and financial impact. Analyser shows specific issues, calculator shows revenue impact, brief_builder shows process improvement, case study shows peer validation."
+    },
+    "agency": {
+      "sequence": ["calculator", "brief_builder", "playbook_excerpt", "case_study"],
+      "rationale": "Agencies care about margin and efficiency first. Calculator shows revenue opportunity, brief_builder shows process improvement, playbook shows methodology, case study shows results for clients."
+    }
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "issues": [
+    {
+      "issue_code": "HERO_TOO_GENERIC",
+      "issue_name": "Hero Section Uses Vague Language",
+      "description": "Hero section communicates value but lacks specificity about what outcome the visitor will actually get. Common patterns: 'We deliver beautiful design', 'Expert design solutions', 'Design that works' — these don't answer 'Why should I care right now?'",
+      "severity_default": "high",
+      "category": "messaging"
+    },
+    {
+      "issue_code": "CTA_TOO_SOFT",
+      "issue_name": "CTA Exists But Isn't Outcome-Tied",
+      "description": "CTA button present but divorced from a clear next step or outcome. Common: 'Get Started', 'Learn More', 'Contact Us' without context of what happens next or what problem gets solved by clicking.",
+      "severity_default": "high",
+      "category": "conversion"
+    },
+    {
+      "issue_code": "CTA_NOT_OUTCOME_TIED",
+      "issue_name": "CTA Asks for Action Without Explaining Benefit",
+      "description": "Asks visitor to take an action (sign up, book call, submit info) without explaining what they'll get from it. No bridge between problem → action → result. Feels transactional rather than beneficial.",
+      "severity_default": "high",
+      "category": "conversion"
+    },
+    {
+      "issue_code": "FEATURE_FIRST_MESSAGING",
+      "issue_name": "Page Leads With Features/Process Before Outcome",
+      "description": "Page structure prioritizes how you work (our process, our team, our methodology) before establishing why the visitor should care. Delays addressing visitor's actual problem or desired outcome.",
+      "severity_default": "high",
+      "category": "messaging"
+    },
+    {
+      "issue_code": "UNCLEAR_OFFER",
+      "issue_name": "Visitor Can't Quickly Understand What You Deliver",
+      "description": "Within 10 seconds, the visitor cannot clearly articulate what the company does or what they'll get by working together. Confusion between service type, outcomes, and offering model.",
+      "severity_default": "critical",
+      "category": "messaging"
+    },
+    {
+      "issue_code": "WEAK_ABOVE_FOLD_STRUCTURE",
+      "issue_name": "Above-the-Fold Fails to Communicate Value Proposition",
+      "description": "The section that appears without scrolling doesn't establish a compelling reason to scroll further. Missing or weak: headline clarity, urgent signal, differentiation, reason to engage.",
+      "severity_default": "high",
+      "category": "messaging"
+    },
+    {
+      "issue_code": "TOO_MANY_COMPETING_ELEMENTS",
+      "issue_name": "Page Has Too Many Visual Elements Competing for Attention",
+      "description": "Homepage or key page shows too many features, sections, calls to action, or visual styles. Visitor attention fragments. No clear focal point. Everything feels equally important.",
+      "severity_default": "medium",
+      "category": "visual"
+    },
+    {
+      "issue_code": "CLUTTERED_LAYOUT",
+      "issue_name": "Layout Lacks Clear Visual Flow and Feels Overwhelming",
+      "description": "Visual hierarchy is weak. Text, images, whitespace don't guide eye flow. Sections feel disconnected. Page feels crowded even if there's technically enough whitespace. Navigation of page is confusing.",
+      "severity_default": "medium",
+      "category": "visual"
+    },
+    {
+      "issue_code": "LOW_TRUST_SIGNAL_VISIBILITY",
+      "issue_name": "Trust Signals Are Buried or Missing",
+      "description": "Logos, testimonials, certifications, case studies, or social proof are absent or placed in low-visibility areas (footer, buried below fold). Visitor has no easy way to build confidence in credibility.",
+      "severity_default": "medium",
+      "category": "trust"
+    },
+    {
+      "issue_code": "WEAK_VISUAL_HIERARCHY",
+      "issue_name": "No Clear Visual Priority Guiding the Eye",
+      "description": "Font sizes, colors, spacing, and contrast don't create a clear priority for what visitor should read first, second, third. Everything competes equally. Eye has nowhere natural to land.",
+      "severity_default": "medium",
+      "category": "visual"
+    },
+    {
+      "issue_code": "POOR_MOBILE_READABILITY",
+      "issue_name": "Content Hard to Read or Navigate on Mobile",
+      "description": "On mobile devices: text too small, buttons too hard to tap, layout breaks, images don't scale, CTAs buried. Navigation or critical content is difficult to access without zooming or horizontal scrolling.",
+      "severity_default": "high",
+      "category": "mobile"
+    },
+    {
+      "issue_code": "HIGH_COGNITIVE_LOAD",
+      "issue_name": "Page Requires Too Much Mental Effort to Process",
+      "description": "Visitor needs to synthesize too many concepts, read long paragraphs, or connect dots to understand value. Jargon or complex explanations without simplification. Decision fatigue sets in quickly.",
+      "severity_default": "medium",
+      "category": "messaging"
+    },
+    {
+      "issue_code": "MISSING_SOCIAL_PROOF",
+      "issue_name": "No Testimonials, Case Studies, Logos, or Results Shown",
+      "description": "Zero third-party validation. No customer names, quotes, case study results, client logos, or outcome numbers. Visitor has no evidence that you deliver what you claim.",
+      "severity_default": "high",
+      "category": "trust"
+    },
+    {
+      "issue_code": "MISSING_SEGMENT_CLARITY",
+      "issue_name": "Page Tries to Speak to Everyone Instead of a Specific Audience",
+      "description": "Messaging is so broad it could apply to any business. No indication that this company understands a specific customer type's problems. Visitor doesn't feel seen or understood.",
+      "severity_default": "high",
+      "category": "messaging"
+    },
+    {
+      "issue_code": "FRICTION_HEAVY_NAVIGATION",
+      "issue_name": "Navigation Creates Friction or Confusion in User Journey",
+      "description": "Visitor unclear on next step or path to take action. Menu structure confusing, next button placement unclear, or multiple competing paths create decision paralysis. Unclear how to progress.",
+      "severity_default": "medium",
+      "category": "navigation"
+    },
+    {
+      "issue_code": "SLOW_DECISION_PATH",
+      "issue_name": "Too Many Steps or Too Much Content Before User Can Take Action",
+      "description": "Visitor must read extensively or scroll through many sections before they encounter an actionable CTA. By then, attention has dropped. No early low-friction entry point to engage.",
+      "severity_default": "high",
+      "category": "conversion"
+    }
+  ]
+}

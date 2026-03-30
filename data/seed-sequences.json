@@ -1,0 +1,258 @@
+{
+  "sequences": [
+    {
+      "sequence_name": "Founder — Homepage Clarity & Speed",
+      "icp": "founder",
+      "issue_cluster": "HERO_TOO_GENERIC",
+      "priority_tier": "tier_1",
+      "channel_mix": ["email", "linkedin", "email", "email", "linkedin"],
+      "cta_strategy": "permission_seeking_then_discovery",
+      "asset_strategy": "hold_until_reply",
+      "steps": [
+        {
+          "step_number": 1,
+          "day_offset": 0,
+          "channel": "email",
+          "objective": "Open the conversation with observed signal",
+          "angle": "homepage_clarity_gap",
+          "asset_to_include": null,
+          "personalization_required_fields": ["company_name", "industry", "primary_issue_code", "strength_detected"],
+          "email_template": "observed_signal_founders",
+          "send_window": "tue_thu_9am_11am",
+          "fallback_behavior": "skip_if_no_email",
+          "example_subject": "One thing on {{company_name}}'s homepage"
+        },
+        {
+          "step_number": 2,
+          "day_offset": 3,
+          "channel": "linkedin",
+          "objective": "Reframe the issue as wasted revenue opportunity",
+          "angle": "revenue_opportunity_angle",
+          "asset_to_include": null,
+          "personalization_required_fields": ["industry"],
+          "message_type": "connection_request",
+          "send_window": "wed_fri_10am_2pm",
+          "fallback_behavior": "send_if_no_email",
+          "example_message": "Hey {{first_name}}, noticed {{company_name}} is getting solid traffic. Curious whether you've looked at how your page converts compared to your space — I spotted a few things that might be worth exploring."
+        },
+        {
+          "step_number": 3,
+          "day_offset": 5,
+          "channel": "email",
+          "objective": "Offer diagnostic tool and frame as speed/waste relief",
+          "angle": "operational_efficiency_angle",
+          "asset_to_include": "checklist",
+          "personalization_required_fields": ["company_name", "primary_pain_id"],
+          "email_template": "asset_checklist_founders",
+          "send_window": "tue_thu_10am_12pm",
+          "fallback_behavior": "skip_if_hard_no",
+          "example_subject": "{{company_name}} — the 6-point conversion checklist"
+        },
+        {
+          "step_number": 4,
+          "day_offset": 7,
+          "channel": "email",
+          "objective": "Shift angle to operational cost and context-switching waste",
+          "angle": "team_velocity_angle",
+          "asset_to_include": null,
+          "personalization_required_fields": ["company_name"],
+          "email_template": "time_cost_founders",
+          "send_window": "mon_fri_2pm_4pm",
+          "fallback_behavior": "skip_if_hard_no",
+          "example_subject": "What if {{company_name}}'s design cycles were 2x faster"
+        },
+        {
+          "step_number": 5,
+          "day_offset": 10,
+          "channel": "linkedin",
+          "objective": "Direct follow-up and nudge to reply",
+          "angle": "direct_nudge",
+          "asset_to_include": null,
+          "personalization_required_fields": ["first_name"],
+          "message_type": "direct_message",
+          "send_window": "wed_fri_11am_1pm",
+          "fallback_behavior": "skip_if_replied",
+          "example_message": "{{first_name}}, would it make sense to explore whether {{company_name}} could convert more of your existing traffic? Happy to share what I noticed if useful."
+        }
+      ]
+    },
+    {
+      "sequence_name": "Marketing Manager — Campaign Landing Page Friction",
+      "icp": "marketing_manager",
+      "issue_cluster": "UNCLEAR_OFFER",
+      "priority_tier": "tier_1",
+      "channel_mix": ["email", "email", "slack", "email", "slack", "email"],
+      "cta_strategy": "direct_offer",
+      "asset_strategy": "conditional_send_on_reply_signal",
+      "steps": [
+        {
+          "step_number": 1,
+          "day_offset": 0,
+          "channel": "email",
+          "objective": "Lead with campaign delay angle and observed friction",
+          "angle": "campaign_delay_angle",
+          "asset_to_include": null,
+          "personalization_required_fields": ["company_name", "primary_issue_code"],
+          "email_template": "campaign_friction_mkt_mgr",
+          "send_window": "mon_wed_fri_9am_11am",
+          "fallback_behavior": "send_always",
+          "example_subject": "Your landing page is costing you campaign velocity"
+        },
+        {
+          "step_number": 2,
+          "day_offset": 2,
+          "channel": "email",
+          "objective": "Share brief builder tool as process solution",
+          "angle": "process_clarity_angle",
+          "asset_to_include": "brief_builder",
+          "personalization_required_fields": ["company_name"],
+          "email_template": "asset_brief_builder_mkt_mgr",
+          "send_window": "tue_thu_10am_12pm",
+          "fallback_behavior": "hold_until_positive_signal_or_day_3",
+          "example_subject": "The 3-field brief structure that speeds up creative"
+        },
+        {
+          "step_number": 3,
+          "day_offset": 4,
+          "channel": "slack",
+          "objective": "Offer ROI calculator as revenue impact quantifier",
+          "angle": "revenue_impact_angle",
+          "asset_to_include": "calculator",
+          "personalization_required_fields": ["company_name"],
+          "message_type": "cold_outreach",
+          "send_window": "wed_fri_2pm_4pm",
+          "fallback_behavior": "skip_if_no_slack_or_hard_no",
+          "example_message": "Quick question: What would it mean for your Q2 pipeline if you could launch landing pages 50% faster? I can show you the revenue impact in 2 minutes."
+        },
+        {
+          "step_number": 4,
+          "day_offset": 6,
+          "channel": "email",
+          "objective": "Share proof and benchmark against competitors",
+          "angle": "competitive_benchmark_angle",
+          "asset_to_include": "analyser",
+          "personalization_required_fields": ["company_name", "industry"],
+          "email_template": "proof_benchmark_mkt_mgr",
+          "send_window": "mon_wed_fri_9am_11am",
+          "fallback_behavior": "skip_if_hard_no",
+          "example_subject": "How {{company_name}} compares to competitors on landing page clarity"
+        },
+        {
+          "step_number": 5,
+          "day_offset": 9,
+          "channel": "slack",
+          "objective": "Close-the-loop: direct question about next steps",
+          "angle": "close_loop_angle",
+          "asset_to_include": null,
+          "personalization_required_fields": ["first_name"],
+          "message_type": "direct_message",
+          "send_window": "tue_thu_11am_1pm",
+          "fallback_behavior": "skip_if_replied",
+          "example_message": "{{first_name}}, one more question: If we could cut your landing page revision cycles in half, would that change how you resource design?"
+        },
+        {
+          "step_number": 6,
+          "day_offset": 11,
+          "channel": "email",
+          "objective": "Final breakup: position for future re-engagement",
+          "angle": "future_fit_angle",
+          "asset_to_include": null,
+          "personalization_required_fields": ["company_name"],
+          "email_template": "breakup_mkt_mgr",
+          "send_window": "mon_fri_4pm_5pm",
+          "fallback_behavior": "send_always",
+          "example_subject": "One more thought on {{company_name}}'s campaign velocity"
+        }
+      ]
+    },
+    {
+      "sequence_name": "Agency — Overflow & Margin Erosion",
+      "icp": "agency",
+      "issue_cluster": "SLOW_DECISION_PATH",
+      "priority_tier": "tier_1",
+      "channel_mix": ["email", "linkedin", "email", "email", "linkedin", "email"],
+      "cta_strategy": "relief_based",
+      "asset_strategy": "calculator_early_if_interested",
+      "steps": [
+        {
+          "step_number": 1,
+          "day_offset": 0,
+          "channel": "email",
+          "objective": "Lead with observed overflow and margin signal",
+          "angle": "capacity_and_margin_angle",
+          "asset_to_include": null,
+          "personalization_required_fields": ["company_name", "service_line"],
+          "email_template": "overflow_signal_agencies",
+          "send_window": "tue_fri_10am_12pm",
+          "fallback_behavior": "send_always",
+          "example_subject": "The project you're turning away from {{company_name}}"
+        },
+        {
+          "step_number": 2,
+          "day_offset": 3,
+          "channel": "linkedin",
+          "objective": "Reframe as margin erosion and profitability risk",
+          "angle": "profitability_angle",
+          "asset_to_include": null,
+          "personalization_required_fields": ["first_name"],
+          "message_type": "connection_request",
+          "send_window": "wed_fri_9am_11am",
+          "fallback_behavior": "send_if_no_email",
+          "example_message": "Hey {{first_name}}, what would it mean for {{company_name}} to take on an extra $30-50k/month in client work without adding headcount? Most agencies I talk to have that sitting on the table. Worth exploring?"
+        },
+        {
+          "step_number": 3,
+          "day_offset": 5,
+          "channel": "email",
+          "objective": "Offer ROI calculator to quantify revenue and margin impact",
+          "angle": "revenue_unlock_angle",
+          "asset_to_include": "calculator",
+          "personalization_required_fields": ["company_name"],
+          "email_template": "asset_calculator_agencies",
+          "send_window": "mon_wed_fri_2pm_4pm",
+          "fallback_behavior": "skip_if_hard_no",
+          "example_subject": "{{company_name}} — the margin calculator"
+        },
+        {
+          "step_number": 4,
+          "day_offset": 7,
+          "channel": "email",
+          "objective": "Shift to white-label positioning and retainer profitability",
+          "angle": "white_label_retainer_angle",
+          "asset_to_include": null,
+          "personalization_required_fields": ["company_name"],
+          "email_template": "white_label_profitability_agencies",
+          "send_window": "tue_thu_10am_12pm",
+          "fallback_behavior": "skip_if_hard_no",
+          "example_subject": "How to scale white-label retainers without killing margin"
+        },
+        {
+          "step_number": 5,
+          "day_offset": 10,
+          "channel": "linkedin",
+          "objective": "Introduce case-study approach and workload relief angle",
+          "angle": "case_study_angle",
+          "asset_to_include": "bottleneck_identification_checklist",
+          "personalization_required_fields": ["first_name"],
+          "message_type": "direct_message",
+          "send_window": "wed_fri_11am_1pm",
+          "fallback_behavior": "skip_if_replied",
+          "example_message": "{{first_name}}, quick thing: most agencies we work with have 1-2 bottleneck projects slowing everything down. Worth 15 mins to identify yours?"
+        },
+        {
+          "step_number": 6,
+          "day_offset": 12,
+          "channel": "email",
+          "objective": "Close-the-loop: direct next-step question",
+          "angle": "close_loop_angle",
+          "asset_to_include": null,
+          "personalization_required_fields": ["company_name", "first_name"],
+          "email_template": "close_loop_agencies",
+          "send_window": "mon_fri_9am_11am",
+          "fallback_behavior": "send_always",
+          "example_subject": "{{first_name}}, quick question about {{company_name}}'s next move"
+        }
+      ]
+    }
+  ]
+}
