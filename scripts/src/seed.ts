@@ -27,10 +27,19 @@ function readJson<T>(filename: string): T {
 interface IssueTaxonomy {
   issues: Array<{
     issue_code: string;
-    issue_name: string;
-    description: string;
-    severity_default: string;
-    category: string;
+    // current shape uses issue_name; new shape uses label
+    issue_name?: string;
+    label?: string;
+    description?: string;
+    // current shape uses severity_default; new shape uses severity
+    severity_default?: string;
+    severity?: string;
+    category?: string;
+    subcategory?: string;
+    common_triggers?: string[];
+    related_issues?: string[];
+    suggested_insight_blocks?: string[];
+    suggested_sequence_family?: string;
   }>;
 }
 
@@ -105,26 +114,46 @@ async function seedIssueClusters() {
   console.log(`\n📋 Seeding ${issues.length} issue clusters…`);
 
   let inserted = 0;
-  let skipped = 0;
+  let updated = 0;
 
   for (const issue of issues) {
-    const result = await db
-      .insert(issueClustersTable)
-      .values({
-        issueCode: issue.issue_code,
-        issueName: issue.issue_name,
-        description: issue.description,
-        severityDefault: issue.severity_default,
-        category: issue.category,
-      })
-      .onConflictDoNothing({ target: issueClustersTable.issueCode })
-      .returning({ id: issueClustersTable.id });
+    // Normalise field names: new shape uses `label`/`severity`, old shape uses `issue_name`/`severity_default`
+    const issueName = issue.label ?? issue.issue_name ?? issue.issue_code;
+    const severityDefault = issue.severity ?? issue.severity_default ?? null;
 
-    if (result.length > 0) inserted++;
-    else skipped++;
+    const values = {
+      issueCode: issue.issue_code,
+      issueName,
+      label: issue.label ?? null,
+      description: issue.description ?? null,
+      severityDefault,
+      category: issue.category ?? null,
+      subcategory: issue.subcategory ?? null,
+      commonTriggers: issue.common_triggers ?? null,
+      relatedIssues: issue.related_issues ?? null,
+      suggestedInsightBlocks: issue.suggested_insight_blocks ?? null,
+      suggestedSequenceFamily: issue.suggested_sequence_family ?? null,
+    };
+
+    const existing = await db
+      .select({ id: issueClustersTable.id })
+      .from(issueClustersTable)
+      .where(eq(issueClustersTable.issueCode, issue.issue_code))
+      .limit(1);
+
+    if (existing.length > 0) {
+      await db
+        .update(issueClustersTable)
+        .set({ ...values })
+        .where(eq(issueClustersTable.issueCode, issue.issue_code));
+      updated++;
+    } else {
+      await db.insert(issueClustersTable).values(values);
+      inserted++;
+    }
   }
 
-  console.log(`   ✅ ${inserted} inserted, ${skipped} already existed`);
+  console.log(`   ✅ ${inserted} inserted, ${updated} updated`);
 }
 
 // ─── 2. Insight Blocks ───────────────────────────────────────────────────────

@@ -6,9 +6,15 @@ export const issueClustersTable = pgTable("issue_clusters", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   issueCode: text("issue_code").notNull().unique(),
   issueName: text("issue_name").notNull(),
+  label: text("label"),
   description: text("description"),
   severityDefault: text("severity_default"),
   category: text("category"),
+  subcategory: text("subcategory"),
+  commonTriggers: jsonb("common_triggers"),
+  relatedIssues: jsonb("related_issues"),
+  suggestedInsightBlocks: jsonb("suggested_insight_blocks"),
+  suggestedSequenceFamily: text("suggested_sequence_family"),
 });
 
 export const insertIssueClusterSchema = createInsertSchema(issueClustersTable).omit({ id: true });
